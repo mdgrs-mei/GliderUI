@@ -88,6 +88,8 @@ You can also refer to the [examples](./examples/Examples.md) folder for script s
 
 *AvaloniaUIShell* launches a server process `AvaloniaUIShell.Server` that provides all the UI functionalities. The AvaloniaUIShell module communicates with the server through IPC (Inter-Process Communication) to create UI elements and handle events. No Avalonia UI's dlls are loaded in PowerShell.
 
+<img width="1436" height="857" alt="image" src="https://github.com/user-attachments/assets/c69a406d-2f9e-437e-82fb-938c786c40f4" />
+
 This model simplifies the script structure. You can write long-running code in event handlers without blocking GUI. It's also allowed to access properties of UI elements directly on any thread without using Dispatchers.
 
 This works:
