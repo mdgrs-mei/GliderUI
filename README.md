@@ -8,7 +8,7 @@
 
 Cross-platform Desktop GUI framework for PowerShell powered by Avalonia UI.
 
-https://github.com/user-attachments/assets/6af85705-3e42-4294-8fc4-8d41614899bd
+https://github.com/user-attachments/assets/4cdce633-b24a-4610-89a6-673599377c22
 
 </div>
 
@@ -60,7 +60,7 @@ $win.Show()
 $win.WaitForClosed()
 ```
 
-![QuickStart](https://github.com/user-attachments/assets/d38c1372-7143-435a-a042-9a9c6ca5fb33)
+![QuickStart](https://github.com/user-attachments/assets/82347fe3-c324-42ee-a8a0-e365e4783a36)
 
 If you dot-source the script and comment out `$win.WaitForClosed()`, you can inspect UI objects or even modify them on the terminal:
 
@@ -114,7 +114,7 @@ $button.AddClick({
 })
 ```
 
-![HowItWorks](https://github.com/user-attachments/assets/dd0b70e5-c718-4463-af2e-07a38cb8692f)
+![HowItWorks](https://github.com/user-attachments/assets/145a2518-151f-42b2-8b3b-7870dcd7041f)
 
 ## Supported APIs
 
