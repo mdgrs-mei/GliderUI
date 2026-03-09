@@ -18,7 +18,7 @@ https://github.com/user-attachments/assets/4cdce633-b24a-4610-89a6-673599377c22
 ## Requirements
 
 - PowerShell 7.4 or newer
-- Windows(win-x64), macOS(osx-arm64) or Linux(linux-x64)
+- Windows(win-x64/win-arm64), macOS(osx-arm64) or Linux(linux-x64)
 
 ## Installation
 
