@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36908.2
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaUIShell.Server", "AvaloniaUIShell.Server\AvaloniaUIShell.Server.csproj", "{5B71C495-27F8-4624-8BB5-F6B0286A9B85}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GliderUI.Server", "GliderUI.Server\GliderUI.Server.csproj", "{5B71C495-27F8-4624-8BB5-F6B0286A9B85}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaUIShell.Common", "AvaloniaUIShell.Common\AvaloniaUIShell.Common.csproj", "{EC4EEA0C-1659-8770-F493-E4F9F8FA67DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GliderUI.Common", "GliderUI.Common\GliderUI.Common.csproj", "{EC4EEA0C-1659-8770-F493-E4F9F8FA67DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaUIShell.ApiExporter", "AvaloniaUIShell.ApiExporter\AvaloniaUIShell.ApiExporter.csproj", "{E33500C4-A53C-68E2-F1E2-153005925F9F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GliderUI.ApiExporter", "GliderUI.ApiExporter\GliderUI.ApiExporter.csproj", "{E33500C4-A53C-68E2-F1E2-153005925F9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaUIShell.Generator", "AvaloniaUIShell.Generator\AvaloniaUIShell.Generator.csproj", "{1A1EDD01-2B0D-CD0D-7FF7-C116951F1C32}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GliderUI.Generator", "GliderUI.Generator\GliderUI.Generator.csproj", "{1A1EDD01-2B0D-CD0D-7FF7-C116951F1C32}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaUIShell", "AvaloniaUIShell\AvaloniaUIShell.csproj", "{DCE35D2C-7A01-2DE1-73C8-F33C21591319}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GliderUI", "GliderUI\GliderUI.csproj", "{DCE35D2C-7A01-2DE1-73C8-F33C21591319}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
