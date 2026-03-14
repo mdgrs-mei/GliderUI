@@ -13,7 +13,7 @@ None.
 None.
 
 #>
-function Enable-AUIExecution {
+function Enable-GLIExecution {
     [CmdletBinding()]
     param ()
 

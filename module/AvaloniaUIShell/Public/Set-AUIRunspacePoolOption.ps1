@@ -11,7 +11,7 @@ The number of runspaces in the Runspace pool. The default is 2.
 
 .PARAMETER InitializationScript
 The ScriptBlock that is executed at the start of the runspace. This is typically used to initialize variables and functions in the runspace pool.
-There's no need to manually load AvaloniaUIShell module as it is automatically loaded at runspace initialization.
+There's no need to manually load GliderUI module as it is automatically loaded at runspace initialization.
 
 .PARAMETER InitializationScriptArgumentList
 The argument list that is passed to the InitializationScript.
@@ -23,7 +23,7 @@ None.
 None.
 
 .EXAMPLE
-Set-AUIRunspacePoolOption -RunspaceCount 3 -InitializationScript {
+Set-GLIRunspacePoolOption -RunspaceCount 3 -InitializationScript {
     $globalVar = 'Hello'
     function Hello {
         Write-Host $globalVar
@@ -31,9 +31,9 @@ Set-AUIRunspacePoolOption -RunspaceCount 3 -InitializationScript {
 }
 
 .EXAMPLE
-Set-AUIRunspacePoolOption -RunspaceCount 4
+Set-GLIRunspacePoolOption -RunspaceCount 4
 #>
-function Set-AUIRunspacePoolOption {
+function Set-GLIRunspacePoolOption {
     [CmdletBinding()]
     param (
         [Parameter(ValueFromPipelineByPropertyName = $true)]
@@ -53,6 +53,6 @@ function Set-AUIRunspacePoolOption {
             $threadCount = $null
         }
 
-        [AvaloniaUIShell.Engine]::Get().SetCommandThreadPoolOption($threadCount, $InitializationScript, $InitializationScriptArgumentList)
+        [GliderUI.Engine]::Get().SetCommandThreadPoolOption($threadCount, $InitializationScript, $InitializationScriptArgumentList)
     }
 }
