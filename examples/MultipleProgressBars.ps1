@@ -29,7 +29,7 @@ function Main() {
     }
 
     # RunspaceCount defines the number of event callbacks that can run in parallel at a time.
-    Set-AUIRunspacePoolOption -RunspaceCount 3 -InitializationScript $runspaceInitializationScript -InitializationScriptArgumentList $PSScriptRoot
+    Set-GLIRunspacePoolOption -RunspaceCount 3 -InitializationScript $runspaceInitializationScript -InitializationScriptArgumentList $PSScriptRoot
 
     # Dot source the initialization script here to make the functions available in the default runspace too.
     . $runspaceInitializationScript $PSScriptRoot
