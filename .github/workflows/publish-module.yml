@@ -24,4 +24,4 @@ jobs:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         shell: pwsh
         run: |
-          Publish-Module -Path ./module/AvaloniaUIShell -NuGetApiKey "$env:NUGET_API_KEY"
+          Publish-Module -Path ./module/GliderUI -NuGetApiKey "$env:NUGET_API_KEY"

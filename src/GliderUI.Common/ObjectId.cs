@@ -1,0 +1,24 @@
+﻿
+namespace GliderUI.Common;
+
+public class ObjectId
+{
+    public string Id { get; set; } = "";
+    public string Type { get; set; } = "";
+
+    public static ObjectId Null { get; } = new();
+
+    public ObjectId()
+    {
+    }
+
+    public ObjectId(string id)
+    {
+        Id = id;
+    }
+
+    public override string ToString()
+    {
+        return Id;
+    }
+}

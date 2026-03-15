@@ -5,14 +5,14 @@ Enter-RSSession -OnStart {
     $root = $args[0]
     $build = "$root/Build.ps1"
 
-    $server = Get-Process -Name AvaloniaUIShell.Server -ErrorAction SilentlyContinue
+    $server = Get-Process -Name GliderUI.Server -ErrorAction SilentlyContinue
     if ($server) {
         Write-Host 'Waiting for server close...'
         $server.WaitForExit()
     }
 
     & $build Debug
-    Import-Module "$root/module/AvaloniaUIShell"
+    Import-Module "$root/module/GliderUI"
 
     function Restart {
         Restart-RSSession

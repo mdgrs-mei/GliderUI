@@ -1,9 +1,9 @@
-using namespace AvaloniaUIShell
-using namespace AvaloniaUIShell.Avalonia
-using namespace AvaloniaUIShell.Avalonia.Controls
+using namespace GliderUI
+using namespace GliderUI.Avalonia
+using namespace GliderUI.Avalonia.Controls
 
-if (-not (Get-Module AvaloniaUIShell)) {
-    Import-Module AvaloniaUIShell
+if (-not (Get-Module GliderUI)) {
+    Import-Module GliderUI
 }
 
 $win = [Window]::new()
@@ -28,7 +28,7 @@ $cancelButton.IsEnabled = $false
 $syncHash.isCancel = $false
 $syncHash.cancelButton = $cancelButton
 
-# This cancel button's callback runs in the main runspace as [AvaloniaUIShell.EventCallbackRunspaceMode]::MainRunspaceAsyncUI is the default mode.
+# This cancel button's callback runs in the main runspace as [GliderUI.EventCallbackRunspaceMode]::MainRunspaceAsyncUI is the default mode.
 $cancelButton.AddClick({
         $syncHash.isCancel = $true
     })
@@ -61,7 +61,7 @@ $longRunningCallback.ScriptBlock = {
             return
         }
 
-        # Properties of AvaloniaUIShell objects are thread-safe and can be updated from any thread.
+        # Properties of GliderUI objects are thread-safe and can be updated from any thread.
         $syncHash.progressBar.Value = $_
 
         # Do some long-running work.

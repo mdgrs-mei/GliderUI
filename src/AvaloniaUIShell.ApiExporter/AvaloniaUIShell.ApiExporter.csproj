@@ -1,6 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\AvaloniaUIShell.Server\Server.props" />
-  <ItemGroup>
-    <Compile Include="..\AvaloniaUIShell.Server\System\EventCallbackRunspaceMode.cs" Link="ServerTypes\EventCallbackRunspaceMode.cs" />
-  </ItemGroup>
-</Project>

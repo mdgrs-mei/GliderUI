@@ -1,7 +1,7 @@
-using namespace AvaloniaUIShell.Avalonia.Controls
+using namespace GliderUI.Avalonia.Controls
 
-if (-not (Get-Module AvaloniaUIShell)) {
-    Import-Module AvaloniaUIShell
+if (-not (Get-Module GliderUI)) {
+    Import-Module GliderUI
 }
 
 $win = [Window]::new()

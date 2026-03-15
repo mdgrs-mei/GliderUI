@@ -1,12 +1,12 @@
-using namespace AvaloniaUIShell
-using namespace AvaloniaUIShell.Avalonia
-using namespace AvaloniaUIShell.Avalonia.Controls
+using namespace GliderUI
+using namespace GliderUI.Avalonia
+using namespace GliderUI.Avalonia.Controls
 
-if (-not (Get-Module AvaloniaUIShell)) {
-    Import-Module AvaloniaUIShell
+if (-not (Get-Module GliderUI)) {
+    Import-Module GliderUI
 }
 
-$modulePath = (Get-Module AvaloniaUIShell).Path
+$modulePath = (Get-Module GliderUI).Path
 
 "Main Runspace ID [$([Runspace]::DefaultRunspace.Id)]" | Write-Host
 $win = [Window]::new()
@@ -36,11 +36,11 @@ $win.Show()
 
 $threadJob = Start-ThreadJob -ScriptBlock {
     param ($ModulePath)
-    # By importing the AvaloniaUIShell module, the event callback processor for this runspace is also created.
+    # By importing the GliderUI module, the event callback processor for this runspace is also created.
     Import-Module $ModulePath
 
     "Sub Runspace ID [$([Runspace]::DefaultRunspace.Id)]" | Write-Host
-    $win = [AvaloniaUIShell.Avalonia.Controls.Window]::new()
+    $win = [GliderUI.Avalonia.Controls.Window]::new()
     $win.Title = 'Multiple Runspaces'
     $win.Width = 420
     $win.Height = 240
@@ -49,7 +49,7 @@ $threadJob = Start-ThreadJob -ScriptBlock {
             "Sub window closed [$([Runspace]::DefaultRunspace.Id)]" | Write-Host
         })
 
-    $button = [AvaloniaUIShell.Avalonia.Controls.Button]::new()
+    $button = [GliderUI.Avalonia.Controls.Button]::new()
     $button.Content = 'Sub Runspace'
     $button.AddClick({
             # Long-running tasks here do not block the button click on the main window as this callback is processed independent of the main runspace.
@@ -58,7 +58,7 @@ $threadJob = Start-ThreadJob -ScriptBlock {
             $button.Content = "Sub Runspace[$([Runspace]::DefaultRunspace.Id)] - Done"
         })
 
-    $panel = [AvaloniaUIShell.Avalonia.Controls.StackPanel]::new()
+    $panel = [GliderUI.Avalonia.Controls.StackPanel]::new()
     $panel.Margin = 32
     $panel.Children.Add($button)
 

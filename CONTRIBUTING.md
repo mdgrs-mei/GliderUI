@@ -11,20 +11,20 @@ The followings are the types of contributions we expect and the guidelines to fo
 ## Reporting Bugs
 
 - Make sure that you are using the latest version
-- Go to [issues](https://github.com/mdgrs-mei/AvaloniaUIShell/issues) page and confirm that there is not already an existing bug report.
+- Go to [issues](https://github.com/mdgrs-mei/GliderUI/issues) page and confirm that there is not already an existing bug report.
 - File an issue and follow the `Bug Report` issue form.
 
 ## Suggesting Enhancements
 
 If you are thinking about requesting new features or minor improvements to existing functionality, please follow the steps below:
 
-- Read the [documentation](https://github.com/mdgrs-mei/AvaloniaUIShell/blob/main/README.md) carefully and confirm that the functionality is not covered already.
-- Go to [issues](https://github.com/mdgrs-mei/AvaloniaUIShell/issues) page and confirm that there is not already an existing enhancement request.
+- Read the [documentation](https://github.com/mdgrs-mei/GliderUI/blob/main/README.md) carefully and confirm that the functionality is not covered already.
+- Go to [issues](https://github.com/mdgrs-mei/GliderUI/issues) page and confirm that there is not already an existing enhancement request.
 - File an issue and follow the `Feature Request` issue form.
 
 ## Making Pull Requests
 
-When you make a code contribution, you must agree that the content you submit is provided under the project [license](https://github.com/mdgrs-mei/AvaloniaUIShell/blob/main/LICENSE). To make a PR, please follow the steps below:
+When you make a code contribution, you must agree that the content you submit is provided under the project [license](https://github.com/mdgrs-mei/GliderUI/blob/main/LICENSE). To make a PR, please follow the steps below:
 
 - File an issue by following the above guidelines before making a PR
 - In the issue, suggest that you are willing to make a PR

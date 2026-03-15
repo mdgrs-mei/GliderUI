@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Generator(Common)": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\GliderUI.Common\\GliderUI.Common.csproj"
+    },
+    "Generator(GliderUI)": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\GliderUI\\GliderUI.csproj"
+    }
+  }
+}

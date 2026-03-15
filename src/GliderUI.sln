@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36908.2
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GliderUI.Server", "GliderUI.Server\GliderUI.Server.csproj", "{5B71C495-27F8-4624-8BB5-F6B0286A9B85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GliderUI.Common", "GliderUI.Common\GliderUI.Common.csproj", "{EC4EEA0C-1659-8770-F493-E4F9F8FA67DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GliderUI.ApiExporter", "GliderUI.ApiExporter\GliderUI.ApiExporter.csproj", "{E33500C4-A53C-68E2-F1E2-153005925F9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GliderUI.Generator", "GliderUI.Generator\GliderUI.Generator.csproj", "{1A1EDD01-2B0D-CD0D-7FF7-C116951F1C32}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GliderUI", "GliderUI\GliderUI.csproj", "{DCE35D2C-7A01-2DE1-73C8-F33C21591319}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5B71C495-27F8-4624-8BB5-F6B0286A9B85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B71C495-27F8-4624-8BB5-F6B0286A9B85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B71C495-27F8-4624-8BB5-F6B0286A9B85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B71C495-27F8-4624-8BB5-F6B0286A9B85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC4EEA0C-1659-8770-F493-E4F9F8FA67DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC4EEA0C-1659-8770-F493-E4F9F8FA67DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC4EEA0C-1659-8770-F493-E4F9F8FA67DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC4EEA0C-1659-8770-F493-E4F9F8FA67DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E33500C4-A53C-68E2-F1E2-153005925F9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E33500C4-A53C-68E2-F1E2-153005925F9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E33500C4-A53C-68E2-F1E2-153005925F9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E33500C4-A53C-68E2-F1E2-153005925F9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A1EDD01-2B0D-CD0D-7FF7-C116951F1C32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A1EDD01-2B0D-CD0D-7FF7-C116951F1C32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A1EDD01-2B0D-CD0D-7FF7-C116951F1C32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A1EDD01-2B0D-CD0D-7FF7-C116951F1C32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCE35D2C-7A01-2DE1-73C8-F33C21591319}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCE35D2C-7A01-2DE1-73C8-F33C21591319}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCE35D2C-7A01-2DE1-73C8-F33C21591319}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCE35D2C-7A01-2DE1-73C8-F33C21591319}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4792C003-C186-4A52-8E61-AC503176524F}
+	EndGlobalSection
+EndGlobal

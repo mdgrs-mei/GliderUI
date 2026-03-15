@@ -1,11 +1,11 @@
 # See CancelLongRunningEventCallback.ps1 first for basic usage of runspace pool event callbacks.
 
-using namespace AvaloniaUIShell
-using namespace AvaloniaUIShell.Avalonia
-using namespace AvaloniaUIShell.Avalonia.Controls
+using namespace GliderUI
+using namespace GliderUI.Avalonia
+using namespace GliderUI.Avalonia.Controls
 
-if (-not (Get-Module AvaloniaUIShell)) {
-    Import-Module AvaloniaUIShell
+if (-not (Get-Module GliderUI)) {
+    Import-Module GliderUI
 }
 
 
@@ -29,7 +29,7 @@ function Main() {
     }
 
     # RunspaceCount defines the number of event callbacks that can run in parallel at a time.
-    Set-AUIRunspacePoolOption -RunspaceCount 3 -InitializationScript $runspaceInitializationScript -InitializationScriptArgumentList $PSScriptRoot
+    Set-GLIRunspacePoolOption -RunspaceCount 3 -InitializationScript $runspaceInitializationScript -InitializationScriptArgumentList $PSScriptRoot
 
     # Dot source the initialization script here to make the functions available in the default runspace too.
     . $runspaceInitializationScript $PSScriptRoot

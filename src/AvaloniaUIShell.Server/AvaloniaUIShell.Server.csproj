@@ -1,6 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\AvaloniaUIShell.Server\Server.props" />
-  <ItemGroup>
-    <ProjectReference Include="..\AvaloniaUIShell.Common\AvaloniaUIShell.Common.csproj" />
-  </ItemGroup>
-</Project>

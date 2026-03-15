@@ -27,21 +27,21 @@ if ($IsWindows) {
 
 $copyExtensions = @('.dll', '.pdb')
 $src = "$PSScriptRoot/src"
-$apiSrc = "$src/AvaloniaUIShell.ApiExporter"
-$coreSrc = "$src/AvaloniaUIShell"
-$depSrc = "$src/AvaloniaUIShell.Common"
-$serverSrc = "$src/AvaloniaUIShell.Server"
+$apiSrc = "$src/GliderUI.ApiExporter"
+$coreSrc = "$src/GliderUI"
+$depSrc = "$src/GliderUI.Common"
+$serverSrc = "$src/GliderUI.Server"
 
 $apiPublish = [System.IO.Path]::GetFullPath("$apiSrc/bin/$Configuration/$serverNetVersion/$defaultServerRid/publish/")
 $corePublish = [System.IO.Path]::GetFullPath("$coreSrc/bin/$Configuration/$coreNetVersion/publish/")
 $depPublish = [System.IO.Path]::GetFullPath("$depSrc/bin/$Configuration/$coreNetVersion/publish/")
 
 $apiXml = "$apiSrc/Api.xml"
-$apiExporter = "$apiPublish/AvaloniaUIShell.ApiExporter$executableExtension"
+$apiExporter = "$apiPublish/GliderUI.ApiExporter$executableExtension"
 
-$outDir = "$PSScriptRoot/module/AvaloniaUIShell/bin/$coreNetVersion"
+$outDir = "$PSScriptRoot/module/GliderUI/bin/$coreNetVersion"
 $outDeps = "$outDir/Dependencies"
-$outServer = "$PSScriptRoot/module/AvaloniaUIShell/bin/$serverNetVersion"
+$outServer = "$PSScriptRoot/module/GliderUI/bin/$serverNetVersion"
 
 function CopyFolderItems($FolderPath, $Destination) {
     if (Test-Path $Destination) {

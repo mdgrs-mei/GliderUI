@@ -1,0 +1,6 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\GliderUI.Server\Server.props" />
+  <ItemGroup>
+    <ProjectReference Include="..\GliderUI.Common\GliderUI.Common.csproj" />
+  </ItemGroup>
+</Project>
