@@ -29,7 +29,7 @@ internal sealed partial class App : Application
 
         _updateTimer = new DispatcherTimer(DispatcherPriority.Background)
         {
-            Interval = TimeSpan.FromMicroseconds(Constants.ServerCommandPolingIntervalMillisecond)
+            Interval = TimeSpan.FromMilliseconds(Constants.ServerCommandPolingIntervalMillisecond)
         };
         _updateTimer.Tick += (sender, eventArgs) =>
         {
