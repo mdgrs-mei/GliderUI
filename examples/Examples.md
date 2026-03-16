@@ -1,5 +1,9 @@
 # Examples
 
+## [BasicInput.ps1](./BasicInput.ps1)
+
+<img width="439" height="439" alt="BasicInput" src="https://github.com/user-attachments/assets/04cac2e4-0970-499f-bcc5-c86519d21fd9" />
+
 ## [CancelLongRunningEventCallback.ps1](./CancelLongRunningEventCallback.ps1)
 
 Basic example that shows how to use `RunspacePoolAsyncUI` for a long running task.
