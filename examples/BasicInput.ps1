@@ -31,9 +31,9 @@ $checkBox.AddIsCheckedChanged({
 
 $comboBox = [ComboBox]::new()
 $comboBox.PlaceholderText = 'Placeholder'
-$comboBox.Items.Add('Apple')
-$comboBox.Items.Add('Banana')
-$comboBox.Items.Add('Orange')
+$comboBox.Items.Add('Apple') | Out-Null
+$comboBox.Items.Add('Banana') | Out-Null
+$comboBox.Items.Add('Orange') | Out-Null
 $comboBox.AddSelectionChanged({
         Write-Host "Selection changed to [$($comboBox.SelectedItem)]"
     })
@@ -46,6 +46,7 @@ $radioButtonOnChecked = {
 $radioButton1 = [RadioButton]::new()
 $radioButton2 = [RadioButton]::new()
 $radioButton3 = [RadioButton]::new()
+$radioButton1.IsChecked = $true
 $radioButton1.GroupName = 'Group'
 $radioButton1.Content = 'Option1'
 $radioButton1.AddChecked($radioButtonOnChecked)
