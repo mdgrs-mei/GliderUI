@@ -18,6 +18,7 @@ internal sealed class Exporter
         AddTypesInAssembly(typeof(AvaloniaObject)); // Avalonia.Base.dll
         AddTypesInAssembly(typeof(Button)); // Avalonia.Controls.dll
         AddTypesInAssembly(typeof(AvaloniaRuntimeXamlLoader)); // Avalonia.Markup.Xaml.Loader.dll
+        AddTypesInAssembly(typeof(DataGrid)); // Avalonia.Controls.DataGrid.dll
 
         AddObject(typeof(List<>));
         AddEnum(typeof(Server.EventCallbackRunspaceMode));

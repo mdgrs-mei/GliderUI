@@ -35,6 +35,8 @@ public class Api
         "WinRT.IWinRTObject",
         "WinRT.IObjectReference",
         "WinRT.ObjectReference",
+        "CompiledAvaloniaXaml.!AvaloniaResources",
+        "CompiledAvaloniaXaml.!XamlLoader",
     ];
 
     private static readonly List<string> _supportedGlobalSystemInterfaces =
