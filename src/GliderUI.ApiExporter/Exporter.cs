@@ -24,6 +24,7 @@ internal sealed class Exporter
 
         AddObject(typeof(List<>));
         AddObject(typeof(ObservableCollection<>));
+        AddObject(typeof(Server.DataSourcePropertyComparer));
         AddEnum(typeof(Server.EventCallbackRunspaceMode));
         AddTypeMapping(typeof(Server.DataSource));
 

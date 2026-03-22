@@ -55,6 +55,7 @@ public class Api
     private static readonly List<string> _emulatedSystemInterfaces =
     [
         "System.Collections.Generic.IDictionary",
+        "System.Collections.IComparer"
     ];
 
     private static readonly List<string> _unsupportedMethodNames =

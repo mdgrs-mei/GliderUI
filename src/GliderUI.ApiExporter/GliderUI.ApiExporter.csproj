@@ -3,5 +3,6 @@
   <ItemGroup>
     <Compile Include="..\GliderUI.Server\System\EventCallbackRunspaceMode.cs" Link="ServerTypes\EventCallbackRunspaceMode.cs" />
     <Compile Include="..\GliderUI.Server\System\DataSource.cs" Link="ServerTypes\DataSource.cs" />
+    <Compile Include="..\GliderUI.Server\System\DataSourcePropertyComparer.cs" Link="ServerTypes\DataSourcePropertyComparer.cs" />
   </ItemGroup>
 </Project>
