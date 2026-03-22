@@ -10,7 +10,8 @@ public sealed class DataSourcePropertyComparer : IComparer
 
     public DataSourcePropertyComparer(string propertyName)
     {
-        _propertyName = propertyName;
+        ArgumentNullException.ThrowIfNull(propertyName);
+        _propertyName = propertyName.ToUpperInvariant();
     }
 
     public int Compare(object? x, object? y)
@@ -19,7 +20,6 @@ public sealed class DataSourcePropertyComparer : IComparer
         {
             return y is null ? 0 : -1;
         }
-
         if (y is null)
         {
             return 1;
