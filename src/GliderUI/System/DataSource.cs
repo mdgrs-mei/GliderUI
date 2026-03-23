@@ -61,6 +61,17 @@ public class DataSource : DynamicObject, IDictionary<string, object?>, IGliderUI
             this);
     }
 
+    public DataSource(Hashtable hashtable)
+        : this()
+    {
+        ArgumentNullException.ThrowIfNull(hashtable);
+
+        foreach (DictionaryEntry keyValue in hashtable)
+        {
+            SetMemberWithOriginalName((string)keyValue.Key, keyValue.Value);
+        }
+    }
+
     public override IEnumerable<string> GetDynamicMemberNames()
     {
         return _originalMemberNames.AsEnumerable();
