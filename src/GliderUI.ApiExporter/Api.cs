@@ -35,6 +35,8 @@ public class Api
         "WinRT.IWinRTObject",
         "WinRT.IObjectReference",
         "WinRT.ObjectReference",
+        "CompiledAvaloniaXaml.!AvaloniaResources",
+        "CompiledAvaloniaXaml.!XamlLoader",
     ];
 
     private static readonly List<string> _supportedGlobalSystemInterfaces =
@@ -53,6 +55,9 @@ public class Api
     private static readonly List<string> _emulatedSystemInterfaces =
     [
         "System.Collections.Generic.IDictionary",
+        "System.Collections.IComparer",
+        "System.Collections.IList",
+        "System.Collections.ICollection",
     ];
 
     private static readonly List<string> _unsupportedMethodNames =
@@ -96,8 +101,19 @@ public class Api
         return _unsupportedMethodNames.Contains(methodName);
     }
 
+    public List<TypeMappingDef> TypeMappings { get; } = [];
     public List<EnumDef> Enums { get; } = [];
     public List<ObjectDef> Objects { get; } = [];
+
+    public class TypeMappingDef
+    {
+        public string Name { get; set; } = "";
+        public string FullName { get; set; } = "";
+        public string Namespace { get; set; } = "";
+
+        [DefaultValue(0)]
+        public int GenericArgumentCount { get; set; }
+    }
 
     public class EnumDef
     {

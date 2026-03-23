@@ -96,6 +96,17 @@ internal static class ObjectGenerator
                 """);
         }
 
+        foreach (var apiTypeMappingDef in api.TypeMappings)
+        {
+            var ns = Generator.GetTargetNamespace(apiTypeMappingDef.Namespace);
+            var genericArgumentCount = apiTypeMappingDef.GenericArgumentCount;
+            string genericSuffix = (genericArgumentCount > 0) ? $"`{genericArgumentCount}" : "";
+
+            codeWriter.Append($"""
+                ("{ns}.{apiTypeMappingDef.Name}{genericSuffix}, GliderUI", "{apiTypeMappingDef.FullName}"),
+                """);
+        }
+
         foreach (var apiObjectDef in api.Objects)
         {
             ObjectDef objectDef = new(apiObjectDef);
