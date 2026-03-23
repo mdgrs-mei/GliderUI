@@ -10,6 +10,12 @@ Basic example that shows how to use `RunspacePoolAsyncUI` for a long running tas
 
 ![CancelLongRunningCallback](https://github.com/user-attachments/assets/73ca8a1d-84cb-41bd-ad1a-0b5bc2370f71)
 
+## [DataGrid.ps1](./DataGrid.ps1)
+
+Example of data binding and `DataGrid`.
+
+<img width="916" height="579" alt="DataGrid" src="https://github.com/user-attachments/assets/98aae49b-7bb1-4fbc-a5bd-18f6a6be7d3b" />
+
 ## [InstallDialog.ps1](./InstallDialog.ps1)
 
 Sample dialog that is shown at the top of the screen for a single long-running task.
