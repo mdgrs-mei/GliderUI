@@ -39,7 +39,7 @@ This code creates a Window that has a clickable button:
 
 ```powershell
 using namespace GliderUI.Avalonia.Controls
-Import-Module GliderUI
+Import-Module GliderUI -Force
 
 $win = [Window]::new()
 $win.Title = 'Hello from PowerShell!'
