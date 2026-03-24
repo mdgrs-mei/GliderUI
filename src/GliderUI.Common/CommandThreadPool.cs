@@ -1,10 +1,9 @@
 ﻿using System.Management.Automation;
 using System.Management.Automation.Host;
-using GliderUI.Common;
 
-namespace GliderUI;
+namespace GliderUI.Common;
 
-internal sealed class CommandThreadPool
+public class CommandThreadPool
 {
     private PSHost? _streamingHost;
     private string _modulePath = "";
