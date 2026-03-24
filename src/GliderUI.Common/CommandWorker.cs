@@ -1,11 +1,10 @@
 ﻿using System.Management.Automation;
 using System.Management.Automation.Host;
 using System.Management.Automation.Runspaces;
-using GliderUI.Common;
 
-namespace GliderUI;
+namespace GliderUI.Common;
 
-internal sealed class CommandWorker
+public class CommandWorker
 {
     private string _modulePath = "";
     private string? _initializationScript;
