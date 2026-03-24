@@ -1,8 +1,6 @@
-﻿using GliderUI.Common;
+﻿namespace GliderUI.Common;
 
-namespace GliderUI;
-
-internal static class PropertyAccessor
+public static class PropertyAccessor
 {
     public static T? Get<T>(ObjectId id, string? typeName, string propertyName)
     {
