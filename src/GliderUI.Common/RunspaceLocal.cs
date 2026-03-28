@@ -1,9 +1,9 @@
 ﻿using System.Collections.Concurrent;
 using System.Management.Automation.Runspaces;
 
-namespace GliderUI;
+namespace GliderUI.Common;
 
-internal sealed class RunspaceLocal<T>
+public class RunspaceLocal<T>
 {
     private readonly ConcurrentDictionary<int, T> _values = [];
     private readonly Func<T> _valueFactory;
