@@ -180,7 +180,7 @@ $engineUpdateTimer.Start()
 
     private void InitCommandThreadPool(PSHost? streamingHost, string modulePath)
     {
-        _commandThreadPool.Init(streamingHost, modulePath);
+        _commandThreadPool.Init(streamingHost, modulePath, Constants.ClientCommandThreadPoolDefaultThreadCount);
     }
 
     private void TermCommandThreadPool()

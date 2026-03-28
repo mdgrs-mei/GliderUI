@@ -7,16 +7,21 @@ public class CommandThreadPool
 {
     private PSHost? _streamingHost;
     private string _modulePath = "";
+    private uint _defaultThreadCount;
     private CommandWorker[]? _workers;
 
     public CommandThreadPool()
     {
     }
 
-    public void Init(PSHost? streamingHost, string modulePath)
+    public void Init(
+        PSHost? streamingHost,
+        string modulePath,
+        uint defaultThreadCount)
     {
         _streamingHost = streamingHost;
         _modulePath = modulePath;
+        _defaultThreadCount = defaultThreadCount;
         Start(null, null, null);
     }
 
@@ -33,7 +38,7 @@ public class CommandThreadPool
         if (_workers is not null)
             return;
 
-        uint workerCount = threadCount ?? Constants.ClientCommandThreadPoolDefaultThreadCount;
+        uint workerCount = threadCount ?? _defaultThreadCount;
         _workers = new CommandWorker[workerCount];
         for (int i = 0; i < _workers.Length; ++i)
         {
