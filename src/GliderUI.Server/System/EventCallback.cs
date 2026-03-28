@@ -100,7 +100,7 @@ internal static class EventCallback
         eventInfo.AddEventHandler(target, handler);
     }
 
-    public static Action<object, TEventArgs> Create<TEventArgs>(
+    internal static Action<object, TEventArgs> Create<TEventArgs>(
         EventCallbackRunspaceMode runspaceMode,
         int mainRunspaceId,
         string eventListId,
@@ -162,7 +162,7 @@ internal static class EventCallback
         };
     }
 
-    public static CommandQueueId GetProcessingQueueId(EventCallbackRunspaceMode runspaceMode, int mainRunspaceId)
+    private static CommandQueueId GetProcessingQueueId(EventCallbackRunspaceMode runspaceMode, int mainRunspaceId)
     {
         if (runspaceMode == EventCallbackRunspaceMode.RunspacePoolAsyncUI)
         {
@@ -174,7 +174,7 @@ internal static class EventCallback
         }
     }
 
-    public static void BlockingWaitTask(Task task)
+    private static void BlockingWaitTask(Task task)
     {
         while (!task.IsCompleted)
         {
