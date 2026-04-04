@@ -5,7 +5,7 @@ using GliderUI.Common;
 
 namespace GliderUI.Server;
 
-internal static class EventCallback
+internal static class EventCallbackBase
 {
     public static void Add(
         object target,
