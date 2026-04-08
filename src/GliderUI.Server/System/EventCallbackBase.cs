@@ -1,63 +1,14 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
-using Avalonia.Input;
 using GliderUI.Common;
 
 namespace GliderUI.Server;
 
-internal static class EventCallbackBase
+internal static class EventCallbackBase<TDisabledControlsHolder> where TDisabledControlsHolder : IDisabledControlsHolder
 {
+    private static readonly MethodInfo s_callbackCreatorGeneric = typeof(EventCallbackBase<TDisabledControlsHolder>).GetMethod("Create", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)!;
+
     public static void Add(
-        object target,
-        string eventName,
-        string eventArgsTypeName,
-        EventCallbackRunspaceMode runspaceMode,
-        int mainRunspaceId,
-        string eventListId,
-        int eventId,
-        object?[]? disabledControlsWhileProcessing)
-    {
-        var targetType = target.GetType();
-
-        Add(target,
-            targetType,
-            eventName,
-            eventArgsTypeName,
-            runspaceMode,
-            mainRunspaceId,
-            eventListId,
-            eventId,
-            disabledControlsWhileProcessing);
-    }
-
-    public static void AddStatic(
-        string className,
-        string eventName,
-        string eventArgsTypeName,
-        EventCallbackRunspaceMode runspaceMode,
-        int mainRunspaceId,
-        string eventListId,
-        int eventId,
-        object?[]? disabledControlsWhileProcessing)
-    {
-        var targetType = Type.GetType(className);
-        if (targetType is null)
-        {
-            throw new InvalidOperationException($"Type [{className}] not found.");
-        }
-
-        Add(null,
-            targetType,
-            eventName,
-            eventArgsTypeName,
-            runspaceMode,
-            mainRunspaceId,
-            eventListId,
-            eventId,
-            disabledControlsWhileProcessing);
-    }
-
-    private static void Add(
         object? target,
         Type targetType,
         string eventName,
@@ -80,8 +31,7 @@ internal static class EventCallbackBase
             throw new InvalidOperationException($"Type [{eventArgsTypeName}] not found.");
         }
 
-        var callbackCreatorGeneric = typeof(EventCallback).GetMethod("Create", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)!;
-        var callbackCreator = callbackCreatorGeneric.MakeGenericMethod(eventArgsType);
+        var callbackCreator = s_callbackCreatorGeneric.MakeGenericMethod(eventArgsType);
 
         var callback = callbackCreator.Invoke(null, [
             runspaceMode,
@@ -111,7 +61,7 @@ internal static class EventCallbackBase
         {
             var parentWindow = WindowStore.Get().EnterEventCallbackAndGetParentWindow(sender);
 
-            DisabledControlsHolder disabledControls = new(disabledControlsWhileProcessing);
+            IDisabledControlsHolder disabledControls = TDisabledControlsHolder.Create(disabledControlsWhileProcessing);
             disabledControls.Disable();
 
             var senderId = ObjectStore.Get().GetId(sender);
@@ -182,50 +132,5 @@ internal static class EventCallbackBase
             Thread.Sleep(Constants.ServerSyncUICommandPolingIntervalMillisecond);
         }
         App.ProcessCommands();
-    }
-
-    private sealed class DisabledControlsHolder
-    {
-        private readonly List<InputElement>? _controls;
-
-        public DisabledControlsHolder(object?[]? controls)
-        {
-            if (controls is null)
-                return;
-
-            _controls = [];
-            foreach (var obj in controls)
-            {
-                if (obj is InputElement control)
-                {
-                    if (control.IsEnabled)
-                    {
-                        _controls.Add(control);
-                    }
-                }
-            }
-        }
-
-        public void Disable()
-        {
-            if (_controls is null)
-                return;
-
-            foreach (var control in _controls)
-            {
-                control.IsEnabled = false;
-            }
-        }
-
-        public void Enable()
-        {
-            if (_controls is null)
-                return;
-
-            foreach (var control in _controls)
-            {
-                control.IsEnabled = true;
-            }
-        }
     }
 }
