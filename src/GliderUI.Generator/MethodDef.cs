@@ -17,7 +17,7 @@ internal class MethodDef
         // Additinally make abstract methods in classes virtual to provide default implementation because abstract classes need to be instantiated as return values.
         get => _apiMethodDef.IsVirtual || (_apiMethodDef.IsAbstract && !ObjectDef.Type.IsInterface);
     }
-    private bool IsAbstract
+    public bool IsAbstract
     {
         // Remove abstract from methods in classes. Instead, make them virtual.
         get => _apiMethodDef.IsAbstract && ObjectDef.Type.IsInterface;
