@@ -227,11 +227,7 @@ internal static class AttributeGenerator
     {
         var className = methodDef.ObjectDef.Type.GetName();
         var methodName = methodDef.GetName(isInterfaceImplExplicitImplementation);
-
-        if (!s_surpressedClasses.TryGetValue(className, out var surpressedClass))
-            return false;
-
-        return surpressedClass.IsMethodSurpressed(methodName);
+        return IsMethodSurpressed(className, methodName);
     }
 
     public static bool IsSurpressed(EventDef eventDef, bool isInterfaceImplExplicitImplementation = false)
@@ -268,5 +264,13 @@ internal static class AttributeGenerator
             return false;
 
         return surpressedClass.IsPropertySurpressed(propertyName);
+    }
+
+    public static bool IsMethodSurpressed(string className, string methodName)
+    {
+        if (!s_surpressedClasses.TryGetValue(className, out var surpressedClass))
+            return false;
+
+        return surpressedClass.IsMethodSurpressed(methodName);
     }
 }
