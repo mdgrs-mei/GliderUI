@@ -17,8 +17,8 @@ internal class ParameterDef
 
         Name = _apiParameterDef.Name!;
 
-        // event is a keyword, object is a type name.
-        if (Name is "event" or "object" or "this" or "operator")
+        // Escape c# keywords.
+        if (Name is "event" or "object" or "this" or "operator" or "break" or "finally" or "continue")
         {
             Name = $"_{Name}";
         }
