@@ -39,9 +39,11 @@ $comboBox.AddSelectionChanged({
     })
 
 
-$radioButtonOnChecked = {
+$radioButtonOnIsCheckedChanged = {
     param ($argumentList, $senderButton)
-    Write-Host "Selection changed to [$($senderButton.Content)]"
+    if ($senderButton.IsChecked) {
+        Write-Host "Selection changed to [$($senderButton.Content)]"
+    }
 }
 $radioButton1 = [RadioButton]::new()
 $radioButton2 = [RadioButton]::new()
@@ -49,13 +51,13 @@ $radioButton3 = [RadioButton]::new()
 $radioButton1.IsChecked = $true
 $radioButton1.GroupName = 'Group'
 $radioButton1.Content = 'Option1'
-$radioButton1.AddChecked($radioButtonOnChecked)
+$radioButton1.AddIsCheckedChanged($radioButtonOnIsCheckedChanged)
 $radioButton2.GroupName = 'Group'
 $radioButton2.Content = 'Option2'
-$radioButton2.AddChecked($radioButtonOnChecked)
+$radioButton2.AddIsCheckedChanged($radioButtonOnIsCheckedChanged)
 $radioButton3.GroupName = 'Group'
 $radioButton3.Content = 'Option3'
-$radioButton3.AddChecked($radioButtonOnChecked)
+$radioButton3.AddIsCheckedChanged($radioButtonOnIsCheckedChanged)
 
 $leftPanel = [StackPanel]::new()
 $leftPanel.Spacing = 16
