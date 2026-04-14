@@ -88,6 +88,9 @@ if ($IsLinux) {
     $grid.Children.Add($goButton)
 
     $win.Content = $grid
+    $win.AddClosed({
+        $dialog.Close()
+    })
     $win.Show()
 
     $dialog.Show()
