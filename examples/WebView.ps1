@@ -21,10 +21,6 @@ $backButton.IsEnabled = $false
 [Grid]::SetRow($backButton, 0)
 [Grid]::SetColumn($backButton, 0)
 
-$backButton.AddClick({
-        $webView.GoBack()
-    })
-
 $addressBar = [TextBox]::new()
 $addressBar.Text = $defaultAddress
 [Grid]::SetRow($addressBar, 0)
@@ -36,50 +32,121 @@ $goButton.Classes.Add('accent')
 [Grid]::SetRow($goButton, 0)
 [Grid]::SetColumn($goButton, 2)
 
-$goButton.AddClick({
-        $webView.Source = $addressBar.Text
-    })
+if ($IsLinux) {
+    # On Linux, embedded WebView is not available. Use NativeWebDialog instead.
+    $win.Width = 600
+    $win.Height = 50
+    $win.TopMost = $true
 
-$webView = [NativeWebView]::new()
-$webView.Source = $defaultAddress
-[Grid]::SetRow($webView, 1)
-[Grid]::SetColumnSpan($webView, 3)
+    $dialog = [NativeWebDialog]::new()
+    $dialog.Title = 'WebView'
+    $dialog.CanUserResize = $false
+    $dialog.Source = $defaultAddress
 
-$webView.AddNavigationStarted({
-        param ($argumentList, $s, $navigationStartingEventArgs)
-        $addressBar.Text = $navigationStartingEventArgs.Request
-    })
+    $isDialogClosed = $false
+    $dialog.AddClosing({
+            $script:isDialogClosed = $true
+        })
 
-$webView.AddNavigationCompleted({
-        $backButton.IsEnabled = $webView.CanGoBack
-    })
+    $dialog.AddNavigationStarted({
+            param ($argumentList, $s, $navigationStartingEventArgs)
+            $addressBar.Text = $navigationStartingEventArgs.Request
+        })
 
-$row0 = [RowDefinition]::new()
-$row0.Height = [GridLength]::Auto
-$row1 = [RowDefinition]::new()
-$row1.Height = [GridLength]::new(1, 'Star')
+    $dialog.AddNavigationCompleted({
+            $backButton.IsEnabled = $dialog.CanGoBack
+        })
 
-$col0 = [ColumnDefinition]::new()
-$col0.Width = [GridLength]::Auto
-$col1 = [ColumnDefinition]::new()
-$col1.Width = [GridLength]::new(1, 'Star')
-$col2 = [ColumnDefinition]::new()
-$col2.Width = [GridLength]::Auto
+    $backButton.AddClick({
+            $dialog.GoBack()
+        })
 
-$grid = [Grid]::new()
-$grid.Margin = 4
-$grid.RowSpacing = 4
-$grid.ColumnSpacing = 4
-$grid.RowDefinitions.Add($row0)
-$grid.RowDefinitions.Add($row1)
-$grid.ColumnDefinitions.Add($col0)
-$grid.ColumnDefinitions.Add($col1)
-$grid.ColumnDefinitions.Add($col2)
-$grid.Children.Add($backButton)
-$grid.Children.Add($addressBar)
-$grid.Children.Add($goButton)
-$grid.Children.Add($webView)
+    $goButton.AddClick({
+            $dialog.Source = $addressBar.Text
+        })
 
-$win.Content = $grid
-$win.Show()
-$win.WaitForClosed()
+    $row0 = [RowDefinition]::new()
+    $row0.Height = [GridLength]::Auto
+
+    $col0 = [ColumnDefinition]::new()
+    $col0.Width = [GridLength]::Auto
+    $col1 = [ColumnDefinition]::new()
+    $col1.Width = [GridLength]::new(1, 'Star')
+    $col2 = [ColumnDefinition]::new()
+    $col2.Width = [GridLength]::Auto
+
+    $grid = [Grid]::new()
+    $grid.Margin = 4
+    $grid.RowSpacing = 4
+    $grid.ColumnSpacing = 4
+    $grid.RowDefinitions.Add($row0)
+    $grid.ColumnDefinitions.Add($col0)
+    $grid.ColumnDefinitions.Add($col1)
+    $grid.ColumnDefinitions.Add($col2)
+    $grid.Children.Add($backButton)
+    $grid.Children.Add($addressBar)
+    $grid.Children.Add($goButton)
+
+    $win.Content = $grid
+    $win.Show()
+
+    $dialog.Show()
+    while (-not $isDialogClosed) {
+        Start-Sleep -Milliseconds 200
+    }
+    $win.WaitForClosed()
+
+} else {
+    # On Windows and macOS, embedded WebView is available.
+    $webView = [NativeWebView]::new()
+    $webView.Source = $defaultAddress
+    [Grid]::SetRow($webView, 1)
+    [Grid]::SetColumnSpan($webView, 3)
+
+    $webView.AddNavigationStarted({
+            param ($argumentList, $s, $navigationStartingEventArgs)
+            $addressBar.Text = $navigationStartingEventArgs.Request
+        })
+
+    $webView.AddNavigationCompleted({
+            $backButton.IsEnabled = $webView.CanGoBack
+        })
+
+    $backButton.AddClick({
+            $webView.GoBack()
+        })
+
+    $goButton.AddClick({
+            $webView.Source = $addressBar.Text
+        })
+
+    $row0 = [RowDefinition]::new()
+    $row0.Height = [GridLength]::Auto
+    $row1 = [RowDefinition]::new()
+    $row1.Height = [GridLength]::new(1, 'Star')
+
+    $col0 = [ColumnDefinition]::new()
+    $col0.Width = [GridLength]::Auto
+    $col1 = [ColumnDefinition]::new()
+    $col1.Width = [GridLength]::new(1, 'Star')
+    $col2 = [ColumnDefinition]::new()
+    $col2.Width = [GridLength]::Auto
+
+    $grid = [Grid]::new()
+    $grid.Margin = 4
+    $grid.RowSpacing = 4
+    $grid.ColumnSpacing = 4
+    $grid.RowDefinitions.Add($row0)
+    $grid.RowDefinitions.Add($row1)
+    $grid.ColumnDefinitions.Add($col0)
+    $grid.ColumnDefinitions.Add($col1)
+    $grid.ColumnDefinitions.Add($col2)
+    $grid.Children.Add($backButton)
+    $grid.Children.Add($addressBar)
+    $grid.Children.Add($goButton)
+    $grid.Children.Add($webView)
+
+    $win.Content = $grid
+    $win.Show()
+    $win.WaitForClosed()
+}
