@@ -59,15 +59,24 @@ $radioButton3.GroupName = 'Group'
 $radioButton3.Content = 'Option3'
 $radioButton3.AddIsCheckedChanged($radioButtonOnIsCheckedChanged)
 
+$radioButtonPanel = [StackPanel]::new()
+$radioButtonPanel.Spacing = 8
+$radioButtonPanel.Children.Add($radioButton1)
+$radioButtonPanel.Children.Add($radioButton2)
+$radioButtonPanel.Children.Add($radioButton3)
+
+$radioButtonGroup = [GroupBox]::new()
+$radioButtonGroup.Padding = 8
+$radioButtonGroup.Header = 'RadioButton'
+$radioButtonGroup.Content = $radioButtonPanel
+
 $leftPanel = [StackPanel]::new()
 $leftPanel.Spacing = 16
 $leftPanel.Children.Add($toggleButton)
 $leftPanel.Children.Add($toggleSwitch)
 $leftPanel.Children.Add($checkBox)
 $leftPanel.Children.Add($comboBox)
-$leftPanel.Children.Add($radioButton1)
-$leftPanel.Children.Add($radioButton2)
-$leftPanel.Children.Add($radioButton3)
+$leftPanel.Children.Add($radioButtonGroup)
 
 $horizontalSlider = [Slider]::new()
 $horizontalSlider.Width = 200
