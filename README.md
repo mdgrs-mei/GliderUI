@@ -33,6 +33,13 @@ On macOS or Linux, call `Enable-GLIExecution` once after the installation or upd
 Enable-GLIExecution
 ```
 
+The module includes server files for all supported platforms, totaling hundreds of megabytes. You can optionally call `Remove-GLINonTargetPlatform` to remove the files that are not needed on the current platform.
+
+```powershell
+# Optionally removes server binaries for other platforms.
+Remove-GLINonTargetPlatform
+```
+
 ## Quick Start
 
 This code creates a Window that has a clickable button:

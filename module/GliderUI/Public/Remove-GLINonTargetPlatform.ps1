@@ -3,7 +3,7 @@
 Removes all server files that are not used on the current platform.
 
 .DESCRIPTION
-The module includes server files for all platforms, totaling hundreds of megabytes.
+The module includes server files for all supported platforms, totaling hundreds of megabytes.
 This function removes the files that are not needed on the current platform to save disk space.
 
 .INPUTS
