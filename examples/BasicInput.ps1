@@ -39,9 +39,11 @@ $comboBox.AddSelectionChanged({
     })
 
 
-$radioButtonOnChecked = {
+$radioButtonOnIsCheckedChanged = {
     param ($argumentList, $senderButton)
-    Write-Host "Selection changed to [$($senderButton.Content)]"
+    if ($senderButton.IsChecked) {
+        Write-Host "Selection changed to [$($senderButton.Content)]"
+    }
 }
 $radioButton1 = [RadioButton]::new()
 $radioButton2 = [RadioButton]::new()
@@ -49,13 +51,24 @@ $radioButton3 = [RadioButton]::new()
 $radioButton1.IsChecked = $true
 $radioButton1.GroupName = 'Group'
 $radioButton1.Content = 'Option1'
-$radioButton1.AddChecked($radioButtonOnChecked)
+$radioButton1.AddIsCheckedChanged($radioButtonOnIsCheckedChanged)
 $radioButton2.GroupName = 'Group'
 $radioButton2.Content = 'Option2'
-$radioButton2.AddChecked($radioButtonOnChecked)
+$radioButton2.AddIsCheckedChanged($radioButtonOnIsCheckedChanged)
 $radioButton3.GroupName = 'Group'
 $radioButton3.Content = 'Option3'
-$radioButton3.AddChecked($radioButtonOnChecked)
+$radioButton3.AddIsCheckedChanged($radioButtonOnIsCheckedChanged)
+
+$radioButtonPanel = [StackPanel]::new()
+$radioButtonPanel.Spacing = 8
+$radioButtonPanel.Children.Add($radioButton1)
+$radioButtonPanel.Children.Add($radioButton2)
+$radioButtonPanel.Children.Add($radioButton3)
+
+$radioButtonGroup = [GroupBox]::new()
+$radioButtonGroup.Padding = 8
+$radioButtonGroup.Header = 'RadioButton'
+$radioButtonGroup.Content = $radioButtonPanel
 
 $leftPanel = [StackPanel]::new()
 $leftPanel.Spacing = 16
@@ -63,9 +76,7 @@ $leftPanel.Children.Add($toggleButton)
 $leftPanel.Children.Add($toggleSwitch)
 $leftPanel.Children.Add($checkBox)
 $leftPanel.Children.Add($comboBox)
-$leftPanel.Children.Add($radioButton1)
-$leftPanel.Children.Add($radioButton2)
-$leftPanel.Children.Add($radioButton3)
+$leftPanel.Children.Add($radioButtonGroup)
 
 $horizontalSlider = [Slider]::new()
 $horizontalSlider.Width = 200

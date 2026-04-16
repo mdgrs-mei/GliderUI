@@ -412,18 +412,25 @@ internal class ObjectDef
                     """);
                 codeWriter.IncrementIndent();
 
-                if (property.CanRead)
+                if (property.IsAbstract)
                 {
-                    codeWriter.Append($$"""
-                        get;
-                        """);
-                }
+                    if (property.CanRead)
+                    {
+                        codeWriter.Append($$"""
+                            get;
+                            """);
+                    }
 
-                if (property.CanWrite)
+                    if (property.CanWrite)
+                    {
+                        codeWriter.Append($$"""
+                            set;
+                            """);
+                    }
+                }
+                else
                 {
-                    codeWriter.Append($$"""
-                        set;
-                        """);
+                    GeneratePropertyGetterSetter(codeWriter, property);
                 }
 
                 codeWriter.DecrementIndent();
@@ -451,9 +458,16 @@ internal class ObjectDef
                 if (!method.IsSupported())
                     continue;
 
-                codeWriter.AppendAndReserveNewLine($$"""
-                    {{method.GetSignatureExpression()}};
-                    """);
+                if (method.IsAbstract)
+                {
+                    codeWriter.AppendAndReserveNewLine($$"""
+                        {{method.GetSignatureExpression()}};
+                        """);
+                }
+                else
+                {
+                    GenerateMethod(codeWriter, method);
+                }
             }
 
             foreach (var eventDef in _staticEvents)
@@ -488,6 +502,87 @@ internal class ObjectDef
             codeWriter.DecrementIndent();
         }
         codeWriter.AppendAndReserveNewLine("}");
+    }
+
+    private void GeneratePropertyGetterSetter(CodeWriter codeWriter, PropertyDef property)
+    {
+        string typeNameExpression = property.ExplicitInterfaceType is not null ? $"ObjectTypeMapping.Get().GetTargetTypeName(typeof({Type.GetName()}))" : "null";
+        if (property.CanRead)
+        {
+            if (property.IsIndexer)
+            {
+                codeWriter.Append($$"""
+                    get => PropertyAccessor.GetIndexer<{{property.Type.GetName()}}>(
+                        GliderUIObjectId,
+                        {{typeNameExpression}},
+                        "{{property.GetOriginalName()}}"{{property.GetIndexerArgumentsExpression(genericTypeParametersOverride: null)}}){{(property.Type.IsNullable ? "" : "!")}};
+                    """);
+            }
+            else
+            {
+                codeWriter.Append($$"""
+                    get => PropertyAccessor.Get<{{property.Type.GetName()}}>(
+                        GliderUIObjectId,
+                        {{typeNameExpression}},
+                        {{property.GetNameOfExpression()}}){{(property.Type.IsNullable ? "" : "!")}};
+                    """);
+            }
+        }
+
+        // Make the property readonly if it's struct. We cannot update value type objects in the ObjectStore.
+        if (property.CanWrite && (Type.IsClass || property.ImplementsInterface))
+        {
+            if (property.IsIndexer)
+            {
+                codeWriter.Append($$"""
+                    set => PropertyAccessor.SetIndexer(
+                        GliderUIObjectId,
+                        {{typeNameExpression}},
+                        "{{property.GetOriginalName()}}", {{property.Type.GetValueExpression()}}{{property.GetIndexerArgumentsExpression(genericTypeParametersOverride: null)}});
+                    """);
+            }
+            else
+            {
+                codeWriter.Append($$"""
+                    set => PropertyAccessor.Set(
+                        GliderUIObjectId,
+                        {{typeNameExpression}},
+                        {{property.GetNameOfExpression()}},
+                        {{property.Type.GetValueExpression()}});
+                    """);
+            }
+        }
+    }
+
+    private void GenerateMethod(CodeWriter codeWriter, MethodDef method)
+    {
+        var returnType = method.ReturnType!;
+        string typeNameExpression = method.ExplicitInterfaceType is not null ? $"ObjectTypeMapping.Get().GetTargetTypeName(typeof({Type.GetName()}))" : "null";
+
+        if (returnType.IsVoid)
+        {
+            codeWriter.AppendAndReserveNewLine($$"""
+                    {{method.GetSignatureExpression()}}
+                    {
+                        CommandClient.Get().InvokeMethod(
+                            GliderUIObjectId,
+                            {{typeNameExpression}},
+                            {{method.GetNameOfExpression()}}{{method.GetArgumentsExpression(genericTypeParametersOverride: null)}});
+                    }
+                    """);
+        }
+        else
+        {
+            codeWriter.AppendAndReserveNewLine($$"""
+                    {{method.GetSignatureExpression()}}
+                    {
+                        return CommandClient.Get().InvokeMethodAndGetResult<{{returnType.GetName()}}>(
+                            GliderUIObjectId,
+                            {{typeNameExpression}},
+                            {{method.GetNameOfExpression()}}{{method.GetArgumentsExpression(genericTypeParametersOverride: null)}}){{(returnType.IsNullable ? "" : "!")}};
+                    }
+                    """);
+        }
     }
 
     private void GenerateClass(CodeWriter codeWriter)
@@ -628,52 +723,7 @@ internal class ObjectDef
                 """);
             codeWriter.IncrementIndent();
 
-            string typeNameExpression = property.ExplicitInterfaceType is not null ? $"ObjectTypeMapping.Get().GetTargetTypeName(typeof({Type.GetName()}))" : "null";
-            if (property.CanRead)
-            {
-                if (property.IsIndexer)
-                {
-                    codeWriter.Append($$"""
-                        get => PropertyAccessor.GetIndexer<{{property.Type.GetName()}}>(
-                            GliderUIObjectId,
-                            {{typeNameExpression}},
-                            "{{property.GetOriginalName()}}"{{property.GetIndexerArgumentsExpression(genericTypeParametersOverride: null)}}){{(property.Type.IsNullable ? "" : "!")}};
-                        """);
-                }
-                else
-                {
-                    codeWriter.Append($$"""
-                        get => PropertyAccessor.Get<{{property.Type.GetName()}}>(
-                            GliderUIObjectId,
-                            {{typeNameExpression}},
-                            {{property.GetNameOfExpression()}}){{(property.Type.IsNullable ? "" : "!")}};
-                        """);
-                }
-            }
-
-            // Make the property readonly if it's struct. We cannot update value type objects in the ObjectStore.
-            if (property.CanWrite && (Type.IsClass || property.ImplementsInterface))
-            {
-                if (property.IsIndexer)
-                {
-                    codeWriter.Append($$"""
-                        set => PropertyAccessor.SetIndexer(
-                            GliderUIObjectId,
-                            {{typeNameExpression}},
-                            "{{property.GetOriginalName()}}", {{property.Type.GetValueExpression()}}{{property.GetIndexerArgumentsExpression(genericTypeParametersOverride: null)}});
-                        """);
-                }
-                else
-                {
-                    codeWriter.Append($$"""
-                        set => PropertyAccessor.Set(
-                            GliderUIObjectId,
-                            {{typeNameExpression}},
-                            {{property.GetNameOfExpression()}},
-                            {{property.Type.GetValueExpression()}});
-                        """);
-                }
-            }
+            GeneratePropertyGetterSetter(codeWriter, property);
 
             codeWriter.DecrementIndent();
             codeWriter.AppendAndReserveNewLine("}");
@@ -720,33 +770,7 @@ internal class ObjectDef
             if (!method.IsSupported())
                 continue;
 
-            var returnType = method.ReturnType!;
-            string typeNameExpression = method.ExplicitInterfaceType is not null ? $"ObjectTypeMapping.Get().GetTargetTypeName(typeof({Type.GetName()}))" : "null";
-
-            if (returnType.IsVoid)
-            {
-                codeWriter.AppendAndReserveNewLine($$"""
-                    {{method.GetSignatureExpression()}}
-                    {
-                        CommandClient.Get().InvokeMethod(
-                            GliderUIObjectId,
-                            {{typeNameExpression}},
-                            {{method.GetNameOfExpression()}}{{method.GetArgumentsExpression(genericTypeParametersOverride: null)}});
-                    }
-                    """);
-            }
-            else
-            {
-                codeWriter.AppendAndReserveNewLine($$"""
-                    {{method.GetSignatureExpression()}}
-                    {
-                        return CommandClient.Get().InvokeMethodAndGetResult<{{returnType.GetName()}}>(
-                            GliderUIObjectId,
-                            {{typeNameExpression}},
-                            {{method.GetNameOfExpression()}}{{method.GetArgumentsExpression(genericTypeParametersOverride: null)}}){{(returnType.IsNullable ? "" : "!")}};
-                    }
-                    """);
-            }
+            GenerateMethod(codeWriter, method);
         }
 
         foreach (var eventDef in _staticEvents)

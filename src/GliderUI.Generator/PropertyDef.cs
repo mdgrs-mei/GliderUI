@@ -9,7 +9,6 @@ internal class PropertyDef
     private readonly bool _hidesBase;
     private readonly bool _isOverride;
     private readonly bool _isVirtual;
-    private readonly bool _isAbstract;
     private readonly string _propertyName;
 
     public readonly ObjectDef ObjectDef;
@@ -22,6 +21,7 @@ internal class PropertyDef
     {
         get => _indexParameters is not null;
     }
+    public bool IsAbstract { get; }
 
     public PropertyDef(
         Api.PropertyDef apiPropertyDef,
@@ -34,7 +34,7 @@ internal class PropertyDef
         // Additinally make abstract methods in classes virtual to provide default implementation because abstract classes need to be instantiated as return values.
         _isVirtual = apiPropertyDef.IsVirtual || (apiPropertyDef.IsAbstract && !objectDef.Type.IsInterface);
         // Remove abstract from methods in classes. Instead, make them virtual.
-        _isAbstract = apiPropertyDef.IsAbstract && objectDef.Type.IsInterface;
+        IsAbstract = apiPropertyDef.IsAbstract && objectDef.Type.IsInterface;
 
         _propertyName = apiPropertyDef.Name;
 
@@ -75,7 +75,7 @@ internal class PropertyDef
         _hidesBase = getter.HidesBase;
         _isOverride = getter.IsOverride;
         _isVirtual = getter.IsVirtual || (getter.IsAbstract && !objectDef.Type.IsInterface); ;
-        _isAbstract = getter.IsAbstract && objectDef.Type.IsInterface;
+        IsAbstract = getter.IsAbstract && objectDef.Type.IsInterface;
         _propertyName = name;
 
         CanRead = true;
@@ -203,8 +203,8 @@ internal class PropertyDef
         string staticExpression = _memberDefType == MemberDefType.Static ? "static " : "";
         string newExpression = (_hidesBase && ExplicitInterfaceType is null) ? "new " : "";
         string overrideExpression = _isOverride ? "override " : "";
-        string abstractExpression = _isAbstract ? "abstract " : "";
-        string virtualExpression = (_isVirtual && !_isOverride && !_isAbstract && ExplicitInterfaceType is null) ? "virtual " : "";
+        string abstractExpression = IsAbstract ? "abstract " : "";
+        string virtualExpression = (_isVirtual && !_isOverride && !IsAbstract && ExplicitInterfaceType is null) ? "virtual " : "";
         string indexerNameExpression = (IsIndexer && ExplicitInterfaceType is null) ? $"[global::System.Runtime.CompilerServices.IndexerName(\"{_propertyName}\")]\n" : "";
         string indexerParametersExpression = IsIndexer ? $"[{ParameterDef.GetParametersSignatureExpression(_indexParameters!, genericTypeParametersOverride: null, isExtensionMethod: false)}]" : "";
 

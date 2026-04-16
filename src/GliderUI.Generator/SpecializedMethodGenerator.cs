@@ -84,6 +84,8 @@ internal class SpecializedMethodGenerator
                 methodDef.Parameters.Count == 0)
         {
             // If the object is awaitable, add WaitForCompleted() method.
+            if (AttributeGenerator.IsMethodSurpressed(methodDef.ObjectDef.Type.GetName(), "WaitForCompleted"))
+                return false;
 
             string newExpression = "";
             if (methodDef.ObjectDef.BaseType is not null)

@@ -4,8 +4,8 @@ param(
 )
 
 $coreNetVersion = 'net8.0'
-$serverNetVersion = 'net9.0'
-$supportedServerRids = @(
+$script:serverNetVersion = 'net9.0'
+$script:supportedServerRids = @(
     'win-x64'
     'osx-arm64'
     'linux-x64'

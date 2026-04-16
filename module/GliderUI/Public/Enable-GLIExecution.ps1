@@ -14,19 +14,23 @@ None.
 
 #>
 function Enable-GLIExecution {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param ()
 
     if ($IsWindows) {
+        Write-Host 'No need to add execute permission on Windows.'
         return
     }
 
-    $script:serverPath
     & test -x $script:serverPath
     if ($LASTEXITCODE -eq 0) {
         # Already has permission.
+        Write-Host "[$script:serverPath] already has permission."
         return
     }
 
-    & chmod '+x' $script:serverPath
+    if ($PSCmdlet.ShouldProcess($script:serverPath, "chmod '+x'")) {
+        Write-Host "Adding execute permission to [$script:serverPath]."
+        & chmod '+x' $script:serverPath
+    }
 }

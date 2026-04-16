@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using GliderUI.Common;
@@ -53,8 +52,6 @@ internal sealed partial class App : Application
         CommandServer.Get().Init(_upstreamPipeName);
         CommandClient.Get().Init(_downstreamPipeName);
         ObjectValidator.Init();
-
-        BindingPlugins.PropertyAccessors.Add(new DataSourcePropertyAccessorPlugin());
     }
 
     private void Term()

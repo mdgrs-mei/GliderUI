@@ -21,6 +21,7 @@ internal sealed class Exporter
         AddTypesInAssembly(typeof(Button)); // Avalonia.Controls.dll
         AddTypesInAssembly(typeof(AvaloniaRuntimeXamlLoader)); // Avalonia.Markup.Xaml.Loader.dll
         AddTypesInAssembly(typeof(DataGrid)); // Avalonia.Controls.DataGrid.dll
+        AddTypesInAssembly(typeof(NativeWebView)); // Avalonia.Controls.WebView.dll
 
         AddObject(typeof(List<>));
         AddObject(typeof(ObservableCollection<>));

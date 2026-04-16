@@ -29,6 +29,11 @@ public class Api
         ("System.Void", "void"),
     ];
 
+    private static readonly List<string> _unsupportedNamespaces =
+    [
+        "System.Linq.Expressions",
+    ];
+
     private static readonly List<string> _unsupportedTypes =
     [
         "System.IntPtr",
@@ -83,7 +88,18 @@ public class Api
 
     public static bool IsUnsupportedType(string typeDefName)
     {
-        return _unsupportedTypes.Contains(typeDefName);
+        if (typeDefName is null)
+            return true;
+
+        if (_unsupportedTypes.Contains(typeDefName))
+            return true;
+
+        foreach (string unsupportedNamespace in _unsupportedNamespaces)
+        {
+            if (typeDefName.StartsWith($"{unsupportedNamespace}.", StringComparison.Ordinal))
+                return true;
+        }
+        return false;
     }
 
     public static bool IsSupportedGlobalSystemInterface(string typeDefName)
