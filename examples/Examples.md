@@ -2,7 +2,7 @@
 
 ## [BasicInput.ps1](./BasicInput.ps1)
 
-<img width="439" height="439" alt="BasicInput" src="https://github.com/user-attachments/assets/04cac2e4-0970-499f-bcc5-c86519d21fd9" />
+<img width="437" height="445" alt="image" src="https://github.com/user-attachments/assets/48c17349-cbad-43c4-ab74-16e895277152" />
 
 ## [CancelLongRunningEventCallback.ps1](./CancelLongRunningEventCallback.ps1)
 
