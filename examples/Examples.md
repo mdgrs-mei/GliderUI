@@ -16,6 +16,10 @@ Example of data binding and `DataGrid`.
 
 <img width="916" height="579" alt="DataGrid" src="https://github.com/user-attachments/assets/98aae49b-7bb1-4fbc-a5bd-18f6a6be7d3b" />
 
+## [DrawerPage.ps1](./DrawerPage.ps1)
+
+<img width="981" height="590" alt="DrawerPage" src="https://github.com/user-attachments/assets/e0af2191-10a3-400d-85e0-24fcd1200009" />
+
 ## [InstallDialog.ps1](./InstallDialog.ps1)
 
 Sample dialog that is shown at the top of the screen for a single long-running task.
@@ -51,6 +55,10 @@ Example sign-in form that takes account name and password.
 Examples of OpenFilePicker, SaveFilePicker and OpenFolderPicker.
 
 <img width="952" height="533" alt="StorageProvider" src="https://github.com/user-attachments/assets/8cf5175e-7068-4691-9701-4d5f15cff64b" />
+
+## [WebView.ps1](./WebView.ps1)
+
+<img width="943" height="780" alt="image" src="https://github.com/user-attachments/assets/aad73457-7da9-49bc-9f58-929c5ddaa4f3" />
 
 ## [XamlLoader.ps1](./XamlLoader.ps1)
 
