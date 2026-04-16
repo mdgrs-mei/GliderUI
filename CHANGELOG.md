@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.0] - 2026-03-23
+
+### Added
+
+- Added `WebView` package
+- Added `Remove-GLINonTargetPlatform`
+- Added ShouldProcess support to `Enable-GLIExecution`
+
+### Changed
+
+- Updated Avalonia version to 12.0.1
+
 ## [0.1.0] - 2026-03-23
 
 ### Added
