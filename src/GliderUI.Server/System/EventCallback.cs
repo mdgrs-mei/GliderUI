@@ -4,6 +4,11 @@ namespace GliderUI.Server;
 
 internal static class EventCallback
 {
+    static EventCallback()
+    {
+        EventCallbackBase<DisabledControlsHolder>.DefaultEventArgsTypeName = "GliderUI.GliderUIObject, GliderUI";
+    }
+
     public static void Add(
         object target,
         string eventName,

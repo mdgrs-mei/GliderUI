@@ -6,7 +6,11 @@ namespace GliderUI.Server;
 
 internal static class EventCallbackBase<TDisabledControlsHolder> where TDisabledControlsHolder : IDisabledControlsHolder
 {
-    private static readonly MethodInfo s_callbackCreatorGeneric = typeof(EventCallbackBase<TDisabledControlsHolder>).GetMethod("Create", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)!;
+    private static readonly MethodInfo s_callbackCreatorGeneric = typeof(EventCallbackBase<TDisabledControlsHolder>).GetMethod(
+        "Create",
+        BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)!;
+
+    public static string DefaultEventArgsTypeName { get; set; } = "";
 
     public static void Add(
         object? target,
@@ -69,10 +73,13 @@ internal static class EventCallbackBase<TDisabledControlsHolder> where TDisabled
             var processingQueueId = GetProcessingQueueId(runspaceMode, mainRunspaceId);
 
             Type eventArgsType = typeof(TEventArgs);
-            var eventArgsTypeName = (eventArgsType == typeof(object)) ? "GliderUIObject" : eventArgsType.ToString();
+            var eventArgsTypeName = (eventArgsType == typeof(object)) ?
+                DefaultEventArgsTypeName :
+                ObjectTypeMapping.Get().GetTargetTypeName(eventArgsType);
+
             var eventArgsId = CommandClient.Get().CreateObjectWithId(
                 temporaryQueueId,
-                $"GliderUI.{eventArgsTypeName}, GliderUI",
+                eventArgsTypeName,
                 eventArgs);
 
             var invokeTask = CommandClient.Get().InvokeMethodWaitAsync(
