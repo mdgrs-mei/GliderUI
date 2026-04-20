@@ -26,7 +26,7 @@ internal sealed class Exporter
         AddObject(typeof(List<>));
         AddObject(typeof(ObservableCollection<>));
         AddObject(typeof(Server.DataSourcePropertyComparer));
-        AddEnum(typeof(Server.EventCallbackRunspaceMode));
+        AddEnum(typeof(Common.EventCallbackRunspaceMode));
         AddTypeMapping(typeof(Server.DataSource));
 
         ExportToFile(apiFilePath);
@@ -802,7 +802,15 @@ internal sealed class Exporter
     {
         var assembly = type.Assembly;
         var assemblyName = assembly.GetName().Name;
-        assemblyName = assemblyName!.Replace("GliderUI.ApiExporter", "GliderUI.Server", StringComparison.Ordinal);
+
+        if (type.FullName!.StartsWith("GliderUI.Common", StringComparison.Ordinal))
+        {
+            assemblyName = "GliderUI.Common";
+        }
+        else
+        {
+            assemblyName = assemblyName!.Replace("GliderUI.ApiExporter", "GliderUI.Server", StringComparison.Ordinal);
+        }
 
         return $"{type.FullName}, {assemblyName}";
     }

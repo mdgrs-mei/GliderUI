@@ -72,6 +72,13 @@ public class Generator : IIncrementalGenerator
 
     internal static string GetTargetNamespace(string serverNamespace)
     {
-        return serverNamespace == "GliderUI.Server" ? "GliderUI" : $"GliderUI.{serverNamespace}";
+        if (serverNamespace is "GliderUI.Server" or "GliderUI.Common")
+        {
+            return "GliderUI";
+        }
+        else
+        {
+            return $"GliderUI.{serverNamespace}";
+        }
     }
 }

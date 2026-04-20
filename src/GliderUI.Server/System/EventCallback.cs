@@ -1,4 +1,6 @@
-﻿namespace GliderUI.Server;
+﻿using GliderUI.Common;
+
+namespace GliderUI.Server;
 
 internal static class EventCallback
 {
