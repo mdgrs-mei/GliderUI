@@ -1,6 +1,6 @@
-﻿namespace GliderUI.Server;
+﻿namespace GliderUI.Common;
 
-internal interface IDisabledControlsHolder
+public interface IDisabledControlsHolder
 {
     static abstract IDisabledControlsHolder Create(object?[]? controls);
 

@@ -4,13 +4,16 @@ using GliderUI.Common;
 
 namespace GliderUI.Server;
 
-internal static class EventCallbackBase<TDisabledControlsHolder> where TDisabledControlsHolder : IDisabledControlsHolder
+public static class EventCallbackBinder<TDisabledControlsHolder>
+    where TDisabledControlsHolder : IDisabledControlsHolder
 {
-    private static readonly MethodInfo s_callbackCreatorGeneric = typeof(EventCallbackBase<TDisabledControlsHolder>).GetMethod(
+    private static readonly MethodInfo s_callbackCreatorGeneric = typeof(EventCallbackBinder<TDisabledControlsHolder>).GetMethod(
         "Create",
         BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)!;
 
     public static string DefaultEventArgsTypeName { get; set; } = "";
+    public static IWindowStore? WindowStore { get; set; }
+    public static Action<Task> BlockingWaitTask { get; set; } = (task) => { };
 
     public static void Add(
         object? target,
@@ -23,6 +26,8 @@ internal static class EventCallbackBase<TDisabledControlsHolder> where TDisabled
         int eventId,
         object?[]? disabledControlsWhileProcessing)
     {
+        ArgumentNullException.ThrowIfNull(targetType);
+
         var eventInfo = targetType.GetEvent(eventName);
         if (eventInfo is null)
         {
@@ -61,9 +66,9 @@ internal static class EventCallbackBase<TDisabledControlsHolder> where TDisabled
         int eventId,
         object?[]? disabledControlsWhileProcessing)
     {
-        return async (object sender, TEventArgs eventArgs) =>
+        return async (sender, eventArgs) =>
         {
-            var parentWindow = WindowStore.Get().EnterEventCallbackAndGetParentWindow(sender);
+            var parentWindow = WindowStore!.EnterEventCallbackAndGetParentWindow(sender);
 
             IDisabledControlsHolder disabledControls = TDisabledControlsHolder.Create(disabledControlsWhileProcessing);
             disabledControls.Disable();
@@ -115,7 +120,7 @@ internal static class EventCallbackBase<TDisabledControlsHolder> where TDisabled
             CommandClient.Get().DestroyObject(processingQueueId, eventArgsId);
             disabledControls.Enable();
 
-            WindowStore.Get().ExitEventCallback(parentWindow);
+            WindowStore!.ExitEventCallback(parentWindow);
         };
     }
 
@@ -129,15 +134,5 @@ internal static class EventCallbackBase<TDisabledControlsHolder> where TDisabled
         {
             return new CommandQueueId(CommandQueueType.RunspaceId, mainRunspaceId);
         }
-    }
-
-    private static void BlockingWaitTask(Task task)
-    {
-        while (!task.IsCompleted)
-        {
-            App.ProcessCommands();
-            Thread.Sleep(Constants.ServerSyncUICommandPolingIntervalMillisecond);
-        }
-        App.ProcessCommands();
     }
 }
