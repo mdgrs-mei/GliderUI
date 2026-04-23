@@ -4,12 +4,10 @@ namespace GliderUI.Server;
 
 internal static class EventCallback
 {
-    static EventCallback()
-    {
-        EventCallbackBinder<DisabledControlsHolder>.DefaultEventArgsTypeName = "GliderUI.GliderUIObject, GliderUI";
-        EventCallbackBinder<DisabledControlsHolder>.WindowStore = WindowStore.Get();
-
-        EventCallbackBinder<DisabledControlsHolder>.BlockingWaitTask = (task) =>
+    private static readonly EventCallbackBinder<DisabledControlsHolder> s_binder = new(
+        defaultEventArgsTypeName: "GliderUI.GliderUIObject, GliderUI",
+        windowStore: WindowStore.Get(),
+        blockingWaitTaskAction: (task) =>
         {
             while (!task.IsCompleted)
             {
@@ -17,8 +15,7 @@ internal static class EventCallback
                 Thread.Sleep(Constants.ServerSyncUICommandPolingIntervalMillisecond);
             }
             App.ProcessCommands();
-        };
-    }
+        });
 
     public static void Add(
         object target,
@@ -32,7 +29,7 @@ internal static class EventCallback
     {
         var targetType = target.GetType();
 
-        EventCallbackBinder<DisabledControlsHolder>.Add(
+        s_binder.Add(
             target,
             targetType,
             eventName,
@@ -60,7 +57,7 @@ internal static class EventCallback
             throw new InvalidOperationException($"Type [{className}] not found.");
         }
 
-        EventCallbackBinder<DisabledControlsHolder>.Add(
+        s_binder.Add(
             null,
             targetType,
             eventName,

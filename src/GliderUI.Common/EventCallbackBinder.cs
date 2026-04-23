@@ -4,18 +4,27 @@ using GliderUI.Common;
 
 namespace GliderUI.Server;
 
-public static class EventCallbackBinder<TDisabledControlsHolder>
-    where TDisabledControlsHolder : IDisabledControlsHolder
+public class EventCallbackBinder<TDisabledControlsHolder> where TDisabledControlsHolder : IDisabledControlsHolder
 {
     private static readonly MethodInfo s_callbackCreatorGeneric = typeof(EventCallbackBinder<TDisabledControlsHolder>).GetMethod(
         "Create",
-        BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)!;
+        BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)!;
 
-    public static string DefaultEventArgsTypeName { get; set; } = "";
-    public static IWindowStore? WindowStore { get; set; }
-    public static Action<Task> BlockingWaitTask { get; set; } = (task) => { };
+    private readonly string _defaultEventArgsTypeName;
+    private readonly IWindowStore _windowStore;
+    private readonly Action<Task> _blockingWaitTaskAction;
 
-    public static void Add(
+    public EventCallbackBinder(
+        string defaultEventArgsTypeName,
+        IWindowStore windowStore,
+        Action<Task> blockingWaitTaskAction)
+    {
+        _defaultEventArgsTypeName = defaultEventArgsTypeName;
+        _windowStore = windowStore;
+        _blockingWaitTaskAction = blockingWaitTaskAction;
+    }
+
+    public void Add(
         object? target,
         Type targetType,
         string eventName,
@@ -42,7 +51,7 @@ public static class EventCallbackBinder<TDisabledControlsHolder>
 
         var callbackCreator = s_callbackCreatorGeneric.MakeGenericMethod(eventArgsType);
 
-        var callback = callbackCreator.Invoke(null, [
+        var callback = callbackCreator.Invoke(this, [
             runspaceMode,
             mainRunspaceId,
             eventListId,
@@ -59,7 +68,7 @@ public static class EventCallbackBinder<TDisabledControlsHolder>
         eventInfo.AddEventHandler(target, handler);
     }
 
-    internal static Action<object, TEventArgs> Create<TEventArgs>(
+    internal Action<object, TEventArgs> Create<TEventArgs>(
         EventCallbackRunspaceMode runspaceMode,
         int mainRunspaceId,
         string eventListId,
@@ -68,7 +77,7 @@ public static class EventCallbackBinder<TDisabledControlsHolder>
     {
         return async (sender, eventArgs) =>
         {
-            var parentWindow = WindowStore!.EnterEventCallbackAndGetParentWindow(sender);
+            var parentWindow = _windowStore.EnterEventCallbackAndGetParentWindow(sender);
 
             IDisabledControlsHolder disabledControls = TDisabledControlsHolder.Create(disabledControlsWhileProcessing);
             disabledControls.Disable();
@@ -79,7 +88,7 @@ public static class EventCallbackBinder<TDisabledControlsHolder>
 
             Type eventArgsType = typeof(TEventArgs);
             var eventArgsTypeName = (eventArgsType == typeof(object)) ?
-                DefaultEventArgsTypeName :
+                _defaultEventArgsTypeName :
                 ObjectTypeMapping.Get().GetTargetTypeName(eventArgsType);
 
             var eventArgsId = CommandClient.Get().CreateObjectWithId(
@@ -102,7 +111,7 @@ public static class EventCallbackBinder<TDisabledControlsHolder>
             {
                 if (runspaceMode == EventCallbackRunspaceMode.MainRunspaceSyncUI)
                 {
-                    BlockingWaitTask(invokeTask);
+                    _blockingWaitTaskAction(invokeTask);
                 }
                 else
                 {
@@ -120,7 +129,7 @@ public static class EventCallbackBinder<TDisabledControlsHolder>
             CommandClient.Get().DestroyObject(processingQueueId, eventArgsId);
             disabledControls.Enable();
 
-            WindowStore!.ExitEventCallback(parentWindow);
+            _windowStore.ExitEventCallback(parentWindow);
         };
     }
 
