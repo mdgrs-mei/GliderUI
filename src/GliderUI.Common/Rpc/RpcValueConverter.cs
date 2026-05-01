@@ -128,24 +128,26 @@ public static class RpcValueConverter
     private static Type? GetInterfaceImplType(Type interfaceType)
     {
         // Get interface Impl type fullname from interface type fullname.
-        // fullName has a format like "GliderUI.Namespace.Class`1+InnerClass+InnerMost`2[[GliderUI.Namespace.GenericArgumentClass, GliderUI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]".
-        var fullName = interfaceType.FullName!;
+        // fullName has a format like "clientAssemblyName.Namespace.Class`1+InnerClass+InnerMost`2[[clientAssemblyName.Namespace.GenericArgumentClass, clientAssemblyName, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]".
 
-        // System interface types don't have "GliderUI" namespace. Add it here as Impl classes are always under GliderUI namespace.
-        if (!fullName.StartsWith("GliderUI.", StringComparison.Ordinal))
+        var clientAssemblyName = ObjectTypeMapping.Get().ClientNamespace;
+        var interfaceFullName = interfaceType.FullName!;
+
+        // System interface types don't have "clientAssemblyName" namespace. Add it here as Impl classes are always under "clientAssemblyName" namespace.
+        if (!interfaceFullName.StartsWith($"{clientAssemblyName}.", StringComparison.Ordinal))
         {
-            fullName = "GliderUI." + fullName;
+            interfaceFullName = $"{clientAssemblyName}." + interfaceFullName;
         }
 
-        int insertIndex = fullName.Length;
-        int firstGenericArgumentSeparator = fullName.IndexOf('[', StringComparison.Ordinal);
+        int insertIndex = interfaceFullName.Length;
+        int firstGenericArgumentSeparator = interfaceFullName.IndexOf('[', StringComparison.Ordinal);
         if (firstGenericArgumentSeparator >= 0)
         {
             insertIndex = firstGenericArgumentSeparator;
         }
 
-        int lastNestedClassSeparator = fullName.LastIndexOf('+', insertIndex - 1);
-        int lastGenericTypeSeparator = fullName.LastIndexOf('`', insertIndex - 1);
+        int lastNestedClassSeparator = interfaceFullName.LastIndexOf('+', insertIndex - 1);
+        int lastGenericTypeSeparator = interfaceFullName.LastIndexOf('`', insertIndex - 1);
         if (lastNestedClassSeparator >= 0)
         {
             if (lastNestedClassSeparator < lastGenericTypeSeparator)
@@ -158,7 +160,7 @@ public static class RpcValueConverter
             insertIndex = lastGenericTypeSeparator;
         }
 
-        string implTypeFullName = $"{fullName.Insert(insertIndex, "_Impl")}, GliderUI";
+        string implTypeFullName = $"{interfaceFullName.Insert(insertIndex, "_Impl")}, {clientAssemblyName}";
         return Type.GetType(implTypeFullName);
     }
 

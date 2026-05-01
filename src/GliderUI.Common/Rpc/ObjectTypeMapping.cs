@@ -1,14 +1,23 @@
-﻿namespace GliderUI.Common;
+﻿using static GliderUI.Common.TypeMapping;
+
+namespace GliderUI.Common;
 
 public sealed partial class ObjectTypeMapping : Singleton<ObjectTypeMapping>
 {
-    public enum MappingDirection
-    {
-        ServerToClient,
-        ClientToServer,
-    };
+    private MappingDirection _direction = MappingDirection.ClientToServer;
+    internal string ClientNamespace { get; set; } = "";
 
-    public MappingDirection Direction { get; set; } = MappingDirection.ClientToServer;
+    internal void Init(
+        MappingDirection direction,
+        string clientNamespace)
+    {
+        _direction = direction;
+        ClientNamespace = clientNamespace;
+    }
+
+    internal void Term()
+    {
+    }
 
     public string GetTargetTypeName(Type type)
     {
@@ -57,14 +66,15 @@ public sealed partial class ObjectTypeMapping : Singleton<ObjectTypeMapping>
 
     private bool TryGetValue(string sourceTypeName, out string? targetTypeName)
     {
-        if (Direction == MappingDirection.ClientToServer)
+        if (_direction == MappingDirection.ClientToServer)
         {
-            if (sourceTypeName.StartsWith("GliderUI", StringComparison.Ordinal))
+            if (sourceTypeName.StartsWith(ClientNamespace, StringComparison.Ordinal))
             {
                 return _map.TryGetValue(sourceTypeName, out targetTypeName);
             }
             else
             {
+                // If the client requests a type that is not in the client namespace, which means non-wrapper types like system types, return it as-is.
                 targetTypeName = sourceTypeName;
                 return true;
             }
