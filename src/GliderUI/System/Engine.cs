@@ -125,9 +125,7 @@ public class Engine
     private void InitConnection()
     {
         ObjectStore.Get().SetObjectIdPrefix("c");
-        TypeMapping.Init(
-            TypeMapping.MappingDirection.ClientToServer,
-            "GliderUI");
+        TypeMappingInitializer.Init();
         CommandServer.Get().Init(_downstreamPipeName);
         CommandClient.Get().Init(_upstreamPipeName);
     }

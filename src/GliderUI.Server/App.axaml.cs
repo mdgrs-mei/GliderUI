@@ -48,9 +48,7 @@ internal sealed partial class App : Application
     {
         ParseArgs();
         ObjectStore.Get().SetObjectIdPrefix("s");
-        TypeMapping.Init(
-            TypeMapping.MappingDirection.ServerToClient,
-            "GliderUI");
+        TypeMappingInitializer.Init();
         CommandServer.Get().Init(_upstreamPipeName);
         CommandClient.Get().Init(_downstreamPipeName);
         ObjectValidator.Init();

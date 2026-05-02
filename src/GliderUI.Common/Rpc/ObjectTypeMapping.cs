@@ -1,13 +1,18 @@
-﻿using static GliderUI.Common.TypeMapping;
+﻿namespace GliderUI.Common;
 
-namespace GliderUI.Common;
-
-public sealed partial class ObjectTypeMapping : Singleton<ObjectTypeMapping>
+public sealed class ObjectTypeMapping : Singleton<ObjectTypeMapping>
 {
+    private readonly Dictionary<string, string> _map = [];
     private MappingDirection _direction = MappingDirection.ClientToServer;
     internal string ClientNamespace { get; set; } = "";
 
-    internal void Init(
+    public enum MappingDirection
+    {
+        ServerToClient,
+        ClientToServer,
+    };
+
+    public void Init(
         MappingDirection direction,
         string clientNamespace)
     {
@@ -17,6 +22,16 @@ public sealed partial class ObjectTypeMapping : Singleton<ObjectTypeMapping>
 
     internal void Term()
     {
+    }
+
+    public void InitMapping(IList<(string, string)> list)
+    {
+        ArgumentNullException.ThrowIfNull(list);
+        foreach (var map in list)
+        {
+            _map.Add(map.Item1, map.Item2);
+            _ = _map.TryAdd(map.Item2, map.Item1);
+        }
     }
 
     public string GetTargetTypeName(Type type)

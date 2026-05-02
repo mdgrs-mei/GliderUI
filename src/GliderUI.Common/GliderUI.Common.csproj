@@ -11,22 +11,10 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!-- And avoid errors due to GenerateDocumentationFile -->
     <NoWarn>$(NoWarn);CS1591</NoWarn>
-
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <GliderUIGenerator_GenerateTypeMapping>true</GliderUIGenerator_GenerateTypeMapping>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GliderUI.Generator\GliderUI.Generator.csproj">
-      <OutputItemType>Analyzer</OutputItemType>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <PackageReference Include="StreamJsonRpc" Version="2.21.10" />
     <PackageReference Include="System.Management.Automation" Version="7.4.0" PrivateAssets="all" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <CompilerVisibleProperty Include="GliderUIGenerator_GenerateTypeMapping" />
-    <AdditionalFiles Include="..\GliderUI.ApiExporter\Api.xml" />
   </ItemGroup>
 </Project>
