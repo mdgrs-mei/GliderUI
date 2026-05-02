@@ -1,4 +1,8 @@
-﻿namespace GliderUI.ApiExporter;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
+
+namespace GliderUI.ApiExporter;
 
 internal sealed class Program
 {
@@ -14,7 +18,19 @@ internal sealed class Program
         }
 
         string apiFilePath = args[0];
-        var exporter = new Exporter();
+        var exporter = new Exporter(
+            "GliderUI.ApiExporter",
+            "GliderUI.Server");
+
+        exporter.AddTypesInAssembly(typeof(AvaloniaObject)); // Avalonia.Base.dll
+        exporter.AddTypesInAssembly(typeof(Button)); // Avalonia.Controls.dll
+        exporter.AddTypesInAssembly(typeof(AvaloniaRuntimeXamlLoader)); // Avalonia.Markup.Xaml.Loader.dll
+        exporter.AddTypesInAssembly(typeof(DataGrid)); // Avalonia.Controls.DataGrid.dll
+        exporter.AddTypesInAssembly(typeof(NativeWebView)); // Avalonia.Controls.WebView.dll
+
+        exporter.AddObject(typeof(Server.DataSourcePropertyComparer));
+        exporter.AddTypeMapping(typeof(Server.DataSource));
+
         exporter.Export(apiFilePath);
     }
 }

@@ -2,37 +2,37 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using GliderUI.Common;
 
 namespace GliderUI.ApiExporter;
 
 internal sealed class Exporter
 {
+    private readonly string _exporterAssemblyName;
+    private readonly string _serverAssemblyName;
     private readonly Api _api = new();
     private readonly HashSet<string> _addedTypeMappings = [];
     private readonly HashSet<string> _addedEnums = [];
     private readonly HashSet<string> _addedObjects = [];
 
+    public Exporter(
+        string exporterAssemblyName,
+        string serverAssemblyName)
+    {
+        _exporterAssemblyName = exporterAssemblyName;
+        _serverAssemblyName = serverAssemblyName;
+    }
+
     public void Export(string apiFilePath)
     {
-        AddTypesInAssembly(typeof(AvaloniaObject)); // Avalonia.Base.dll
-        AddTypesInAssembly(typeof(Button)); // Avalonia.Controls.dll
-        AddTypesInAssembly(typeof(AvaloniaRuntimeXamlLoader)); // Avalonia.Markup.Xaml.Loader.dll
-        AddTypesInAssembly(typeof(DataGrid)); // Avalonia.Controls.DataGrid.dll
-        AddTypesInAssembly(typeof(NativeWebView)); // Avalonia.Controls.WebView.dll
-
+        AddEnum(typeof(EventCallbackRunspaceMode));
         AddObject(typeof(List<>));
         AddObject(typeof(ObservableCollection<>));
-        AddObject(typeof(Server.DataSourcePropertyComparer));
-        AddEnum(typeof(Common.EventCallbackRunspaceMode));
-        AddTypeMapping(typeof(Server.DataSource));
 
         ExportToFile(apiFilePath);
     }
 
-    private void AddTypesInAssembly(Type representativeTypeInAssembly)
+    public void AddTypesInAssembly(Type representativeTypeInAssembly)
     {
         var assembly = representativeTypeInAssembly.Assembly;
         var types = assembly.GetTypes().OrderBy(type => type.FullName);
@@ -50,7 +50,7 @@ internal sealed class Exporter
         }
     }
 
-    private void AddTypeMapping(Type type)
+    public void AddTypeMapping(Type type)
     {
         if (!IsPublicType(type))
             return;
@@ -114,7 +114,7 @@ internal sealed class Exporter
         _api.Enums.Add(def);
     }
 
-    private void AddObject(Type type)
+    public void AddObject(Type type)
     {
         if (type.IsEnum)
             return;
@@ -809,7 +809,7 @@ internal sealed class Exporter
         }
         else
         {
-            assemblyName = assemblyName!.Replace("GliderUI.ApiExporter", "GliderUI.Server", StringComparison.Ordinal);
+            assemblyName = assemblyName!.Replace(_exporterAssemblyName, _serverAssemblyName, StringComparison.Ordinal);
         }
 
         return $"{type.FullName}, {assemblyName}";

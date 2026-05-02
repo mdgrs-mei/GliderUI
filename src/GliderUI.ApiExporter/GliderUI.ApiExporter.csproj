@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\GliderUI.Server\Server.props" />
   <ItemGroup>
-    <Compile Include="..\GliderUI.Common\Server\EventCallbackRunspaceMode.cs" Link="ServerTypes\EventCallbackRunspaceMode.cs" />
+    <ProjectReference Include="..\GliderUI.Common\GliderUI.Common.csproj" />
     <Compile Include="..\GliderUI.Server\System\DataSource.cs" Link="ServerTypes\DataSource.cs" />
     <Compile Include="..\GliderUI.Server\System\DataSourceTypeInfo.cs" Link="ServerTypes\DataSourceTypeInfo.cs" />
     <Compile Include="..\GliderUI.Server\System\DataSourcePropertyInfo.cs" Link="ServerTypes\DataSourcePropertyInfo.cs" />
