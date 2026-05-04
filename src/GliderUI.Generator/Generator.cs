@@ -36,15 +36,13 @@ public class Generator : IIncrementalGenerator
             if (apiText is null)
                 return;
 
-            var api = LoadApi(apiText.ToString());
-            if (api is null)
-                return;
+            LoadApi(apiText.ToString());
 
             var configOptionsProvider = providers.Left.Right;
             if (configOptionsProvider.GlobalOptions.TryGetValue("build_property.GliderUIGenerator_GenerateTypeMapping", out var rootNamespace))
             {
-                EnumGenerator.GenerateTypeMapping(sourceProductionContext, api, rootNamespace);
-                ObjectGenerator.GenerateTypeMapping(sourceProductionContext, api, rootNamespace);
+                EnumGenerator.GenerateTypeMapping(sourceProductionContext, rootNamespace);
+                ObjectGenerator.GenerateTypeMapping(sourceProductionContext, rootNamespace);
             }
 
             if (configOptionsProvider.GlobalOptions.TryGetValue("build_property.GliderUIGenerator_GenerateApi", out var generateApi))
@@ -55,20 +53,28 @@ public class Generator : IIncrementalGenerator
                     surpressMethodByNameAttributes,
                     surpressPropertyByNameAttributes);
 
-                EnumGenerator.Generate(sourceProductionContext, api);
-                ObjectGenerator.Generate(sourceProductionContext, api);
+                EnumGenerator.Generate(sourceProductionContext);
+                ObjectGenerator.Generate(sourceProductionContext);
 
                 AttributeGenerator.TermSurpressDictionary();
             }
+
+            UnloadApi();
         });
     }
 
-    private static Api LoadApi(string content)
+    public static Api? Api { get; private set; }
+
+    private static void LoadApi(string content)
     {
         var stringReader = new StringReader(content);
         var serializer = new XmlSerializer(typeof(Api));
-        var api = (Api)serializer.Deserialize(stringReader);
-        return api;
+        Api = (Api)serializer.Deserialize(stringReader);
+    }
+
+    private static void UnloadApi()
+    {
+        Api = null;
     }
 
     internal static string GetTargetNamespace(string serverNamespace)

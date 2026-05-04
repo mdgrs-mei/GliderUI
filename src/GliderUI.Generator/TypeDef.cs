@@ -68,7 +68,7 @@ internal class TypeDef
         {
             _name = originalTypeName;
         }
-        else if (Api.IsSupportedGlobalSystemInterface(originalTypeName))
+        else if (Generator.Api!.IsSupportedGlobalSystemInterface(originalTypeName))
         {
             IsGlobalSystemInterface = true;
             _name = $"GliderUI.{originalTypeName}";
@@ -173,8 +173,8 @@ internal class TypeDef
 
     private bool IsUnsupportedType()
     {
-        bool isUnsupportedSystemInterface = _apiTypeDef.IsInterface && _apiTypeDef.IsSystemObject && !Api.IsSupportedSystemInterface(_apiTypeDef.Name);
-        return Api.IsUnsupportedType(_apiTypeDef.Name) || _apiTypeDef.IsDelegate || isUnsupportedSystemInterface;
+        bool isUnsupportedSystemInterface = _apiTypeDef.IsInterface && _apiTypeDef.IsSystemObject && !Generator.Api!.IsSupportedSystemInterface(_apiTypeDef.Name);
+        return Generator.Api!.IsUnsupportedType(_apiTypeDef.Name) || _apiTypeDef.IsDelegate || isUnsupportedSystemInterface;
     }
 
     private bool IsRefOrOut()

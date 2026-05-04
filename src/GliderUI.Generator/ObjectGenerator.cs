@@ -7,9 +7,9 @@ internal static class ObjectGenerator
 {
     private static readonly Dictionary<string, ObjectDef> _objectDefs = [];
 
-    public static void Generate(SourceProductionContext sourceProductionContext, Api api)
+    public static void Generate(SourceProductionContext sourceProductionContext)
     {
-        CreateObjectDefMap(api);
+        CreateObjectDefMap();
 
         foreach (var keyValuePair in _objectDefs)
         {
@@ -22,8 +22,10 @@ internal static class ObjectGenerator
         DestroyObjectDefMap();
     }
 
-    private static void CreateObjectDefMap(Api api)
+    private static void CreateObjectDefMap()
     {
+        Api api = Generator.Api!;
+
         foreach (var apiObjectDef in api.Objects)
         {
             ObjectDef objectDef = new(apiObjectDef);
@@ -56,9 +58,9 @@ internal static class ObjectGenerator
 
     public static void GenerateTypeMapping(
         SourceProductionContext sourceProductionContext,
-        Api api,
         string rootNamespace)
     {
+        Api api = Generator.Api!;
         var codeWriter = new CodeWriter();
 
         codeWriter.Append($$"""

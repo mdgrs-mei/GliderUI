@@ -5,8 +5,10 @@ namespace GliderUI.Generator;
 
 internal static class EnumGenerator
 {
-    public static void Generate(SourceProductionContext sourceProductionContext, Api api)
+    public static void Generate(SourceProductionContext sourceProductionContext)
     {
+        Api api = Generator.Api!;
+
         foreach (var enumDef in api.Enums)
         {
             var codeWriter = new CodeWriter();
@@ -37,9 +39,9 @@ internal static class EnumGenerator
 
     public static void GenerateTypeMapping(
         SourceProductionContext sourceProductionContext,
-        Api api,
         string rootNamespace)
     {
+        Api api = Generator.Api!;
         var codeWriter = new CodeWriter();
 
         codeWriter.Append($$"""

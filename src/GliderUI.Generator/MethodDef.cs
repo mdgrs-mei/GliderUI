@@ -74,7 +74,7 @@ internal class MethodDef
 
         if (!string.IsNullOrEmpty(_apiMethodDef.Name))
         {
-            if (Api.IsUnsupportedMethod(_apiMethodDef.Name!))
+            if (Generator.Api!.IsUnsupportedMethod(_apiMethodDef.Name!))
                 return false;
         }
 

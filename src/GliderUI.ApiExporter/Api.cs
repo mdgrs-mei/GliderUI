@@ -29,12 +29,12 @@ public class Api
         ("System.Void", "void"),
     ];
 
-    private static readonly List<string> _unsupportedNamespaces =
+    public List<string> UnsupportedNamespaces { get; } =
     [
         "System.Linq.Expressions",
     ];
 
-    private static readonly List<string> _unsupportedTypes =
+    public List<string> UnsupportedTypes { get; } =
     [
         "System.IntPtr",
         "WinRT.IWinRTObject",
@@ -44,7 +44,7 @@ public class Api
         "CompiledAvaloniaXaml.!XamlLoader",
     ];
 
-    private static readonly List<string> _supportedGlobalSystemInterfaces =
+    public List<string> SupportedGlobalSystemInterfaces { get; } =
     [
         "System.IDisposable",
         "System.Collections.Generic.ICollection",
@@ -57,7 +57,7 @@ public class Api
         "System.Collections.Generic.IReadOnlyCollection",
     ];
 
-    private static readonly List<string> _emulatedSystemInterfaces =
+    public List<string> EmulatedSystemInterfaces { get; } =
     [
         "System.Collections.Generic.IDictionary",
         "System.Collections.IComparer",
@@ -65,57 +65,12 @@ public class Api
         "System.Collections.ICollection",
     ];
 
-    private static readonly List<string> _unsupportedMethodNames =
+    public List<string> UnsupportedMethodNames { get; } =
     [
         "Equals",
         "GetHashCode",
         "GetType",
     ];
-
-    public static bool TryReplaceSystemTypeNameWithShortName(string fullTypeName, out string? shortTypeName)
-    {
-        foreach (var (fullName, shortName) in SystemTypes)
-        {
-            if (fullTypeName == fullName)
-            {
-                shortTypeName = shortName;
-                return true;
-            }
-        }
-        shortTypeName = null;
-        return false;
-    }
-
-    public static bool IsUnsupportedType(string typeDefName)
-    {
-        if (typeDefName is null)
-            return true;
-
-        if (_unsupportedTypes.Contains(typeDefName))
-            return true;
-
-        foreach (string unsupportedNamespace in _unsupportedNamespaces)
-        {
-            if (typeDefName.StartsWith($"{unsupportedNamespace}.", StringComparison.Ordinal))
-                return true;
-        }
-        return false;
-    }
-
-    public static bool IsSupportedGlobalSystemInterface(string typeDefName)
-    {
-        return _supportedGlobalSystemInterfaces.Contains(typeDefName);
-    }
-
-    public static bool IsSupportedSystemInterface(string typeDefName)
-    {
-        return IsSupportedGlobalSystemInterface(typeDefName) || _emulatedSystemInterfaces.Contains(typeDefName);
-    }
-
-    public static bool IsUnsupportedMethod(string methodName)
-    {
-        return _unsupportedMethodNames.Contains(methodName);
-    }
 
     public List<TypeMappingDef> TypeMappings { get; } = [];
     public List<EnumDef> Enums { get; } = [];
@@ -347,6 +302,50 @@ public class Api
         public TypeDef Type { get; set; } = new();
     }
 
+    public static bool TryReplaceSystemTypeNameWithShortName(string fullTypeName, out string? shortTypeName)
+    {
+        foreach (var (fullName, shortName) in SystemTypes)
+        {
+            if (fullTypeName == fullName)
+            {
+                shortTypeName = shortName;
+                return true;
+            }
+        }
+        shortTypeName = null;
+        return false;
+    }
+
+    public bool IsUnsupportedType(string typeDefName)
+    {
+        if (typeDefName is null)
+            return true;
+
+        if (UnsupportedTypes.Contains(typeDefName))
+            return true;
+
+        foreach (string unsupportedNamespace in UnsupportedNamespaces)
+        {
+            if (typeDefName.StartsWith($"{unsupportedNamespace}.", StringComparison.Ordinal))
+                return true;
+        }
+        return false;
+    }
+
+    public bool IsSupportedGlobalSystemInterface(string typeDefName)
+    {
+        return SupportedGlobalSystemInterfaces.Contains(typeDefName);
+    }
+
+    public bool IsSupportedSystemInterface(string typeDefName)
+    {
+        return IsSupportedGlobalSystemInterface(typeDefName) || EmulatedSystemInterfaces.Contains(typeDefName);
+    }
+
+    public bool IsUnsupportedMethod(string methodName)
+    {
+        return UnsupportedMethodNames.Contains(methodName);
+    }
 #pragma warning restore CA2227
 #pragma warning restore CA1002
 #pragma warning restore CA1034

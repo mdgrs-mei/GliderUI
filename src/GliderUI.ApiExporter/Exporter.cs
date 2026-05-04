@@ -127,7 +127,7 @@ internal sealed class Exporter
 
         string typeDefName = GetTypeDefName(type);
         bool isSystemType = IsSystemType(typeDefName);
-        bool isUnsupportedSystemInterface = type.IsInterface && isSystemType && !Api.IsSupportedSystemInterface(typeDefName);
+        bool isUnsupportedSystemInterface = type.IsInterface && isSystemType && !_api.IsSupportedSystemInterface(typeDefName);
         if (isUnsupportedSystemInterface)
             return;
 
@@ -565,7 +565,7 @@ internal sealed class Exporter
         if (!isImplemented)
             return false;
 
-        if (objectType.IsInterface && Api.IsSupportedGlobalSystemInterface(GetTypeDefName(objectType)))
+        if (objectType.IsInterface && _api.IsSupportedGlobalSystemInterface(GetTypeDefName(objectType)))
         {
             return true;
         }
@@ -573,7 +573,7 @@ internal sealed class Exporter
         foreach (var interfaceType in objectType.GetInterfaces())
         {
             var interfaceName = GetTypeDefName(interfaceType);
-            bool isGlobalSystemInterface = Api.IsSupportedGlobalSystemInterface(interfaceName);
+            bool isGlobalSystemInterface = _api.IsSupportedGlobalSystemInterface(interfaceName);
             if (!isGlobalSystemInterface)
                 continue;
 
