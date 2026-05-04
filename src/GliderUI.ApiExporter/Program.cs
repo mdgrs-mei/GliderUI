@@ -18,9 +18,55 @@ internal sealed class Program
         }
 
         string apiFilePath = args[0];
+
         var exporter = new Exporter(
             "GliderUI.ApiExporter",
             "GliderUI.Server");
+
+        var api = exporter.Api;
+
+        api.UnsupportedNamespaces =
+        [
+            "System.Linq.Expressions",
+        ];
+
+        api.UnsupportedTypes =
+        [
+            "System.IntPtr",
+            "WinRT.IWinRTObject",
+            "WinRT.IObjectReference",
+            "WinRT.ObjectReference",
+            "CompiledAvaloniaXaml.!AvaloniaResources",
+            "CompiledAvaloniaXaml.!XamlLoader",
+        ];
+
+        api.SupportedGlobalSystemInterfaces =
+        [
+            "System.IDisposable",
+            "System.Collections.Generic.ICollection",
+            "System.Collections.Generic.IList",
+            "System.Collections.IEnumerable",
+            "System.Collections.Generic.IEnumerable",
+            "System.Collections.IEnumerator",
+            "System.Collections.Generic.IEnumerator",
+            "System.Collections.Generic.IReadOnlyList",
+            "System.Collections.Generic.IReadOnlyCollection",
+        ];
+
+        api.EmulatedSystemInterfaces =
+        [
+            "System.Collections.Generic.IDictionary",
+            "System.Collections.IComparer",
+            "System.Collections.IList",
+            "System.Collections.ICollection",
+        ];
+
+        api.UnsupportedMethodNames =
+        [
+            "Equals",
+            "GetHashCode",
+            "GetType",
+        ];
 
         exporter.AddTypesInAssembly(typeof(AvaloniaObject)); // Avalonia.Base.dll
         exporter.AddTypesInAssembly(typeof(Button)); // Avalonia.Controls.dll

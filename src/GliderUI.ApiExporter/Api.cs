@@ -29,49 +29,11 @@ public class Api
         ("System.Void", "void"),
     ];
 
-    public List<string> UnsupportedNamespaces { get; } =
-    [
-        "System.Linq.Expressions",
-    ];
-
-    public List<string> UnsupportedTypes { get; } =
-    [
-        "System.IntPtr",
-        "WinRT.IWinRTObject",
-        "WinRT.IObjectReference",
-        "WinRT.ObjectReference",
-        "CompiledAvaloniaXaml.!AvaloniaResources",
-        "CompiledAvaloniaXaml.!XamlLoader",
-    ];
-
-    public List<string> SupportedGlobalSystemInterfaces { get; } =
-    [
-        "System.IDisposable",
-        "System.Collections.Generic.ICollection",
-        "System.Collections.Generic.IList",
-        "System.Collections.IEnumerable",
-        "System.Collections.Generic.IEnumerable",
-        "System.Collections.IEnumerator",
-        "System.Collections.Generic.IEnumerator",
-        "System.Collections.Generic.IReadOnlyList",
-        "System.Collections.Generic.IReadOnlyCollection",
-    ];
-
-    public List<string> EmulatedSystemInterfaces { get; } =
-    [
-        "System.Collections.Generic.IDictionary",
-        "System.Collections.IComparer",
-        "System.Collections.IList",
-        "System.Collections.ICollection",
-    ];
-
-    public List<string> UnsupportedMethodNames { get; } =
-    [
-        "Equals",
-        "GetHashCode",
-        "GetType",
-    ];
-
+    public List<string> UnsupportedNamespaces { get; set; } = [];
+    public List<string> UnsupportedTypes { get; set; } = [];
+    public List<string> SupportedGlobalSystemInterfaces { get; set; } = [];
+    public List<string> EmulatedSystemInterfaces { get; set; } = [];
+    public List<string> UnsupportedMethodNames { get; set; } = [];
     public List<TypeMappingDef> TypeMappings { get; } = [];
     public List<EnumDef> Enums { get; } = [];
     public List<ObjectDef> Objects { get; } = [];

@@ -10,10 +10,11 @@ internal sealed class Exporter
 {
     private readonly string _exporterAssemblyName;
     private readonly string _serverAssemblyName;
-    private readonly Api _api = new();
     private readonly HashSet<string> _addedTypeMappings = [];
     private readonly HashSet<string> _addedEnums = [];
     private readonly HashSet<string> _addedObjects = [];
+
+    public Api Api { get; } = new();
 
     public Exporter(
         string exporterAssemblyName,
@@ -71,7 +72,7 @@ internal sealed class Exporter
             GenericArgumentCount = type.GetGenericArguments().Length
         };
 
-        _api.TypeMappings.Add(def);
+        Api.TypeMappings.Add(def);
     }
 
     private void AddEnum(Type type)
@@ -111,7 +112,7 @@ internal sealed class Exporter
             });
         }
 
-        _api.Enums.Add(def);
+        Api.Enums.Add(def);
     }
 
     public void AddObject(Type type)
@@ -127,7 +128,7 @@ internal sealed class Exporter
 
         string typeDefName = GetTypeDefName(type);
         bool isSystemType = IsSystemType(typeDefName);
-        bool isUnsupportedSystemInterface = type.IsInterface && isSystemType && !_api.IsSupportedSystemInterface(typeDefName);
+        bool isUnsupportedSystemInterface = type.IsInterface && isSystemType && !Api.IsSupportedSystemInterface(typeDefName);
         if (isUnsupportedSystemInterface)
             return;
 
@@ -144,7 +145,7 @@ internal sealed class Exporter
 
         var def = GetObjectDef(type);
 
-        _api.Objects.Add(def);
+        Api.Objects.Add(def);
     }
 
     private bool IsPublicType(Type type)
@@ -565,7 +566,7 @@ internal sealed class Exporter
         if (!isImplemented)
             return false;
 
-        if (objectType.IsInterface && _api.IsSupportedGlobalSystemInterface(GetTypeDefName(objectType)))
+        if (objectType.IsInterface && Api.IsSupportedGlobalSystemInterface(GetTypeDefName(objectType)))
         {
             return true;
         }
@@ -573,7 +574,7 @@ internal sealed class Exporter
         foreach (var interfaceType in objectType.GetInterfaces())
         {
             var interfaceName = GetTypeDefName(interfaceType);
-            bool isGlobalSystemInterface = _api.IsSupportedGlobalSystemInterface(interfaceName);
+            bool isGlobalSystemInterface = Api.IsSupportedGlobalSystemInterface(interfaceName);
             if (!isGlobalSystemInterface)
                 continue;
 
@@ -888,7 +889,7 @@ internal sealed class Exporter
     {
         var streamWriter = new StreamWriter(filePath, append: false, System.Text.Encoding.UTF8);
         var serializer = new XmlSerializer(typeof(Api));
-        serializer.Serialize(streamWriter, _api);
+        serializer.Serialize(streamWriter, Api);
         streamWriter.Close();
     }
 }
