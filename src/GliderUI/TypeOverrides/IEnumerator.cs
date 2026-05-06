@@ -1,4 +1,4 @@
-﻿using GliderUI.Generator;
+﻿using RpcUIShell.Generator;
 
 namespace GliderUI.System.Collections.Generic;
 

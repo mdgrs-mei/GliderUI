@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GliderUI.Common", "GliderUI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GliderUI.ApiExporter", "GliderUI.ApiExporter\GliderUI.ApiExporter.csproj", "{E33500C4-A53C-68E2-F1E2-153005925F9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GliderUI.Generator", "GliderUI.Generator\GliderUI.Generator.csproj", "{1A1EDD01-2B0D-CD0D-7FF7-C116951F1C32}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpcUIShell.Generator", "GliderUI.Generator\RpcUIShell.Generator.csproj", "{1A1EDD01-2B0D-CD0D-7FF7-C116951F1C32}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GliderUI", "GliderUI\GliderUI.csproj", "{DCE35D2C-7A01-2DE1-73C8-F33C21591319}"
 EndProject

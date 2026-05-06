@@ -2,7 +2,7 @@
 using System.Text;
 using GliderUI.Common;
 
-namespace GliderUI.Generator;
+namespace RpcUIShell.Generator;
 
 internal class ObjectDef
 {

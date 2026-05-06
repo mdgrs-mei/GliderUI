@@ -1,7 +1,7 @@
 ﻿using GliderUI.Common;
 using Microsoft.CodeAnalysis;
 
-namespace GliderUI.Generator;
+namespace RpcUIShell.Generator;
 
 internal static class EnumGenerator
 {

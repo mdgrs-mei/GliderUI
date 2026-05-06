@@ -1,4 +1,4 @@
-﻿namespace GliderUI.Generator;
+﻿namespace RpcUIShell.Generator;
 
 internal enum MemberDefType
 {

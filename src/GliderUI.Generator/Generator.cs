@@ -2,7 +2,7 @@
 using GliderUI.Common;
 using Microsoft.CodeAnalysis;
 
-namespace GliderUI.Generator;
+namespace RpcUIShell.Generator;
 
 [Generator(LanguageNames.CSharp)]
 public class Generator : IIncrementalGenerator

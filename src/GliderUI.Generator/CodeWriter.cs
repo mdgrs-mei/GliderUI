@@ -2,7 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace GliderUI.Generator;
+namespace RpcUIShell.Generator;
 
 internal class CodeWriter
 {
