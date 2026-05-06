@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 
-namespace GliderUI.ApiExporter;
+namespace GliderUI.Common;
 
-internal static class Reflection
+internal static class ApiReflection
 {
     public static bool IsNullable(PropertyInfo propertyInfo)
     {

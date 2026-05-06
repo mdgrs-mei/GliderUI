@@ -2,11 +2,10 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
-using GliderUI.Common;
 
-namespace GliderUI.ApiExporter;
+namespace GliderUI.Common;
 
-internal sealed class Exporter
+public class ApiExporter
 {
     private readonly string _exporterAssemblyName;
     private readonly string _serverAssemblyName;
@@ -16,7 +15,7 @@ internal sealed class Exporter
 
     public Api Api { get; } = new();
 
-    public Exporter(
+    public ApiExporter(
         string exporterAssemblyName,
         string serverAssemblyName)
     {
@@ -35,6 +34,8 @@ internal sealed class Exporter
 
     public void AddTypesInAssembly(Type representativeTypeInAssembly)
     {
+        ArgumentNullException.ThrowIfNull(representativeTypeInAssembly);
+
         var assembly = representativeTypeInAssembly.Assembly;
         var types = assembly.GetTypes().OrderBy(type => type.FullName);
 
@@ -53,6 +54,8 @@ internal sealed class Exporter
 
     public void AddTypeMapping(Type type)
     {
+        ArgumentNullException.ThrowIfNull(type);
+
         if (!IsPublicType(type))
             return;
 
@@ -117,6 +120,8 @@ internal sealed class Exporter
 
     public void AddObject(Type type)
     {
+        ArgumentNullException.ThrowIfNull(type);
+
         if (type.IsEnum)
             return;
 
@@ -337,7 +342,7 @@ internal sealed class Exporter
     {
         var propertyType = propertyInfo.PropertyType;
         var typeDef = GetTypeDef(propertyType);
-        typeDef.IsNullable = Reflection.IsNullable(propertyInfo);
+        typeDef.IsNullable = ApiReflection.IsNullable(propertyInfo);
 
         var propertyDef = new Api.PropertyDef
         {
@@ -384,7 +389,7 @@ internal sealed class Exporter
     {
         var propertyType = fieldInfo.FieldType;
         var typeDef = GetTypeDef(propertyType);
-        typeDef.IsNullable = Reflection.IsNullable(fieldInfo);
+        typeDef.IsNullable = ApiReflection.IsNullable(fieldInfo);
 
         var propertyDef = new Api.PropertyDef
         {
@@ -427,7 +432,7 @@ internal sealed class Exporter
     {
         var returnParameter = methodInfo.ReturnParameter;
         var returnType = GetTypeDef(methodInfo.ReturnType);
-        returnType.IsNullable = Reflection.IsNullable(returnParameter);
+        returnType.IsNullable = ApiReflection.IsNullable(returnParameter);
         returnType.IsIn = returnParameter.IsIn;
         returnType.IsOut = returnParameter.IsOut;
 
@@ -676,7 +681,7 @@ internal sealed class Exporter
     {
         var type = parameterInfo.ParameterType;
         var typeDef = GetTypeDef(type);
-        typeDef.IsNullable = Reflection.IsNullable(parameterInfo);
+        typeDef.IsNullable = ApiReflection.IsNullable(parameterInfo);
         typeDef.IsIn = parameterInfo.IsIn;
         typeDef.IsOut = parameterInfo.IsOut;
 
@@ -700,7 +705,7 @@ internal sealed class Exporter
         {
             Name = name,
             IsPublic = IsPublicType(type),
-            IsNullable = Reflection.IsNullable(type),
+            IsNullable = ApiReflection.IsNullable(type),
             IsAbstract = type.IsAbstract,
             IsSealed = type.IsSealed,
             IsEnum = type.IsEnum,

@@ -1,5 +1,5 @@
 ﻿using System.Xml.Serialization;
-using GliderUI.ApiExporter;
+using GliderUI.Common;
 using Microsoft.CodeAnalysis;
 
 namespace GliderUI.Generator;
