@@ -2,7 +2,7 @@
   <Import Project="..\GliderUI.Server\Server.props" />
   <PropertyGroup>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <GliderUIGenerator_GenerateTypeMapping>GliderUI.Server</GliderUIGenerator_GenerateTypeMapping>
+    <RpcUIShellGenerator_GenerateTypeMapping>GliderUI.Server</RpcUIShellGenerator_GenerateTypeMapping>
   </PropertyGroup>
     
   <ItemGroup>
@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <CompilerVisibleProperty Include="GliderUIGenerator_GenerateTypeMapping" />
+    <CompilerVisibleProperty Include="RpcUIShellGenerator_GenerateTypeMapping" />
     <AdditionalFiles Include="..\GliderUI.ApiExporter\Api.xml" />
   </ItemGroup>
 </Project>

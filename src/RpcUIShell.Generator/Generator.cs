@@ -39,13 +39,13 @@ public class Generator : IIncrementalGenerator
             LoadApi(apiText.ToString());
 
             var configOptionsProvider = providers.Left.Right;
-            if (configOptionsProvider.GlobalOptions.TryGetValue("build_property.GliderUIGenerator_GenerateTypeMapping", out var rootNamespace))
+            if (configOptionsProvider.GlobalOptions.TryGetValue("build_property.RpcUIShellGenerator_GenerateTypeMapping", out var rootNamespace))
             {
                 EnumGenerator.GenerateTypeMapping(sourceProductionContext, rootNamespace);
                 ObjectGenerator.GenerateTypeMapping(sourceProductionContext, rootNamespace);
             }
 
-            if (configOptionsProvider.GlobalOptions.TryGetValue("build_property.GliderUIGenerator_GenerateApi", out var generateApi))
+            if (configOptionsProvider.GlobalOptions.TryGetValue("build_property.RpcUIShellGenerator_GenerateApi", out var generateApi))
             {
                 var surpressMethodByNameAttributes = providers.Right.Left;
                 var surpressPropertyByNameAttributes = providers.Right.Right;

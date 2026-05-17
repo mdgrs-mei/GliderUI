@@ -13,8 +13,8 @@
     <!-- And avoid errors due to GenerateDocumentationFile -->
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <GliderUIGenerator_GenerateTypeMapping>GliderUI</GliderUIGenerator_GenerateTypeMapping>
-    <GliderUIGenerator_GenerateApi>true</GliderUIGenerator_GenerateApi>
+    <RpcUIShellGenerator_GenerateTypeMapping>GliderUI</RpcUIShellGenerator_GenerateTypeMapping>
+    <RpcUIShellGenerator_GenerateApi>true</RpcUIShellGenerator_GenerateApi>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,8 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <CompilerVisibleProperty Include="GliderUIGenerator_GenerateTypeMapping" />
-    <CompilerVisibleProperty Include="GliderUIGenerator_GenerateApi" />
+    <CompilerVisibleProperty Include="RpcUIShellGenerator_GenerateTypeMapping" />
+    <CompilerVisibleProperty Include="RpcUIShellGenerator_GenerateApi" />
     <AdditionalFiles Include="..\GliderUI.ApiExporter\Api.xml" />
   </ItemGroup>
 
