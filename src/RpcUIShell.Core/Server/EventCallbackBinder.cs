@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
-using RpcUIShell.Core;
 
-namespace GliderUI.Server;
+namespace RpcUIShell.Core;
 
 public class EventCallbackBinder<TDisabledControlsHolder> where TDisabledControlsHolder : IDisabledControlsHolder
 {
