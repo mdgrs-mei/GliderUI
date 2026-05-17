@@ -5,7 +5,7 @@ VisualStudioVersion = 17.14.36908.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GliderUI.Server", "GliderUI.Server\GliderUI.Server.csproj", "{5B71C495-27F8-4624-8BB5-F6B0286A9B85}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GliderUI.Common", "GliderUI.Common\GliderUI.Common.csproj", "{EC4EEA0C-1659-8770-F493-E4F9F8FA67DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpcUIShell.Core", "GliderUI.Common\RpcUIShell.Core.csproj", "{EC4EEA0C-1659-8770-F493-E4F9F8FA67DE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GliderUI.ApiExporter", "GliderUI.ApiExporter\GliderUI.ApiExporter.csproj", "{E33500C4-A53C-68E2-F1E2-153005925F9F}"
 EndProject

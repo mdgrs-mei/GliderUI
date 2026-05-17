@@ -5,7 +5,7 @@ using System.Security.Principal;
 using Microsoft.VisualStudio.Threading;
 using StreamJsonRpc;
 
-namespace GliderUI.Common;
+namespace RpcUIShell.Core;
 
 public class CommandClient : Singleton<CommandClient>
 {

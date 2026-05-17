@@ -1,4 +1,4 @@
-﻿namespace GliderUI.Common;
+﻿namespace RpcUIShell.Core;
 
 public class EnumTypeMapping : Singleton<EnumTypeMapping>
 {

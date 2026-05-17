@@ -2,7 +2,7 @@
 using System.Management.Automation.Host;
 using System.Management.Automation.Runspaces;
 
-namespace GliderUI.Common;
+namespace RpcUIShell.Core;
 
 public class CommandWorker
 {

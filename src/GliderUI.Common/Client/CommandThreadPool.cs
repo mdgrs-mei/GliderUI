@@ -1,7 +1,7 @@
 ﻿using System.Management.Automation;
 using System.Management.Automation.Host;
 
-namespace GliderUI.Common;
+namespace RpcUIShell.Core;
 
 public class CommandThreadPool
 {

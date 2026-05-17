@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using GliderUI.Common;
+using RpcUIShell.Core;
 
 namespace RpcUIShell.Generator;
 

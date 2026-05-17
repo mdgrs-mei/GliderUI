@@ -1,7 +1,7 @@
 ﻿
 using System.Reflection;
 
-namespace GliderUI.Common;
+namespace RpcUIShell.Core;
 
 public class Invoker : Singleton<Invoker>
 {

@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
 
-namespace GliderUI.Common;
+namespace RpcUIShell.Core;
 
 public class ApiExporter
 {
@@ -809,9 +809,9 @@ public class ApiExporter
         var assembly = type.Assembly;
         var assemblyName = assembly.GetName().Name;
 
-        if (type.FullName!.StartsWith("GliderUI.Common", StringComparison.Ordinal))
+        if (type.FullName!.StartsWith("RpcUIShell.Core", StringComparison.Ordinal))
         {
-            assemblyName = "GliderUI.Common";
+            assemblyName = "RpcUIShell.Core";
         }
         else
         {

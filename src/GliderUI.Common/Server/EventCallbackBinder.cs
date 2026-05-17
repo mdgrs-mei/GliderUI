@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
-using GliderUI.Common;
+using RpcUIShell.Core;
 
 namespace GliderUI.Server;
 

@@ -3,7 +3,7 @@ using System.IO.Pipes;
 using Microsoft.VisualStudio.Threading;
 using StreamJsonRpc;
 
-namespace GliderUI.Common;
+namespace RpcUIShell.Core;
 
 public class CommandServer : Singleton<CommandServer>
 {

@@ -2,7 +2,7 @@
 using System.Management.Automation;
 using System.Management.Automation.Host;
 using System.Management.Automation.Runspaces;
-using GliderUI.Common;
+using RpcUIShell.Core;
 
 namespace GliderUI;
 

@@ -1,7 +1,7 @@
 ﻿
 using System.Diagnostics;
 
-namespace GliderUI.Common;
+namespace RpcUIShell.Core;
 
 public enum CommandQueueType
 {

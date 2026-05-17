@@ -19,7 +19,7 @@ internal sealed class Program
 
         string apiFilePath = args[0];
 
-        var exporter = new Common.ApiExporter(
+        var exporter = new RpcUIShell.Core.ApiExporter(
             "GliderUI.ApiExporter",
             "GliderUI.Server");
 

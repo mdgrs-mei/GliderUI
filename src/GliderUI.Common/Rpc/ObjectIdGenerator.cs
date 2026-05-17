@@ -1,6 +1,6 @@
 ﻿
 
-namespace GliderUI.Common;
+namespace RpcUIShell.Core;
 
 public class ObjectIdGenerator : Singleton<ObjectIdGenerator>
 {

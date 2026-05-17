@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
-using GliderUI.Common;
 using Microsoft.CodeAnalysis;
+using RpcUIShell.Core;
 
 namespace RpcUIShell.Generator;
 
@@ -79,7 +79,7 @@ public class Generator : IIncrementalGenerator
 
     internal static string GetTargetNamespace(string serverNamespace)
     {
-        if (serverNamespace is "GliderUI.Server" or "GliderUI.Common")
+        if (serverNamespace is "GliderUI.Server" or "RpcUIShell.Core")
         {
             return "GliderUI";
         }

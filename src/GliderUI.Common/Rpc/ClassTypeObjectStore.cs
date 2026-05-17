@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace GliderUI.Common;
+namespace RpcUIShell.Core;
 
 internal sealed class ClassTypeObjectStore
 {

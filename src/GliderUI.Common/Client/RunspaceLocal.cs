@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Management.Automation.Runspaces;
 
-namespace GliderUI.Common;
+namespace RpcUIShell.Core;
 
 public class RunspaceLocal<T>
 {

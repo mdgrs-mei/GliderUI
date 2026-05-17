@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace GliderUI.Common;
+namespace RpcUIShell.Core;
 
 internal static class ApiReflection
 {

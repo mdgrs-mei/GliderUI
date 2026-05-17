@@ -3,7 +3,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using GliderUI.Common;
+using RpcUIShell.Core;
 
 namespace GliderUI.Server;
 

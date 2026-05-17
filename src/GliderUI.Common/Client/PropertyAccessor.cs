@@ -1,4 +1,4 @@
-﻿namespace GliderUI.Common;
+﻿namespace RpcUIShell.Core;
 
 public static class PropertyAccessor
 {

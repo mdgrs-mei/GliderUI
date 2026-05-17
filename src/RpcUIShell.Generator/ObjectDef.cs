@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Text;
-using GliderUI.Common;
+using RpcUIShell.Core;
 
 namespace RpcUIShell.Generator;
 
@@ -288,7 +288,7 @@ internal class ObjectDef
 
             using System.Management.Automation;
             using GliderUI;
-            using GliderUI.Common;
+            using RpcUIShell.Core;
 
             namespace {{ns}};
 

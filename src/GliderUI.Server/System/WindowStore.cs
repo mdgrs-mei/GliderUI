@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Controls;
-using GliderUI.Common;
+using RpcUIShell.Core;
 
 namespace GliderUI.Server;
 
