@@ -18,7 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GliderUI.Generator\RpcUIShell.Generator.csproj">
+    <ProjectReference Include="..\RpcUIShell.Generator\RpcUIShell.Generator.csproj">
       <OutputItemType>Analyzer</OutputItemType>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
