@@ -12,6 +12,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.13.0" />
-    <Compile Include="..\GliderUI.Common\ApiExporter\Api.cs" />
+    <Compile Include="..\RpcUIShell.Core\ApiExporter\Api.cs" />
   </ItemGroup>
 </Project>
