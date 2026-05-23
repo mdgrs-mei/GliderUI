@@ -25,6 +25,9 @@ internal sealed class Program
 
         var api = exporter.Api;
 
+        api.ModuleName = "GliderUI";
+        api.ServerName = "GliderUI.Server";
+
         api.UnsupportedNamespaces =
         [
             "System.Linq.Expressions",

@@ -29,6 +29,17 @@ public class Api
         ("System.Void", "void"),
     ];
 
+    public string ModuleName { get; set; } = "";
+    public string ServerName { get; set; } = "";
+    public string ObjectInterfaceName
+    {
+        get => $"I{ModuleName}Object";
+    }
+    public string ObjectIdMemberName
+    {
+        get => $"{ModuleName}ObjectId";
+    }
+
     public List<string> UnsupportedNamespaces { get; set; } = [];
     public List<string> UnsupportedTypes { get; set; } = [];
     public List<string> SupportedGlobalSystemInterfaces { get; set; } = [];

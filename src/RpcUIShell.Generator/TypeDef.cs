@@ -71,11 +71,11 @@ internal class TypeDef
         else if (Generator.Api!.IsSupportedGlobalSystemInterface(originalTypeName))
         {
             IsGlobalSystemInterface = true;
-            _name = $"GliderUI.{originalTypeName}";
+            _name = $"{Generator.Api!.ModuleName}.{originalTypeName}";
         }
-        else if (originalTypeName.StartsWith("GliderUI.Server"))
+        else if (originalTypeName.StartsWith(Generator.Api!.ServerName))
         {
-            _name = originalTypeName.Replace("GliderUI.Server", "GliderUI");
+            _name = originalTypeName.Replace(Generator.Api!.ServerName, Generator.Api!.ModuleName);
         }
         else if (originalTypeName == "System.Object")
         {
@@ -95,7 +95,7 @@ internal class TypeDef
         }
         else
         {
-            _name = $"GliderUI.{originalTypeName}";
+            _name = $"{Generator.Api!.ModuleName}.{originalTypeName}";
         }
 
         if (elementTypeOverride is not null)
@@ -399,11 +399,11 @@ internal class TypeDef
         }
         else if (IsObject || IsGenericParameter())
         {
-            return "(value is IGliderUIObject v ? v.GliderUIObjectId : value)";
+            return $"(value is {Generator.Api!.ObjectInterfaceName} v ? v.{Generator.Api!.ObjectIdMemberName} : value)";
         }
         else
         {
-            return "value?.GliderUIObjectId";
+            return $"value?.{Generator.Api!.ObjectIdMemberName}";
         }
     }
 
@@ -419,11 +419,11 @@ internal class TypeDef
         }
         else if (IsObject || IsGenericParameter())
         {
-            return $"({variableName} is IGliderUIObject v{variableIndex} ? v{variableIndex}.GliderUIObjectId : {variableName})";
+            return $"({variableName} is {Generator.Api!.ObjectInterfaceName} v{variableIndex} ? v{variableIndex}.{Generator.Api!.ObjectIdMemberName} : {variableName})";
         }
         else
         {
-            return $"{variableName}?.GliderUIObjectId";
+            return $"{variableName}?.{Generator.Api!.ObjectIdMemberName}";
         }
     }
 }

@@ -33,7 +33,7 @@ internal static class EnumGenerator
 
             codeWriter.Append("}");
 
-            sourceProductionContext.AddSource($"GliderUI.{enumDef.Namespace}.{enumDef.Name}.g.cs", codeWriter.ToString());
+            sourceProductionContext.AddSource($"{api.ModuleName}.{enumDef.Namespace}.{enumDef.Name}.g.cs", codeWriter.ToString());
         }
     }
 
@@ -72,7 +72,7 @@ internal static class EnumGenerator
         {
             var ns = Generator.GetTargetNamespace(enumDef.Namespace);
             codeWriter.Append($"""
-                ("{ns}.{enumDef.Name}, GliderUI", "{enumDef.FullName}"),
+                ("{ns}.{enumDef.Name}, {api.ModuleName}", "{enumDef.FullName}"),
                 """);
         }
         codeWriter.DecrementIndent();

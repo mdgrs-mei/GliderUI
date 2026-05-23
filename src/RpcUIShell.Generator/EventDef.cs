@@ -201,7 +201,7 @@ internal class EventDef
                 {{signatureExpression}}
                 {
                     {{GetEventCallbackListFieldName(_memberDefType)}}.Add(
-                        GliderUIObjectId,
+                        {{Generator.Api!.ObjectIdMemberName}},
                         "{{GetEventName()}}",
                         ObjectTypeMapping.Get().GetTargetTypeName(typeof({{GetEventArgsTypeName(genericTypeParametersOverride)}})),
                         eventCallback);

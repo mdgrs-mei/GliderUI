@@ -274,7 +274,7 @@ internal class ObjectDef
     public string GetSourceCodeFileName()
     {
         var fullName = _apiObjectDef.FullName.Split(',')[0];
-        return $"GliderUI.{fullName}.g.cs";
+        return $"{Generator.Api!.ModuleName}.{fullName}.g.cs";
     }
 
     public string Generate()
@@ -287,7 +287,7 @@ internal class ObjectDef
             #nullable enable
 
             using System.Management.Automation;
-            using GliderUI;
+            using {{Generator.Api!.ModuleName}};
             using RpcUIShell.Core;
 
             namespace {{ns}};
@@ -333,7 +333,7 @@ internal class ObjectDef
 
         if (baseTypeExpression.Length == 0)
         {
-            _ = baseTypeExpression.Append($" : IGliderUIObject");
+            _ = baseTypeExpression.Append($" : {Generator.Api!.ObjectInterfaceName}");
         }
 
         if (Type.IsGlobalSystemInterface)
@@ -513,7 +513,7 @@ internal class ObjectDef
             {
                 codeWriter.Append($$"""
                     get => PropertyAccessor.GetIndexer<{{property.Type.GetName()}}>(
-                        GliderUIObjectId,
+                        {{Generator.Api!.ObjectIdMemberName}},
                         {{typeNameExpression}},
                         "{{property.GetOriginalName()}}"{{property.GetIndexerArgumentsExpression(genericTypeParametersOverride: null)}}){{(property.Type.IsNullable ? "" : "!")}};
                     """);
@@ -522,7 +522,7 @@ internal class ObjectDef
             {
                 codeWriter.Append($$"""
                     get => PropertyAccessor.Get<{{property.Type.GetName()}}>(
-                        GliderUIObjectId,
+                        {{Generator.Api!.ObjectIdMemberName}},
                         {{typeNameExpression}},
                         {{property.GetNameOfExpression()}}){{(property.Type.IsNullable ? "" : "!")}};
                     """);
@@ -536,7 +536,7 @@ internal class ObjectDef
             {
                 codeWriter.Append($$"""
                     set => PropertyAccessor.SetIndexer(
-                        GliderUIObjectId,
+                        {{Generator.Api!.ObjectIdMemberName}},
                         {{typeNameExpression}},
                         "{{property.GetOriginalName()}}", {{property.Type.GetValueExpression()}}{{property.GetIndexerArgumentsExpression(genericTypeParametersOverride: null)}});
                     """);
@@ -545,7 +545,7 @@ internal class ObjectDef
             {
                 codeWriter.Append($$"""
                     set => PropertyAccessor.Set(
-                        GliderUIObjectId,
+                        {{Generator.Api!.ObjectIdMemberName}},
                         {{typeNameExpression}},
                         {{property.GetNameOfExpression()}},
                         {{property.Type.GetValueExpression()}});
@@ -565,7 +565,7 @@ internal class ObjectDef
                     {{method.GetSignatureExpression()}}
                     {
                         CommandClient.Get().InvokeMethod(
-                            GliderUIObjectId,
+                            {{Generator.Api!.ObjectIdMemberName}},
                             {{typeNameExpression}},
                             {{method.GetNameOfExpression()}}{{method.GetArgumentsExpression(genericTypeParametersOverride: null)}});
                     }
@@ -577,7 +577,7 @@ internal class ObjectDef
                     {{method.GetSignatureExpression()}}
                     {
                         return CommandClient.Get().InvokeMethodAndGetResult<{{returnType.GetName()}}>(
-                            GliderUIObjectId,
+                            {{Generator.Api!.ObjectIdMemberName}},
                             {{typeNameExpression}},
                             {{method.GetNameOfExpression()}}{{method.GetArgumentsExpression(genericTypeParametersOverride: null)}}){{(returnType.IsNullable ? "" : "!")}};
                     }
@@ -616,7 +616,7 @@ internal class ObjectDef
 
         if (baseTypeExpression.Length == 0 && !isStatic)
         {
-            _ = baseTypeExpression.Append($" : IGliderUIObject");
+            _ = baseTypeExpression.Append($" : {Generator.Api!.ObjectInterfaceName}");
         }
 
         codeWriter.Append($$"""
@@ -637,7 +637,7 @@ internal class ObjectDef
         if (!hasBaseType && !isStatic)
         {
             codeWriter.AppendAndReserveNewLine($$"""
-                public ObjectId GliderUIObjectId { get; protected set; } = new();
+                public ObjectId {{Generator.Api!.ObjectIdMemberName}} { get; protected set; } = new();
                 """);
         }
 
@@ -650,7 +650,7 @@ internal class ObjectDef
             codeWriter.AppendAndReserveNewLine($$"""
                 {{method.GetConstructorSignatureExpression(_apiObjectDef.Name)}}{{baseInitializer}}
                 {
-                    GliderUIObjectId = CommandClient.Get().CreateObject(
+                    {{Generator.Api!.ObjectIdMemberName}} = CommandClient.Get().CreateObject(
                         ObjectTypeMapping.Get().GetTargetTypeName(typeof({{Type.GetName()}})),
                         this{{method.GetArgumentsExpression(genericTypeParametersOverride: null)}});
                 }
@@ -672,7 +672,7 @@ internal class ObjectDef
                 codeWriter.AppendAndReserveNewLine($$"""
                 internal {{_apiObjectDef.Name}}(ObjectId id)
                 {
-                    GliderUIObjectId = id;
+                    {{Generator.Api!.ObjectIdMemberName}} = id;
                 }
                 """);
             }
@@ -821,7 +821,7 @@ internal class ObjectDef
         codeWriter.IncrementIndent();
 
         codeWriter.AppendAndReserveNewLine($$"""
-            public ObjectId GliderUIObjectId { get; protected set; } = new();
+            public ObjectId {{Generator.Api!.ObjectIdMemberName}} { get; protected set; } = new();
             """);
 
         if (!AttributeGenerator.IsConstructorSurpressed(Type.GetName()))
@@ -829,7 +829,7 @@ internal class ObjectDef
             codeWriter.AppendAndReserveNewLine($$"""
                 internal {{className}}(ObjectId id)
                 {
-                    GliderUIObjectId = id;
+                    {{Generator.Api!.ObjectIdMemberName}} = id;
                 }
                 """);
         }
@@ -916,7 +916,7 @@ internal class ObjectDef
                 {
                     codeWriter.Append($$"""
                         get => PropertyAccessor.GetIndexer<{{propertyType.GetName()}}>(
-                            GliderUIObjectId,
+                            {{Generator.Api!.ObjectIdMemberName}},
                             {{typeNameExpression}},
                             "{{property.GetOriginalName(isExplicit, addInterfaceName: false)}}"{{property.GetIndexerArgumentsExpression(genericTypeParametersOverride)}}){{(propertyType.IsNullable ? "" : "!")}};
                         """);
@@ -925,7 +925,7 @@ internal class ObjectDef
                 {
                     codeWriter.Append($$"""
                         get => PropertyAccessor.Get<{{propertyType.GetName()}}>(
-                            GliderUIObjectId,
+                            {{Generator.Api!.ObjectIdMemberName}},
                             {{typeNameExpression}},
                             {{property.GetNameOfExpression(isExplicit, addInterfaceName: false)}}){{(propertyType.IsNullable ? "" : "!")}};
                         """);
@@ -938,7 +938,7 @@ internal class ObjectDef
                 {
                     codeWriter.Append($$"""
                         set => PropertyAccessor.SetIndexer(
-                            GliderUIObjectId,
+                            {{Generator.Api!.ObjectIdMemberName}},
                             {{typeNameExpression}},
                             "{{property.GetOriginalName(isExplicit, addInterfaceName: false)}}", {{propertyType.GetValueExpression()}}{{property.GetIndexerArgumentsExpression(genericTypeParametersOverride)}});
                         """);
@@ -947,7 +947,7 @@ internal class ObjectDef
                 {
                     codeWriter.Append($$"""
                         set => PropertyAccessor.Set(
-                            GliderUIObjectId,
+                            {{Generator.Api!.ObjectIdMemberName}},
                             {{typeNameExpression}},
                             {{property.GetNameOfExpression(isExplicit, addInterfaceName: false)}}, {{propertyType.GetValueExpression()}});
                         """);
@@ -1014,7 +1014,7 @@ internal class ObjectDef
                     {{method.GetInterfaceImplSignatureExpression(isExplicit, genericTypeParametersOverride)}}
                     {
                         CommandClient.Get().InvokeMethod(
-                            GliderUIObjectId,
+                            {{Generator.Api!.ObjectIdMemberName}},
                             {{typeNameExpression}},
                             {{method.GetNameOfExpression(isExplicit, addInterfaceName: false)}}{{method.GetArgumentsExpression(genericTypeParametersOverride)}});
                     }
@@ -1026,7 +1026,7 @@ internal class ObjectDef
                     {{method.GetInterfaceImplSignatureExpression(isExplicit, genericTypeParametersOverride)}}
                     {
                         return CommandClient.Get().InvokeMethodAndGetResult<{{returnType.GetName()}}>(
-                            GliderUIObjectId,
+                            {{Generator.Api!.ObjectIdMemberName}},
                             {{typeNameExpression}},
                             {{method.GetNameOfExpression(isExplicit, addInterfaceName: false)}}{{method.GetArgumentsExpression(genericTypeParametersOverride)}}){{(returnType.IsNullable ? "" : "!")}};
                     }

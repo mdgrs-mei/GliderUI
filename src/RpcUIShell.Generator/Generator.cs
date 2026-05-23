@@ -79,13 +79,13 @@ public class Generator : IIncrementalGenerator
 
     internal static string GetTargetNamespace(string serverNamespace)
     {
-        if (serverNamespace is "GliderUI.Server" or "RpcUIShell.Core")
+        if ((serverNamespace == Api!.ServerName) || (serverNamespace == "RpcUIShell.Core"))
         {
-            return "GliderUI";
+            return Api!.ModuleName;
         }
         else
         {
-            return $"GliderUI.{serverNamespace}";
+            return $"{Api!.ModuleName}.{serverNamespace}";
         }
     }
 }

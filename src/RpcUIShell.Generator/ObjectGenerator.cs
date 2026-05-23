@@ -102,7 +102,7 @@ internal static class ObjectGenerator
             string genericSuffix = (genericArgumentCount > 0) ? $"`{genericArgumentCount}" : "";
 
             codeWriter.Append($"""
-                ("{ns}.{apiTypeMappingDef.Name}{genericSuffix}, GliderUI", "{apiTypeMappingDef.FullName}"),
+                ("{ns}.{apiTypeMappingDef.Name}{genericSuffix}, {api.ModuleName}", "{apiTypeMappingDef.FullName}"),
                 """);
         }
 
@@ -117,7 +117,7 @@ internal static class ObjectGenerator
             string genericSuffix = (genericArgumentCount > 0) ? $"`{genericArgumentCount}" : "";
 
             codeWriter.Append($"""
-                ("{ns}.{apiObjectDef.Name}{genericSuffix}, GliderUI", "{apiObjectDef.FullName}"),
+                ("{ns}.{apiObjectDef.Name}{genericSuffix}, {api.ModuleName}", "{apiObjectDef.FullName}"),
                 """);
         }
         codeWriter.DecrementIndent();
