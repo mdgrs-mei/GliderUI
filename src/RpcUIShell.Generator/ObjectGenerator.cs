@@ -35,6 +35,7 @@ internal static class ObjectGenerator
             var typeId = objectDef.Type.GetId();
             if (_objectDefs.ContainsKey(typeId))
             {
+                DestroyObjectDefMap();
                 throw new InvalidOperationException($"Duplicate object found: {typeId}");
             }
             _objectDefs[typeId] = objectDef;
