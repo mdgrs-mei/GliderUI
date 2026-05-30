@@ -4,7 +4,7 @@ using System.Management.Automation.Runspaces;
 
 namespace RpcUIShell.Core;
 
-public class CommandWorker
+public class CommandThreadWorker
 {
     private string _modulePath = "";
     private string? _initializationScript;
@@ -15,7 +15,7 @@ public class CommandWorker
 
     private static readonly ThreadLocal<PowerShell?> _threadLocalPowerShell = new(() => null);
 
-    public CommandWorker()
+    public CommandThreadWorker()
     {
     }
 

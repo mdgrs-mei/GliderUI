@@ -8,7 +8,7 @@ public class CommandThreadPool
     private PSHost? _streamingHost;
     private string _modulePath = "";
     private uint _defaultThreadCount;
-    private CommandWorker[]? _workers;
+    private CommandThreadWorker[]? _workers;
 
     public CommandThreadPool()
     {
@@ -39,10 +39,10 @@ public class CommandThreadPool
             return;
 
         uint workerCount = threadCount ?? _defaultThreadCount;
-        _workers = new CommandWorker[workerCount];
+        _workers = new CommandThreadWorker[workerCount];
         for (int i = 0; i < _workers.Length; ++i)
         {
-            var worker = new CommandWorker();
+            var worker = new CommandThreadWorker();
             worker.Start(
                 _streamingHost,
                 _modulePath,

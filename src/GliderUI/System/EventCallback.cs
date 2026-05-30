@@ -54,7 +54,7 @@ public class EventCallback
         {
             if (RunspaceMode == EventCallbackRunspaceMode.RunspacePoolAsyncUI)
             {
-                CommandWorker.InvokeEventCallback(
+                CommandThreadWorker.InvokeEventCallback(
                     _scriptBlockString,
                     ArgumentList,
                     sender,
