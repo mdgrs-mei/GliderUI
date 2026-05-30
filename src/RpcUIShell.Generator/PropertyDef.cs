@@ -11,12 +11,12 @@ internal class PropertyDef
     private readonly bool _isVirtual;
     private readonly string _propertyName;
 
-    public readonly ObjectDef ObjectDef;
-    public readonly TypeDef Type;
-    public readonly TypeDef? ExplicitInterfaceType;
-    public bool CanRead { get; private set; }
-    public bool CanWrite { get; private set; }
-    public bool ImplementsInterface { get; private set; }
+    public ObjectDef ObjectDef { get; }
+    public TypeDef Type { get; }
+    public TypeDef? ExplicitInterfaceType { get; }
+    public bool CanRead { get; }
+    public bool CanWrite { get; }
+    public bool ImplementsInterface { get; }
     public bool IsIndexer
     {
         get => _indexParameters is not null;

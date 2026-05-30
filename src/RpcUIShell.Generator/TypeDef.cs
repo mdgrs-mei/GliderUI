@@ -10,7 +10,7 @@ internal class TypeDef
     private readonly TypeDef? _parentType;
 
     public bool AlwaysReturnGlobalSystemInterfaceName { get; set; }
-    public readonly List<TypeDef>? GenericArguments;
+    public List<TypeDef>? GenericArguments { get; }
     public bool IsPublic
     {
         get => _apiTypeDef.IsPublic;
@@ -23,14 +23,14 @@ internal class TypeDef
     {
         get => _apiTypeDef.IsAbstract && _apiTypeDef.IsSealed;
     }
-    public bool IsRpcSupportedType { get; private set; }
+    public bool IsRpcSupportedType { get; }
     public bool IsInterface
     {
         get => _apiTypeDef.IsInterface;
     }
-    public bool IsGlobalSystemInterface { get; private set; }
-    public bool IsObject { get; private set; }
-    public bool IsVoid { get; private set; }
+    public bool IsGlobalSystemInterface { get; }
+    public bool IsObject { get; }
+    public bool IsVoid { get; }
     public bool IsClass
     {
         get => _apiTypeDef.IsClass;
