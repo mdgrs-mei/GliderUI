@@ -29,7 +29,7 @@ $copyExtensions = @('.dll', '.pdb')
 $src = "$PSScriptRoot/src"
 $apiSrc = "$src/GliderUI.ApiExporter"
 $coreSrc = "$src/GliderUI"
-$depSrc = "$src/GliderUI.Common"
+$depSrc = "$src/RpcUIShell.Core"
 $serverSrc = "$src/GliderUI.Server"
 
 $apiPublish = [System.IO.Path]::GetFullPath("$apiSrc/bin/$Configuration/$serverNetVersion/$defaultServerRid/publish/")

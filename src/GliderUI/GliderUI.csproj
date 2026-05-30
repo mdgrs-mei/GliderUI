@@ -13,18 +13,22 @@
     <!-- And avoid errors due to GenerateDocumentationFile -->
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <RpcUIShellGenerator_TypeMappingRootNamespace>GliderUI</RpcUIShellGenerator_TypeMappingRootNamespace>
+    <RpcUIShellGenerator_GenerateApi>true</RpcUIShellGenerator_GenerateApi>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GliderUI.Generator\GliderUI.Generator.csproj">
+    <ProjectReference Include="..\RpcUIShell.Generator\RpcUIShell.Generator.csproj">
       <OutputItemType>Analyzer</OutputItemType>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\GliderUI.Common\GliderUI.Common.csproj" />
+    <ProjectReference Include="..\RpcUIShell.Core\RpcUIShell.Core.csproj" />
     <PackageReference Include="System.Management.Automation" Version="7.4.0" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
+    <CompilerVisibleProperty Include="RpcUIShellGenerator_TypeMappingRootNamespace" />
+    <CompilerVisibleProperty Include="RpcUIShellGenerator_GenerateApi" />
     <AdditionalFiles Include="..\GliderUI.ApiExporter\Api.xml" />
   </ItemGroup>
 

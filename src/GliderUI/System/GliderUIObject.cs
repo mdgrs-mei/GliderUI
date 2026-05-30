@@ -1,4 +1,4 @@
-﻿using GliderUI.Common;
+﻿using RpcUIShell.Core;
 
 namespace GliderUI;
 

@@ -2,7 +2,7 @@
 using System.Management.Automation;
 using System.Management.Automation.Host;
 using System.Management.Automation.Runspaces;
-using GliderUI.Common;
+using RpcUIShell.Core;
 
 namespace GliderUI;
 
@@ -125,7 +125,7 @@ public class Engine
     private void InitConnection()
     {
         ObjectStore.Get().SetObjectIdPrefix("c");
-        ObjectTypeMapping.Get().Direction = ObjectTypeMapping.MappingDirection.ClientToServer;
+        TypeMappingInitializer.Init();
         CommandServer.Get().Init(_downstreamPipeName);
         CommandClient.Get().Init(_upstreamPipeName);
     }
@@ -180,7 +180,7 @@ $engineUpdateTimer.Start()
 
     private void InitCommandThreadPool(PSHost? streamingHost, string modulePath)
     {
-        _commandThreadPool.Init(streamingHost, modulePath);
+        _commandThreadPool.Init(streamingHost, modulePath, Constants.ClientCommandThreadPoolDefaultThreadCount);
     }
 
     private void TermCommandThreadPool()

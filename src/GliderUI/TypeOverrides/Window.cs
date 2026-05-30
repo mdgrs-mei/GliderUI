@@ -1,6 +1,6 @@
 ﻿using System.Management.Automation;
-using GliderUI.Common;
-using GliderUI.Generator;
+using RpcUIShell.Core;
+using RpcUIShell.Generator;
 
 namespace GliderUI.Avalonia.Controls;
 

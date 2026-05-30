@@ -36,7 +36,7 @@ public class AssemblyResolver : IModuleAssemblyInitializer, IModuleAssemblyClean
         {
             return null;
         }
-        if (!assemblyToResolve.Name.Equals("GliderUI.Common", StringComparison.Ordinal))
+        if (!assemblyToResolve.Name.Equals("RpcUIShell.Core", StringComparison.Ordinal))
         {
             return null;
         }

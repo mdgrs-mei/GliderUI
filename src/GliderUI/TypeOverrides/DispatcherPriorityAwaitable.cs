@@ -1,5 +1,4 @@
-﻿using GliderUI.Common;
-using GliderUI.Generator;
+﻿using RpcUIShell.Generator;
 
 namespace GliderUI.Avalonia.Threading;
 

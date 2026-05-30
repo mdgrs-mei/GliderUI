@@ -3,7 +3,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using GliderUI.Common;
+using RpcUIShell.Core;
 
 namespace GliderUI.Server;
 
@@ -48,7 +48,7 @@ internal sealed partial class App : Application
     {
         ParseArgs();
         ObjectStore.Get().SetObjectIdPrefix("s");
-        ObjectTypeMapping.Get().Direction = ObjectTypeMapping.MappingDirection.ServerToClient;
+        TypeMappingInitializer.Init();
         CommandServer.Get().Init(_upstreamPipeName);
         CommandClient.Get().Init(_downstreamPipeName);
         ObjectValidator.Init();

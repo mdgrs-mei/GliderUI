@@ -1,11 +1,11 @@
 ﻿using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Controls;
-using GliderUI.Common;
+using RpcUIShell.Core;
 
 namespace GliderUI.Server;
 
-internal sealed class WindowStore : Singleton<WindowStore>
+internal sealed class WindowStore : Singleton<WindowStore>, IWindowStore
 {
     internal sealed class WindowProperty
     {
@@ -47,7 +47,7 @@ internal sealed class WindowStore : Singleton<WindowStore>
         }
     }
 
-    public Window? EnterEventCallbackAndGetParentWindow(object sender)
+    public object? EnterEventCallbackAndGetParentWindow(object sender)
     {
         Window? parentWindow = GetParentWindow(sender);
         if (parentWindow is null)
@@ -61,12 +61,15 @@ internal sealed class WindowStore : Singleton<WindowStore>
         return parentWindow;
     }
 
-    public void ExitEventCallback(Window? parentWindow)
+    public void ExitEventCallback(object? parentWindow)
     {
         if (parentWindow is null)
             return;
 
-        var property = GetWindowProperty(parentWindow);
+        if (parentWindow is not Window _parentWindow)
+            return;
+
+        var property = GetWindowProperty(_parentWindow);
         lock (property)
         {
             property.RunningEventCallbackCount--;

@@ -1,5 +1,5 @@
 ﻿using System.Management.Automation;
-using GliderUI.Common;
+using RpcUIShell.Core;
 
 namespace GliderUI;
 
@@ -54,7 +54,7 @@ public class EventCallback
         {
             if (RunspaceMode == EventCallbackRunspaceMode.RunspacePoolAsyncUI)
             {
-                CommandWorker.InvokeEventCallback(
+                CommandThreadWorker.InvokeEventCallback(
                     _scriptBlockString,
                     ArgumentList,
                     sender,
