@@ -27,6 +27,7 @@ public class ApiExporter
     {
         AddEnum(typeof(EventCallbackRunspaceMode));
         AddObject(typeof(List<>));
+        AddObject(typeof(System.Text.StringBuilder));
         AddObject(typeof(ObservableCollection<>));
 
         ExportToFile(apiFilePath);
