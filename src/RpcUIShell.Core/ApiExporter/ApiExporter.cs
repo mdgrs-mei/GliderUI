@@ -628,19 +628,31 @@ public class ApiExporter
         if (baseType is null)
             return false;
 
-        foreach (var baseFieldInfo in baseType.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly))
+        return HasField(baseType, fieldInfo);
+    }
+
+    private bool HasField(Type type, FieldInfo fieldInfo)
+    {
+        foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly))
         {
-            if (baseFieldInfo.Name == fieldInfo.Name)
+            if (field.Name == fieldInfo.Name)
                 return true;
         }
 
-        foreach (var baseFieldInfo in baseType.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+        foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
         {
-            if (baseFieldInfo.Name == fieldInfo.Name)
+            if (field.Name == fieldInfo.Name)
                 return true;
         }
 
-        return false;
+        if (type.BaseType is not null)
+        {
+            return HasField(type.BaseType, fieldInfo);
+        }
+        else
+        {
+            return false;
+        }
     }
 
     private Api.TypeDef? GetExplicitInterfaceType(MethodInfo? methodInfo)
