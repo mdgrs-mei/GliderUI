@@ -67,28 +67,39 @@ internal class PropertyDef
 
     public PropertyDef(
         string name,
-        Api.MethodDef getter,
+        Api.MethodDef? getter,
         Api.MethodDef? setter,
         ObjectDef objectDef,
         MemberDefType memberDefType)
     {
-        _hidesBase = getter.HidesBase;
-        _isOverride = getter.IsOverride;
-        _isVirtual = getter.IsVirtual || (getter.IsAbstract && !objectDef.Type.IsInterface); ;
-        IsAbstract = getter.IsAbstract && objectDef.Type.IsInterface;
+        Api.MethodDef getterOrSetter = getter ?? setter!;
+
+        _hidesBase = getterOrSetter.HidesBase;
+        _isOverride = getterOrSetter.IsOverride;
+        _isVirtual = getterOrSetter.IsVirtual || (getterOrSetter.IsAbstract && !objectDef.Type.IsInterface); ;
+        IsAbstract = getterOrSetter.IsAbstract && objectDef.Type.IsInterface;
         _propertyName = name;
 
-        CanRead = true;
+        CanRead = getter is not null;
         CanWrite = setter is not null;
-        ImplementsInterface = getter.ImplementsInterface;
+        ImplementsInterface = getterOrSetter.ImplementsInterface;
 
         ObjectDef = objectDef;
         _memberDefType = memberDefType;
 
-        bool useSystemInterfaceName = getter!.ImplementsGlobalSystemInterface;
-        ExplicitInterfaceType = getter.ExplicitInterfaceType is null ? null : new TypeDef(getter.ExplicitInterfaceType, useSystemInterfaceName);
+        bool useSystemInterfaceName = getterOrSetter.ImplementsGlobalSystemInterface;
+        ExplicitInterfaceType = getterOrSetter.ExplicitInterfaceType is null ? null : new TypeDef(getterOrSetter.ExplicitInterfaceType, useSystemInterfaceName);
 
-        List<Api.ParameterDef>? indexParameters = getter.Parameters!;
+        List<Api.ParameterDef>? indexParameters = null;
+        if (getter is not null)
+        {
+            indexParameters = getter.Parameters;
+        }
+        else if (setter!.Parameters is not null)
+        {
+            indexParameters = setter!.Parameters.GetRange(0, setter!.Parameters.Count - 1);
+        }
+
         if (indexParameters is not null)
         {
             foreach (var apiParameterDef in indexParameters)
@@ -101,7 +112,17 @@ internal class PropertyDef
             }
         }
 
-        Type = new TypeDef(getter.ReturnType!, useSystemInterfaceName);
+        Api.TypeDef? typeDef = null;
+        if (getter is not null)
+        {
+            typeDef = getter.ReturnType;
+        }
+        else if (setter!.Parameters is not null)
+        {
+            typeDef = setter!.Parameters.Last().Type;
+        }
+
+        Type = new TypeDef(typeDef!, useSystemInterfaceName);
     }
 
     public bool IsSupported()
