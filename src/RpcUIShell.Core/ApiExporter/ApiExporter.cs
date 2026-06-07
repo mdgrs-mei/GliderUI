@@ -860,6 +860,10 @@ public class ApiExporter
         {
             Name = GetEventName(eventInfo),
             ExplicitInterfaceType = GetExplicitInterfaceType(eventInfo.AddMethod),
+            IsVirtual = eventInfo.AddMethod?.IsVirtual ?? false,
+            IsAbstract = eventInfo.AddMethod?.IsAbstract ?? false,
+            IsOverride = IsOverride(eventInfo.AddMethod),
+            HidesBase = HidesBaseMethod(eventInfo.AddMethod),
         };
 
         var invokeMethod = eventInfo.EventHandlerType!.GetMethod("Invoke");
