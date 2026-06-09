@@ -863,7 +863,7 @@ public class ApiExporter
             IsVirtual = eventInfo.AddMethod?.IsVirtual ?? false,
             IsAbstract = eventInfo.AddMethod?.IsAbstract ?? false,
             IsOverride = IsOverride(eventInfo.AddMethod),
-            HidesBase = HidesBaseMethod(eventInfo.AddMethod),
+            HidesBase = HidesBaseEvent(eventInfo),
         };
 
         var invokeMethod = eventInfo.EventHandlerType!.GetMethod("Invoke");
@@ -884,6 +884,42 @@ public class ApiExporter
         var name = eventInfo.Name;
         int dot = name.LastIndexOf('.');
         return name[(dot + 1)..];
+    }
+
+    private bool HidesBaseEvent(EventInfo? eventInfo)
+    {
+        if (eventInfo is null)
+            return false;
+
+        Type? baseType = eventInfo.DeclaringType!.BaseType;
+        if (baseType is null)
+            return false;
+
+        return HasEvent(baseType, eventInfo);
+    }
+
+    private bool HasEvent(Type type, EventInfo eventInfo)
+    {
+        foreach (var e in type.GetEvents(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly))
+        {
+            if (e.Name == eventInfo.Name)
+                return true;
+        }
+
+        foreach (var e in type.GetEvents(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+        {
+            if (e.Name == eventInfo.Name)
+                return true;
+        }
+
+        if (type.BaseType is not null)
+        {
+            return HasEvent(type.BaseType, eventInfo);
+        }
+        else
+        {
+            return false;
+        }
     }
 
     private bool IsIgnoredNamespace(string? ns)
