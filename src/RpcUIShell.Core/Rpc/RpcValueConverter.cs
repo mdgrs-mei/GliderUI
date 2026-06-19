@@ -68,18 +68,7 @@ public static class RpcValueConverter
                 if (targetType is null)
                     return objectId;
 
-                obj = Activator.CreateInstance(
-                    targetType,
-                    System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public,
-                    null,
-                    [objectId],
-                    null);
-
-                if (obj == null)
-                {
-                    throw new InvalidOperationException($"Failed to create instance of type [{objectId.Type}].");
-                }
-                ObjectStore.Get().RegisterObject(objectId, obj);
+                obj = CreateObject(objectId, targetType, registerObject: true);
             }
 
             return obj;
