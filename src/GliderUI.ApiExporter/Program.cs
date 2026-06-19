@@ -77,6 +77,7 @@ internal sealed class Program
         exporter.AddTypesInAssembly(typeof(DataGrid)); // Avalonia.Controls.DataGrid.dll
         exporter.AddTypesInAssembly(typeof(NativeWebView)); // Avalonia.Controls.WebView.dll
         exporter.AddTypesInAssembly(typeof(LiveChartsCore.SkiaSharpView.Avalonia.CartesianChart)); // LiveChartsCore.SkiaSharpView.Avalonia.dll
+        exporter.AddTypesInAssembly(typeof(LiveChartsCore.SkiaSharpView.LineSeries<>)); // LiveChartsCore.SkiaSharpView.dll
 
         exporter.AddObject(typeof(Server.DataSourcePropertyComparer));
         exporter.AddTypeMapping(typeof(Server.DataSource));
