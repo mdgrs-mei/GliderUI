@@ -1,5 +1,4 @@
-﻿
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace RpcUIShell.Core;
 
@@ -23,6 +22,20 @@ public class Invoker : Singleton<Invoker>
         {
             throw new InvalidOperationException($"Type [{typeName}] not found.");
         }
+        return CreateObject(type, arguments);
+    }
+
+    internal object CreateObject(Type type, object?[]? arguments = null)
+    {
+        if (type.IsInterface)
+        {
+            var interfaceImplType = GetInterfaceImplType(type);
+            if (interfaceImplType is null)
+            {
+                throw new InvalidOperationException($"Unsupported interface type [{type.FullName}].");
+            }
+            type = interfaceImplType;
+        }
 
         var obj = Activator.CreateInstance(
             type,
@@ -31,11 +44,50 @@ public class Invoker : Singleton<Invoker>
             arguments,
             null);
 
-        if (obj == null)
+        if (obj is null)
         {
-            throw new InvalidOperationException($"Failed to create instance of type [{typeName}].");
+            throw new InvalidOperationException($"Failed to create instance of type [{type.FullName}].");
         }
         return obj;
+    }
+
+    private static Type? GetInterfaceImplType(Type interfaceType)
+    {
+        // Get interface Impl type fullname from interface type fullname.
+        // fullName has a format like "clientAssemblyName.Namespace.Class`1+InnerClass+InnerMost`2[[clientAssemblyName.Namespace.GenericArgumentClass, clientAssemblyName, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]".
+
+        var clientAssemblyName = ObjectTypeMapping.Get().ClientNamespace;
+        var interfaceFullName = interfaceType.FullName!;
+
+        // System interface types don't have "clientAssemblyName" namespace. Add it here as Impl classes are always under "clientAssemblyName" namespace.
+        if (!interfaceFullName.StartsWith($"{clientAssemblyName}.", StringComparison.Ordinal))
+        {
+            interfaceFullName = $"{clientAssemblyName}." + interfaceFullName;
+        }
+
+        int insertIndex = interfaceFullName.Length;
+        int firstGenericArgumentSeparator = interfaceFullName.IndexOf('[', StringComparison.Ordinal);
+        if (firstGenericArgumentSeparator >= 0)
+        {
+            insertIndex = firstGenericArgumentSeparator;
+        }
+
+        int lastNestedClassSeparator = interfaceFullName.LastIndexOf('+', insertIndex - 1);
+        int lastGenericTypeSeparator = interfaceFullName.LastIndexOf('`', insertIndex - 1);
+        if (lastNestedClassSeparator >= 0)
+        {
+            if (lastNestedClassSeparator < lastGenericTypeSeparator)
+            {
+                insertIndex = lastGenericTypeSeparator;
+            }
+        }
+        else if (lastGenericTypeSeparator >= 0)
+        {
+            insertIndex = lastGenericTypeSeparator;
+        }
+
+        string implTypeFullName = $"{interfaceFullName.Insert(insertIndex, "_Impl")}, {clientAssemblyName}";
+        return Type.GetType(implTypeFullName);
     }
 
     public object? InvokeMethod(object obj, string? typeName, string methodName, object?[]? arguments = null)
