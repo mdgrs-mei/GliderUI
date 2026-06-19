@@ -80,7 +80,7 @@ internal class PropertyDef
         IsAbstract = getterOrSetter.IsAbstract && objectDef.Type.IsInterface;
         _propertyName = name;
 
-        CanRead = getter is not null;
+        CanRead = true;
         CanWrite = setter is not null;
         ImplementsInterface = getterOrSetter.ImplementsInterface;
 
