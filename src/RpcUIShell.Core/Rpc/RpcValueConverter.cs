@@ -1,8 +1,10 @@
 ﻿namespace RpcUIShell.Core;
 
-public static class RpcValueConverter
+public class RpcValueConverter : Singleton<RpcValueConverter>
 {
-    public static T? ConvertRpcValueTo<T>(RpcValue rpcValue)
+    public Type? DefaultObjectType { get; set; }
+
+    public T? ConvertRpcValueTo<T>(RpcValue rpcValue)
     {
         if (rpcValue is null)
             return default;
@@ -39,7 +41,7 @@ public static class RpcValueConverter
         }
     }
 
-    private static object? ConvertRpcValueToObject(RpcValue rpcValue)
+    private object? ConvertRpcValueToObject(RpcValue rpcValue)
     {
         if (rpcValue is null)
             return null;
@@ -79,14 +81,24 @@ public static class RpcValueConverter
         }
     }
 
-    private static object? CreateObject(ObjectId objectId, Type type, bool registerObject)
+    private object? CreateObject(ObjectId objectId, Type type, bool registerObject)
     {
+        object? obj;
         if (type == typeof(object))
         {
-            throw new InvalidOperationException($"Object not found or unsupported object type. Id:[{objectId.Id}], Type:[{objectId.Type}].");
+            if (DefaultObjectType is not null)
+            {
+                obj = Invoker.Get().CreateObject(DefaultObjectType, [objectId]);
+            }
+            else
+            {
+                obj = new object();
+            }
         }
-
-        object? obj = Invoker.Get().CreateObject(type, [objectId]);
+        else
+        {
+            obj = Invoker.Get().CreateObject(type, [objectId]);
+        }
 
         if (registerObject)
         {
@@ -124,7 +136,7 @@ public static class RpcValueConverter
         return Enum.ToObject(targetEnumType, value);
     }
 
-    public static object?[]? ConvertRpcValueArrayToObjectArray(RpcValue[]? rpcArray)
+    public object?[]? ConvertRpcValueArrayToObjectArray(RpcValue[]? rpcArray)
     {
         if (rpcArray is null)
         {
@@ -139,7 +151,7 @@ public static class RpcValueConverter
         return objectArray;
     }
 
-    public static RpcValue ConvertObjectToRpcValue(object? obj)
+    public RpcValue ConvertObjectToRpcValue(object? obj)
     {
         if (RpcValue.IsSupportedType(obj))
         {
@@ -163,12 +175,12 @@ public static class RpcValueConverter
         }
     }
 
-    public static RpcValue[]? ConvertObjectArrayToRpcArray(object?[]? objectArray)
+    public RpcValue[]? ConvertObjectArrayToRpcArray(object?[]? objectArray)
     {
         return ConvertObjectArrayToRpcArray((Array?)objectArray);
     }
 
-    public static RpcValue[]? ConvertObjectArrayToRpcArray(Array? objectArray)
+    public RpcValue[]? ConvertObjectArrayToRpcArray(Array? objectArray)
     {
         if (objectArray is null || objectArray.Length == 0)
         {

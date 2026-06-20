@@ -26,7 +26,7 @@ internal sealed class RpcService
             queueId,
             () =>
             {
-                var arguments = RpcValueConverter.ConvertRpcValueArrayToObjectArray(rpcArguments);
+                var arguments = RpcValueConverter.Get().ConvertRpcValueArrayToObjectArray(rpcArguments);
                 var obj = Invoker.Get().CreateObject(typeName, arguments);
                 ObjectStore.Get().RegisterObject(id, obj);
             });
@@ -52,7 +52,7 @@ internal sealed class RpcService
             {
                 try
                 {
-                    var arguments = RpcValueConverter.ConvertRpcValueArrayToObjectArray(rpcArguments);
+                    var arguments = RpcValueConverter.Get().ConvertRpcValueArrayToObjectArray(rpcArguments);
                     var obj = Invoker.Get().CreateObject(typeName, arguments);
                     ObjectStore.Get().RegisterObject(id, obj);
 
@@ -77,7 +77,7 @@ internal sealed class RpcService
             CommandQueueId.MainThread,
             () =>
             {
-                var arguments = RpcValueConverter.ConvertRpcValueArrayToObjectArray(rpcArguments);
+                var arguments = RpcValueConverter.Get().ConvertRpcValueArrayToObjectArray(rpcArguments);
                 var obj = Invoker.Get().InvokeStaticMethod(className, methodName, arguments);
                 if (obj is null)
                 {
@@ -104,7 +104,7 @@ internal sealed class RpcService
             () =>
             {
                 var obj = ObjectStore.Get().GetObject(id);
-                var arguments = RpcValueConverter.ConvertRpcValueArrayToObjectArray(rpcArguments);
+                var arguments = RpcValueConverter.Get().ConvertRpcValueArrayToObjectArray(rpcArguments);
                 _ = Invoker.Get().InvokeMethod(obj, typeName, methodName, arguments);
             });
     }
@@ -119,7 +119,7 @@ internal sealed class RpcService
                 try
                 {
                     var obj = ObjectStore.Get().GetObject(id);
-                    var arguments = RpcValueConverter.ConvertRpcValueArrayToObjectArray(rpcArguments);
+                    var arguments = RpcValueConverter.Get().ConvertRpcValueArrayToObjectArray(rpcArguments);
                     _ = Invoker.Get().InvokeMethod(obj, typeName, methodName, arguments);
 
                     taskCompletion.SetResult();
@@ -144,9 +144,9 @@ internal sealed class RpcService
                 try
                 {
                     var obj = ObjectStore.Get().GetObject(id);
-                    var arguments = RpcValueConverter.ConvertRpcValueArrayToObjectArray(rpcArguments);
+                    var arguments = RpcValueConverter.Get().ConvertRpcValueArrayToObjectArray(rpcArguments);
                     object? result = Invoker.Get().InvokeMethod(obj, typeName, methodName, arguments);
-                    taskCompletion.SetResult(RpcValueConverter.ConvertObjectToRpcValue(result));
+                    taskCompletion.SetResult(RpcValueConverter.Get().ConvertObjectToRpcValue(result));
                 }
                 catch (Exception e)
                 {
@@ -163,7 +163,7 @@ internal sealed class RpcService
             CommandQueueId.MainThread,
             () =>
             {
-                var arguments = RpcValueConverter.ConvertRpcValueArrayToObjectArray(rpcArguments);
+                var arguments = RpcValueConverter.Get().ConvertRpcValueArrayToObjectArray(rpcArguments);
                 _ = Invoker.Get().InvokeStaticMethod(className, methodName, arguments);
             });
     }
@@ -177,7 +177,7 @@ internal sealed class RpcService
             {
                 try
                 {
-                    var arguments = RpcValueConverter.ConvertRpcValueArrayToObjectArray(rpcArguments);
+                    var arguments = RpcValueConverter.Get().ConvertRpcValueArrayToObjectArray(rpcArguments);
                     _ = Invoker.Get().InvokeStaticMethod(className, methodName, arguments);
 
                     taskCompletion.SetResult();
@@ -201,9 +201,9 @@ internal sealed class RpcService
             {
                 try
                 {
-                    var arguments = RpcValueConverter.ConvertRpcValueArrayToObjectArray(rpcArguments);
+                    var arguments = RpcValueConverter.Get().ConvertRpcValueArrayToObjectArray(rpcArguments);
                     object? result = Invoker.Get().InvokeStaticMethod(className, methodName, arguments);
-                    taskCompletion.SetResult(RpcValueConverter.ConvertObjectToRpcValue(result));
+                    taskCompletion.SetResult(RpcValueConverter.Get().ConvertObjectToRpcValue(result));
                 }
                 catch (Exception e)
                 {
@@ -221,7 +221,7 @@ internal sealed class RpcService
             () =>
             {
                 var obj = ObjectStore.Get().GetObject(id);
-                var value = RpcValueConverter.ConvertRpcValueTo<object>(rpcValue);
+                var value = RpcValueConverter.Get().ConvertRpcValueTo<object>(rpcValue);
                 Invoker.Get().SetProperty(obj, typeName, propertyName, value);
             });
     }
@@ -236,7 +236,7 @@ internal sealed class RpcService
                 try
                 {
                     var obj = ObjectStore.Get().GetObject(id);
-                    var value = RpcValueConverter.ConvertRpcValueTo<object>(rpcValue);
+                    var value = RpcValueConverter.Get().ConvertRpcValueTo<object>(rpcValue);
                     Invoker.Get().SetProperty(obj, typeName, propertyName, value);
 
                     taskCompletion.SetResult();
@@ -256,7 +256,7 @@ internal sealed class RpcService
             queueId,
             () =>
             {
-                var value = RpcValueConverter.ConvertRpcValueTo<object>(rpcValue);
+                var value = RpcValueConverter.Get().ConvertRpcValueTo<object>(rpcValue);
                 Invoker.Get().SetStaticProperty(className, propertyName, value);
             });
     }
@@ -272,7 +272,7 @@ internal sealed class RpcService
                 {
                     var obj = ObjectStore.Get().GetObject(id);
                     var value = Invoker.Get().GetProperty(obj, typeName, propertyName);
-                    taskCompletion.SetResult(RpcValueConverter.ConvertObjectToRpcValue(value));
+                    taskCompletion.SetResult(RpcValueConverter.Get().ConvertObjectToRpcValue(value));
                 }
                 catch (Exception e)
                 {
@@ -293,7 +293,7 @@ internal sealed class RpcService
                 try
                 {
                     var value = Invoker.Get().GetStaticProperty(className, propertyName);
-                    taskCompletion.SetResult(RpcValueConverter.ConvertObjectToRpcValue(value));
+                    taskCompletion.SetResult(RpcValueConverter.Get().ConvertObjectToRpcValue(value));
                 }
                 catch (Exception e)
                 {
@@ -311,8 +311,8 @@ internal sealed class RpcService
             () =>
             {
                 var obj = ObjectStore.Get().GetObject(id);
-                var value = RpcValueConverter.ConvertRpcValueTo<object>(rpcValue);
-                var indexArguments = RpcValueConverter.ConvertRpcValueArrayToObjectArray(rpcIndexArguments);
+                var value = RpcValueConverter.Get().ConvertRpcValueTo<object>(rpcValue);
+                var indexArguments = RpcValueConverter.Get().ConvertRpcValueArrayToObjectArray(rpcIndexArguments);
 
                 if (indexArguments is null)
                 {
@@ -333,7 +333,7 @@ internal sealed class RpcService
                 try
                 {
                     var obj = ObjectStore.Get().GetObject(id);
-                    var indexArguments = RpcValueConverter.ConvertRpcValueArrayToObjectArray(rpcIndexArguments);
+                    var indexArguments = RpcValueConverter.Get().ConvertRpcValueArrayToObjectArray(rpcIndexArguments);
 
                     if (indexArguments is null)
                     {
@@ -341,7 +341,7 @@ internal sealed class RpcService
                     }
 
                     var value = Invoker.Get().GetIndexerProperty(obj, typeName, indexerName, indexArguments);
-                    taskCompletion.SetResult(RpcValueConverter.ConvertObjectToRpcValue(value));
+                    taskCompletion.SetResult(RpcValueConverter.Get().ConvertObjectToRpcValue(value));
                 }
                 catch (Exception e)
                 {

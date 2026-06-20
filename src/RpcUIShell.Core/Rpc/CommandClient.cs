@@ -61,7 +61,7 @@ public class CommandClient : Singleton<CommandClient>
         if (!ObjectStore.Get().RegisterObject(linkedObject, out ObjectId id))
             return id;
 
-        var rpcArguments = RpcValueConverter.ConvertObjectArrayToRpcArray(arguments);
+        var rpcArguments = RpcValueConverter.Get().ConvertObjectArrayToRpcArray(arguments);
 
         _joinableTaskFactory.Run(async () =>
         {
@@ -102,7 +102,7 @@ public class CommandClient : Singleton<CommandClient>
         if (!ObjectStore.Get().RegisterObject(linkedObject, out ObjectId id))
             return id;
 
-        var rpcArguments = RpcValueConverter.ConvertObjectArrayToRpcArray(arguments);
+        var rpcArguments = RpcValueConverter.Get().ConvertObjectArrayToRpcArray(arguments);
 
         await _rpc.InvokeAsync("CreateObjectWait", queueId, id, typeName, rpcArguments);
 
@@ -121,7 +121,7 @@ public class CommandClient : Singleton<CommandClient>
         if (!ObjectStore.Get().RegisterObject(linkedObject, out ObjectId id))
             return id;
 
-        var rpcArguments = RpcValueConverter.ConvertObjectArrayToRpcArray(arguments);
+        var rpcArguments = RpcValueConverter.Get().ConvertObjectArrayToRpcArray(arguments);
 
         _joinableTaskFactory.Run(async () =>
         {
@@ -153,7 +153,7 @@ public class CommandClient : Singleton<CommandClient>
         Debug.Assert(_rpc is not null);
         ArgumentNullException.ThrowIfNull(arguments);
 
-        var rpcArguments = RpcValueConverter.ConvertObjectArrayToRpcArray(arguments);
+        var rpcArguments = RpcValueConverter.Get().ConvertObjectArrayToRpcArray(arguments);
 
         _joinableTaskFactory.Run(async () =>
         {
@@ -171,7 +171,7 @@ public class CommandClient : Singleton<CommandClient>
         Debug.Assert(_rpc is not null);
         ArgumentNullException.ThrowIfNull(arguments);
 
-        RpcValue[]? rpcArguments = RpcValueConverter.ConvertObjectArrayToRpcArray(arguments);
+        RpcValue[]? rpcArguments = RpcValueConverter.Get().ConvertObjectArrayToRpcArray(arguments);
 
         return _rpc.InvokeAsync("InvokeMethodWait", queueId, id, typeName, methodName, rpcArguments);
     }
@@ -181,14 +181,14 @@ public class CommandClient : Singleton<CommandClient>
         Debug.Assert(_rpc is not null);
         ArgumentNullException.ThrowIfNull(arguments);
 
-        var rpcArguments = RpcValueConverter.ConvertObjectArrayToRpcArray(arguments);
+        var rpcArguments = RpcValueConverter.Get().ConvertObjectArrayToRpcArray(arguments);
 
         var rpcValue = _joinableTaskFactory.Run(async () =>
         {
             return await _rpc.InvokeAsync<RpcValue>("InvokeMethodAndGetResult", id, typeName, methodName, rpcArguments);
         });
 
-        return RpcValueConverter.ConvertRpcValueTo<T>(rpcValue);
+        return RpcValueConverter.Get().ConvertRpcValueTo<T>(rpcValue);
     }
 
     public void InvokeStaticMethod(string className, string methodName, params object?[] arguments)
@@ -196,7 +196,7 @@ public class CommandClient : Singleton<CommandClient>
         Debug.Assert(_rpc is not null);
         ArgumentNullException.ThrowIfNull(arguments);
 
-        var rpcArguments = RpcValueConverter.ConvertObjectArrayToRpcArray(arguments);
+        var rpcArguments = RpcValueConverter.Get().ConvertObjectArrayToRpcArray(arguments);
 
         _joinableTaskFactory.Run(async () =>
         {
@@ -209,7 +209,7 @@ public class CommandClient : Singleton<CommandClient>
         Debug.Assert(_rpc is not null);
         ArgumentNullException.ThrowIfNull(arguments);
 
-        var rpcArguments = RpcValueConverter.ConvertObjectArrayToRpcArray(arguments);
+        var rpcArguments = RpcValueConverter.Get().ConvertObjectArrayToRpcArray(arguments);
 
         return _rpc.InvokeAsync("InvokeStaticMethodWait", queueId, className, methodName, rpcArguments);
     }
@@ -219,14 +219,14 @@ public class CommandClient : Singleton<CommandClient>
         Debug.Assert(_rpc is not null);
         ArgumentNullException.ThrowIfNull(arguments);
 
-        var rpcArguments = RpcValueConverter.ConvertObjectArrayToRpcArray(arguments);
+        var rpcArguments = RpcValueConverter.Get().ConvertObjectArrayToRpcArray(arguments);
 
         var rpcValue = _joinableTaskFactory.Run(async () =>
         {
             return await _rpc.InvokeAsync<RpcValue>("InvokeStaticMethodAndGetResult", className, methodName, rpcArguments);
         });
 
-        return RpcValueConverter.ConvertRpcValueTo<T>(rpcValue);
+        return RpcValueConverter.Get().ConvertRpcValueTo<T>(rpcValue);
     }
 
     public void SetProperty(ObjectId id, string? typeName, string propertyName, object? value)
@@ -237,7 +237,7 @@ public class CommandClient : Singleton<CommandClient>
     {
         Debug.Assert(_rpc is not null);
 
-        var rpcValue = RpcValueConverter.ConvertObjectToRpcValue(value);
+        var rpcValue = RpcValueConverter.Get().ConvertObjectToRpcValue(value);
 
         _joinableTaskFactory.Run(async () =>
         {
@@ -252,7 +252,7 @@ public class CommandClient : Singleton<CommandClient>
     public Task SetPropertyAsync(CommandQueueId queueId, ObjectId id, string? typeName, string propertyName, object? value)
     {
         Debug.Assert(_rpc is not null);
-        var rpcValue = RpcValueConverter.ConvertObjectToRpcValue(value);
+        var rpcValue = RpcValueConverter.Get().ConvertObjectToRpcValue(value);
         return _rpc.InvokeAsync("SetProperty", queueId, id, typeName, propertyName, rpcValue);
     }
 
@@ -264,7 +264,7 @@ public class CommandClient : Singleton<CommandClient>
     {
         Debug.Assert(_rpc is not null);
 
-        var rpcValue = RpcValueConverter.ConvertObjectToRpcValue(value);
+        var rpcValue = RpcValueConverter.Get().ConvertObjectToRpcValue(value);
 
         _joinableTaskFactory.Run(async () =>
         {
@@ -281,7 +281,7 @@ public class CommandClient : Singleton<CommandClient>
     {
         Debug.Assert(_rpc is not null);
 
-        var rpcValue = RpcValueConverter.ConvertObjectToRpcValue(value);
+        var rpcValue = RpcValueConverter.Get().ConvertObjectToRpcValue(value);
 
         _joinableTaskFactory.Run(async () =>
         {
@@ -298,7 +298,7 @@ public class CommandClient : Singleton<CommandClient>
             return await _rpc.InvokeAsync<RpcValue>("GetProperty", id, typeName, propertyName);
         });
 
-        return RpcValueConverter.ConvertRpcValueTo<T>(rpcValue);
+        return RpcValueConverter.Get().ConvertRpcValueTo<T>(rpcValue);
     }
 
     public T? GetStaticProperty<T>(string className, string propertyName)
@@ -310,7 +310,7 @@ public class CommandClient : Singleton<CommandClient>
             return await _rpc.InvokeAsync<RpcValue>("GetStaticProperty", className, propertyName);
         });
 
-        return RpcValueConverter.ConvertRpcValueTo<T>(rpcValue);
+        return RpcValueConverter.Get().ConvertRpcValueTo<T>(rpcValue);
     }
 
     public void SetIndexerProperty(ObjectId id, string? typeName, string indexerName, object? value, params object?[] indexArguments)
@@ -318,8 +318,8 @@ public class CommandClient : Singleton<CommandClient>
         Debug.Assert(_rpc is not null);
         ArgumentNullException.ThrowIfNull(indexArguments);
 
-        var rpcIndexArguments = RpcValueConverter.ConvertObjectArrayToRpcArray(indexArguments);
-        var rpcValue = RpcValueConverter.ConvertObjectToRpcValue(value);
+        var rpcIndexArguments = RpcValueConverter.Get().ConvertObjectArrayToRpcArray(indexArguments);
+        var rpcValue = RpcValueConverter.Get().ConvertObjectToRpcValue(value);
 
         _joinableTaskFactory.Run(async () =>
         {
@@ -332,14 +332,14 @@ public class CommandClient : Singleton<CommandClient>
         Debug.Assert(_rpc is not null);
         ArgumentNullException.ThrowIfNull(indexArguments);
 
-        var rpcIndexArguments = RpcValueConverter.ConvertObjectArrayToRpcArray(indexArguments);
+        var rpcIndexArguments = RpcValueConverter.Get().ConvertObjectArrayToRpcArray(indexArguments);
 
         var rpcValue = _joinableTaskFactory.Run(async () =>
         {
             return await _rpc.InvokeAsync<RpcValue>("GetIndexerProperty", id, typeName, indexerName, rpcIndexArguments);
         });
 
-        return RpcValueConverter.ConvertRpcValueTo<T>(rpcValue);
+        return RpcValueConverter.Get().ConvertRpcValueTo<T>(rpcValue);
     }
 
     public void WriteError(string message)
