@@ -88,4 +88,24 @@ public class Generator : IIncrementalGenerator
             return $"{Api!.ModuleName}.{serverNamespace}";
         }
     }
+
+    internal static string GetTargetTypeFullName(string serverTypeFullName)
+    {
+        string serverTypeFullNameWithoutAssembly = serverTypeFullName.Split(',')[0];
+        string targetTypeFullNameWithoutAssembly;
+
+        if (serverTypeFullNameWithoutAssembly.StartsWith(Api!.ServerName))
+        {
+            targetTypeFullNameWithoutAssembly = $"{Api!.ModuleName}{serverTypeFullNameWithoutAssembly.Substring(Api!.ServerName.Length)}";
+        }
+        else if (serverTypeFullNameWithoutAssembly.StartsWith("RpcUIShell.Core"))
+        {
+            targetTypeFullNameWithoutAssembly = $"{Api!.ModuleName}{serverTypeFullNameWithoutAssembly.Substring("RpcUIShell.Core".Length)}";
+        }
+        else
+        {
+            targetTypeFullNameWithoutAssembly = $"{Api!.ModuleName}.{serverTypeFullNameWithoutAssembly}";
+        }
+        return $"{targetTypeFullNameWithoutAssembly}, {Api!.ModuleName}";
+    }
 }
