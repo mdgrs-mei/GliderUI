@@ -137,7 +137,7 @@ public class Invoker : Singleton<Invoker>
         }
         else if (arguments.Contains(null))
         {
-            var methods = objType.GetMethods();
+            var methods = objType.GetMethods(bindingFlags);
             foreach (var method in methods)
             {
                 if (method.Name != methodName)
