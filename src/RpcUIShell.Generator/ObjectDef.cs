@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Text;
+﻿using System.Text;
 using RpcUIShell.Core;
 
 namespace RpcUIShell.Generator;
@@ -173,10 +172,9 @@ internal class ObjectDef
         {
             foreach (var getterSetter in _explicitInterfaceImplementationGetterSetters.Values)
             {
-                Debug.Assert(getterSetter.Getter is not null);
                 _instanceProperties.Add(new PropertyDef(
                     getterSetter.PropertyName,
-                    getterSetter.Getter!,
+                    getterSetter.Getter,
                     getterSetter.Setter,
                     this,
                     MemberDefType.Instance));

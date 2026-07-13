@@ -98,12 +98,10 @@ internal static class ObjectGenerator
 
         foreach (var apiTypeMappingDef in api.TypeMappings)
         {
-            var ns = Generator.GetTargetNamespace(apiTypeMappingDef.Namespace);
-            var genericArgumentCount = apiTypeMappingDef.GenericArgumentCount;
-            string genericSuffix = (genericArgumentCount > 0) ? $"`{genericArgumentCount}" : "";
+            var targetTypeFullName = Generator.GetTargetTypeFullName(apiTypeMappingDef.FullName);
 
             codeWriter.Append($"""
-                ("{ns}.{apiTypeMappingDef.Name}{genericSuffix}, {api.ModuleName}", "{apiTypeMappingDef.FullName}"),
+                ("{targetTypeFullName}", "{apiTypeMappingDef.FullName}"),
                 """);
         }
 
@@ -113,13 +111,26 @@ internal static class ObjectGenerator
             if (!objectDef.IsSupported())
                 continue;
 
-            var ns = Generator.GetTargetNamespace(apiObjectDef.Namespace);
-            var genericArgumentCount = apiObjectDef.Type.GenericTypeArguments is not null ? apiObjectDef.Type.GenericTypeArguments.Count : 0;
-            string genericSuffix = (genericArgumentCount > 0) ? $"`{genericArgumentCount}" : "";
+            var targetTypeFullName = Generator.GetTargetTypeFullName(apiObjectDef.FullName);
 
             codeWriter.Append($"""
-                ("{ns}.{apiObjectDef.Name}{genericSuffix}, {api.ModuleName}", "{apiObjectDef.FullName}"),
+                ("{targetTypeFullName}", "{apiObjectDef.FullName}"),
                 """);
+
+            if (apiObjectDef.NestedTypes is null)
+                continue;
+
+            foreach (var nestedApiObjectDef in apiObjectDef.NestedTypes)
+            {
+                ObjectDef nestedObjectDef = new(nestedApiObjectDef);
+                if (!nestedObjectDef.IsSupported())
+                    continue;
+
+                var nestedTargetTypeFullName = Generator.GetTargetTypeFullName(nestedApiObjectDef.FullName);
+                codeWriter.Append($"""
+                    ("{nestedTargetTypeFullName}", "{nestedApiObjectDef.FullName}"),
+                    """);
+            }
         }
         codeWriter.DecrementIndent();
 

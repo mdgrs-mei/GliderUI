@@ -18,7 +18,17 @@ internal class ParameterDef
         Name = _apiParameterDef.Name!;
 
         // Escape c# keywords.
-        if (Name is "event" or "object" or "this" or "operator" or "break" or "finally" or "continue")
+        string[] escapedWords = [
+            "event",
+            "object",
+            "this",
+            "operator",
+            "break",
+            "finally",
+            "continue",
+            "base"
+        ];
+        if (escapedWords.Contains(Name))
         {
             Name = $"_{Name}";
         }

@@ -126,6 +126,7 @@ public class Engine
     {
         ObjectStore.Get().SetObjectIdPrefix("c");
         TypeMappingInitializer.Init();
+        RpcValueConverter.Get().DefaultObjectType = typeof(GliderUIObject);
         CommandServer.Get().Init(_downstreamPipeName);
         CommandClient.Get().Init(_upstreamPipeName);
     }

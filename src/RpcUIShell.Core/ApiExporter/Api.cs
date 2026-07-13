@@ -267,6 +267,21 @@ public class Api
 
         [DefaultValue(null)]
         public TypeDef? ExplicitInterfaceType { get; set; }
+
+        [DefaultValue(false)]
+        public bool IsVirtual { get; set; }
+
+        [DefaultValue(false)]
+        public bool IsAbstract { get; set; }
+
+        [DefaultValue(false)]
+        public bool IsOverride { get; set; }
+
+        [DefaultValue(false)]
+        public bool IsExtension { get; set; }
+
+        [DefaultValue(false)]
+        public bool HidesBase { get; set; }
     }
 
     public class ParameterDef

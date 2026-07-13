@@ -150,7 +150,7 @@ public class RpcValue
                 }
             case Array array:
                 {
-                    ArrayValue = RpcValueConverter.ConvertObjectArrayToRpcArray(array);
+                    ArrayValue = RpcValueConverter.Get().ConvertObjectArrayToRpcArray(array);
                     break;
                 }
             default:

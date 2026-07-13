@@ -1,8 +1,10 @@
 ﻿namespace RpcUIShell.Core;
 
-public static class RpcValueConverter
+public class RpcValueConverter : Singleton<RpcValueConverter>
 {
-    public static T? ConvertRpcValueTo<T>(RpcValue rpcValue)
+    public Type? DefaultObjectType { get; set; }
+
+    public T? ConvertRpcValueTo<T>(RpcValue rpcValue)
     {
         if (rpcValue is null)
             return default;
@@ -39,7 +41,7 @@ public static class RpcValueConverter
         }
     }
 
-    private static object? ConvertRpcValueToObject(RpcValue rpcValue)
+    private object? ConvertRpcValueToObject(RpcValue rpcValue)
     {
         if (rpcValue is null)
             return null;
@@ -68,18 +70,7 @@ public static class RpcValueConverter
                 if (targetType is null)
                     return objectId;
 
-                obj = Activator.CreateInstance(
-                    targetType,
-                    System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public,
-                    null,
-                    [objectId],
-                    null);
-
-                if (obj == null)
-                {
-                    throw new InvalidOperationException($"Failed to create instance of type [{objectId.Type}].");
-                }
-                ObjectStore.Get().RegisterObject(objectId, obj);
+                obj = CreateObject(objectId, targetType, registerObject: true);
             }
 
             return obj;
@@ -90,32 +81,23 @@ public static class RpcValueConverter
         }
     }
 
-    private static object? CreateObject(ObjectId objectId, Type type, bool registerObject)
+    private object? CreateObject(ObjectId objectId, Type type, bool registerObject)
     {
+        object? obj;
         if (type == typeof(object))
         {
-            throw new InvalidOperationException($"Object not found or unsupported object type. Id:[{objectId.Id}], Type:[{objectId.Type}].");
-        }
-        else if (type.IsInterface)
-        {
-            var interfaceImplType = GetInterfaceImplType(type);
-            if (interfaceImplType is null)
+            if (DefaultObjectType is not null)
             {
-                throw new InvalidOperationException($"Unsupported interface type [{type.FullName}]. Id:[{objectId.Id}], Type:[{objectId.Type}].");
+                obj = Invoker.Get().CreateObject(DefaultObjectType, [objectId]);
             }
-            type = interfaceImplType;
+            else
+            {
+                obj = new object();
+            }
         }
-
-        object? obj = Activator.CreateInstance(
-            type,
-            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public,
-            null,
-            [objectId],
-            null);
-
-        if (obj == null)
+        else
         {
-            throw new InvalidOperationException($"Failed to create instance of type [{type.FullName}].");
+            obj = Invoker.Get().CreateObject(type, [objectId]);
         }
 
         if (registerObject)
@@ -123,45 +105,6 @@ public static class RpcValueConverter
             ObjectStore.Get().RegisterObject(objectId, obj);
         }
         return obj;
-    }
-
-    private static Type? GetInterfaceImplType(Type interfaceType)
-    {
-        // Get interface Impl type fullname from interface type fullname.
-        // fullName has a format like "clientAssemblyName.Namespace.Class`1+InnerClass+InnerMost`2[[clientAssemblyName.Namespace.GenericArgumentClass, clientAssemblyName, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]".
-
-        var clientAssemblyName = ObjectTypeMapping.Get().ClientNamespace;
-        var interfaceFullName = interfaceType.FullName!;
-
-        // System interface types don't have "clientAssemblyName" namespace. Add it here as Impl classes are always under "clientAssemblyName" namespace.
-        if (!interfaceFullName.StartsWith($"{clientAssemblyName}.", StringComparison.Ordinal))
-        {
-            interfaceFullName = $"{clientAssemblyName}." + interfaceFullName;
-        }
-
-        int insertIndex = interfaceFullName.Length;
-        int firstGenericArgumentSeparator = interfaceFullName.IndexOf('[', StringComparison.Ordinal);
-        if (firstGenericArgumentSeparator >= 0)
-        {
-            insertIndex = firstGenericArgumentSeparator;
-        }
-
-        int lastNestedClassSeparator = interfaceFullName.LastIndexOf('+', insertIndex - 1);
-        int lastGenericTypeSeparator = interfaceFullName.LastIndexOf('`', insertIndex - 1);
-        if (lastNestedClassSeparator >= 0)
-        {
-            if (lastNestedClassSeparator < lastGenericTypeSeparator)
-            {
-                insertIndex = lastGenericTypeSeparator;
-            }
-        }
-        else if (lastGenericTypeSeparator >= 0)
-        {
-            insertIndex = lastGenericTypeSeparator;
-        }
-
-        string implTypeFullName = $"{interfaceFullName.Insert(insertIndex, "_Impl")}, {clientAssemblyName}";
-        return Type.GetType(implTypeFullName);
     }
 
     private static object? ConvertRpcValueToEnum(RpcValue rpcValue)
@@ -193,7 +136,7 @@ public static class RpcValueConverter
         return Enum.ToObject(targetEnumType, value);
     }
 
-    public static object?[]? ConvertRpcValueArrayToObjectArray(RpcValue[]? rpcArray)
+    public object?[]? ConvertRpcValueArrayToObjectArray(RpcValue[]? rpcArray)
     {
         if (rpcArray is null)
         {
@@ -208,7 +151,7 @@ public static class RpcValueConverter
         return objectArray;
     }
 
-    public static RpcValue ConvertObjectToRpcValue(object? obj)
+    public RpcValue ConvertObjectToRpcValue(object? obj)
     {
         if (RpcValue.IsSupportedType(obj))
         {
@@ -232,12 +175,12 @@ public static class RpcValueConverter
         }
     }
 
-    public static RpcValue[]? ConvertObjectArrayToRpcArray(object?[]? objectArray)
+    public RpcValue[]? ConvertObjectArrayToRpcArray(object?[]? objectArray)
     {
         return ConvertObjectArrayToRpcArray((Array?)objectArray);
     }
 
-    public static RpcValue[]? ConvertObjectArrayToRpcArray(Array? objectArray)
+    public RpcValue[]? ConvertObjectArrayToRpcArray(Array? objectArray)
     {
         if (objectArray is null || objectArray.Length == 0)
         {

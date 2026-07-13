@@ -628,19 +628,31 @@ public class ApiExporter
         if (baseType is null)
             return false;
 
-        foreach (var baseFieldInfo in baseType.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly))
+        return HasField(baseType, fieldInfo);
+    }
+
+    private bool HasField(Type type, FieldInfo fieldInfo)
+    {
+        foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly))
         {
-            if (baseFieldInfo.Name == fieldInfo.Name)
+            if (field.Name == fieldInfo.Name)
                 return true;
         }
 
-        foreach (var baseFieldInfo in baseType.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+        foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
         {
-            if (baseFieldInfo.Name == fieldInfo.Name)
+            if (field.Name == fieldInfo.Name)
                 return true;
         }
 
-        return false;
+        if (type.BaseType is not null)
+        {
+            return HasField(type.BaseType, fieldInfo);
+        }
+        else
+        {
+            return false;
+        }
     }
 
     private Api.TypeDef? GetExplicitInterfaceType(MethodInfo? methodInfo)
@@ -848,6 +860,10 @@ public class ApiExporter
         {
             Name = GetEventName(eventInfo),
             ExplicitInterfaceType = GetExplicitInterfaceType(eventInfo.AddMethod),
+            IsVirtual = eventInfo.AddMethod?.IsVirtual ?? false,
+            IsAbstract = eventInfo.AddMethod?.IsAbstract ?? false,
+            IsOverride = IsOverride(eventInfo.AddMethod),
+            HidesBase = HidesBaseEvent(eventInfo),
         };
 
         var invokeMethod = eventInfo.EventHandlerType!.GetMethod("Invoke");
@@ -868,6 +884,42 @@ public class ApiExporter
         var name = eventInfo.Name;
         int dot = name.LastIndexOf('.');
         return name[(dot + 1)..];
+    }
+
+    private bool HidesBaseEvent(EventInfo? eventInfo)
+    {
+        if (eventInfo is null)
+            return false;
+
+        Type? baseType = eventInfo.DeclaringType!.BaseType;
+        if (baseType is null)
+            return false;
+
+        return HasEvent(baseType, eventInfo);
+    }
+
+    private bool HasEvent(Type type, EventInfo eventInfo)
+    {
+        foreach (var e in type.GetEvents(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly))
+        {
+            if (e.Name == eventInfo.Name)
+                return true;
+        }
+
+        foreach (var e in type.GetEvents(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+        {
+            if (e.Name == eventInfo.Name)
+                return true;
+        }
+
+        if (type.BaseType is not null)
+        {
+            return HasEvent(type.BaseType, eventInfo);
+        }
+        else
+        {
+            return false;
+        }
     }
 
     private bool IsIgnoredNamespace(string? ns)
