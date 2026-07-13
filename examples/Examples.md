@@ -26,6 +26,12 @@ Sample dialog that is shown at the top of the screen for a single long-running t
 
 ![InstallDialog](https://github.com/user-attachments/assets/2e610c72-17bf-4b64-9fa5-eb9f668a71e0)
 
+## [LiveCharts2.ps1](./LiveCharts2.ps1)
+
+Example that shows how to use [LiveCharts2](https://github.com/Live-Charts/LiveCharts2) APIs.
+
+<img width="1411" height="1076" alt="LiveCharts2" src="https://github.com/user-attachments/assets/3eceb14a-c294-4be7-b6af-c638c2e5ccfa" />
+
 ## [MultipleProgressBars.ps1](./MultipleProgressBars.ps1)
 
 Advanced example that uses `RunspacePoolAsyncUI` for multiple long running tasks.
