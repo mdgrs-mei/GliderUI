@@ -268,3 +268,4 @@ Please see our [Contribution Guidelines](./CONTRIBUTING.md).
 
 - Avalonia<br>https://github.com/AvaloniaUI/Avalonia
 - vs-StreamJsonRpc<br>https://github.com/microsoft/vs-streamjsonrpc
+- LiveCharts2<br>https://github.com/Live-Charts/LiveCharts2
