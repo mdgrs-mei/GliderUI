@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.0] - 2026-07-13
+
+### Added
+
+- Added [LiveCharts2](https://github.com/Live-Charts/LiveCharts2) APIs
+
 ## [0.2.0] - 2026-03-23
 
 ### Added
