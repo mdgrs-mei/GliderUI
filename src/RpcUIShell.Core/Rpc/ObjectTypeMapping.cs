@@ -62,7 +62,16 @@ public sealed class ObjectTypeMapping : Singleton<ObjectTypeMapping>
             List<string> argNames = [];
             foreach (var argType in sourceType.GetGenericArguments())
             {
-                if (!TryGetTargetTypeName(argType, out string? argTargetTypeName))
+                string? argTargetTypeName;
+                if (argType.IsEnum)
+                {
+                    if (!EnumTypeMapping.Get().TryGetTargetTypeName(argType, out argTargetTypeName))
+                    {
+                        targetTypeName = null;
+                        return false;
+                    }
+                }
+                else if (!TryGetTargetTypeName(argType, out argTargetTypeName))
                 {
                     targetTypeName = null;
                     return false;
