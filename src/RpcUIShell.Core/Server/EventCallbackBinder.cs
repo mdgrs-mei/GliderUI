@@ -76,9 +76,9 @@ public class EventCallbackBinder<TDisabledControlsHolder> where TDisabledControl
     {
         return async (sender, eventArgs) =>
         {
-            var parentWindow = _windowStore.EnterEventCallbackAndGetParentWindow(sender);
+            var parentWindow = EnterEventCallbackAndGetParentWindow(sender);
 
-            IDisabledControlsHolder disabledControls = TDisabledControlsHolder.Create(disabledControlsWhileProcessing);
+            IDisabledControlsHolder disabledControls = CreateDisabledControlsHolder(disabledControlsWhileProcessing);
             disabledControls.Disable();
 
             var senderId = ObjectStore.Get().GetId(sender);
@@ -106,33 +106,31 @@ public class EventCallbackBinder<TDisabledControlsHolder> where TDisabledControl
 
             CommandClient.Get().ProcessTemporaryQueue(processingQueueId, temporaryQueueId);
 
-            try
-            {
-                if (runspaceMode == EventCallbackRunspaceMode.MainRunspaceSyncUI)
-                {
-                    _blockingWaitTaskAction(invokeTask);
-                }
-                else
-                {
-                    await invokeTask;
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine("EventCallback faild:");
-                Debug.WriteLine(e);
-                CommandClient.Get().WriteError("EventCallback faild:");
-                CommandClient.Get().WriteException(e);
-            }
+            await WaitEventCallbackAsync(runspaceMode, invokeTask);
 
             CommandClient.Get().DestroyObject(processingQueueId, eventArgsId);
             disabledControls.Enable();
 
-            _windowStore.ExitEventCallback(parentWindow);
+            ExitEventCallback(parentWindow);
         };
     }
 
-    private static CommandQueueId GetProcessingQueueId(EventCallbackRunspaceMode runspaceMode, int mainRunspaceId)
+    public object? EnterEventCallbackAndGetParentWindow(object sender)
+    {
+        return _windowStore.EnterEventCallbackAndGetParentWindow(sender);
+    }
+
+    public void ExitEventCallback(object? parentWindow)
+    {
+        _windowStore.ExitEventCallback(parentWindow);
+    }
+
+    public IDisabledControlsHolder CreateDisabledControlsHolder(object?[]? controls)
+    {
+        return TDisabledControlsHolder.Create(controls);
+    }
+
+    public CommandQueueId GetProcessingQueueId(EventCallbackRunspaceMode runspaceMode, int mainRunspaceId)
     {
         if (runspaceMode == EventCallbackRunspaceMode.RunspacePoolAsyncUI)
         {
@@ -141,6 +139,28 @@ public class EventCallbackBinder<TDisabledControlsHolder> where TDisabledControl
         else
         {
             return new CommandQueueId(CommandQueueType.RunspaceId, mainRunspaceId);
+        }
+    }
+
+    public async Task WaitEventCallbackAsync(EventCallbackRunspaceMode runspaceMode, Task invokeTask)
+    {
+        try
+        {
+            if (runspaceMode == EventCallbackRunspaceMode.MainRunspaceSyncUI)
+            {
+                _blockingWaitTaskAction(invokeTask);
+            }
+            else
+            {
+                await invokeTask;
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine("EventCallback faild:");
+            Debug.WriteLine(e);
+            CommandClient.Get().WriteError("EventCallback faild:");
+            CommandClient.Get().WriteException(e);
         }
     }
 }
