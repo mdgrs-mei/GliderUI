@@ -12,10 +12,11 @@ $ProgressPreference = 'SilentlyContinue'
 
 $coreNetVersion = 'net8.0'
 $serverNetVersion = 'net9.0'
-$serverRids = @(
+$supportedServerRids = @(
     'win-x64'
     'osx-arm64'
     'linux-x64'
+    'linux-arm64'
 )
 if ($IsWindows) {
     $defaultServerRid = 'win-x64'
@@ -23,6 +24,11 @@ if ($IsWindows) {
 } else {
     $defaultServerRid = [System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier
     $executableExtension = ''
+}
+
+if ($supportedServerRids -notcontains $defaultServerRid) {
+    Write-Error "Server runtime id [$defaultServerRid] is not supported. Supported runtime ids are [$supportedServerRids]."
+    return
 }
 
 $copyExtensions = @('.dll', '.pdb')
@@ -116,7 +122,7 @@ function BuildServer($Rid) {
 }
 
 if ($BuildAllRuntimes) {
-    foreach ($rid in $serverRids) {
+    foreach ($rid in $supportedServerRids) {
         BuildServer $rid
     }
 } else {

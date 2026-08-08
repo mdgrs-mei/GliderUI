@@ -9,6 +9,7 @@ $script:supportedServerRids = @(
     'win-x64'
     'osx-arm64'
     'linux-x64'
+    'linux-arm64'
 )
 
 if ($IsWindows) {
