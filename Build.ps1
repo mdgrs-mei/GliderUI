@@ -45,9 +45,9 @@ $depPublish = [System.IO.Path]::GetFullPath("$depSrc/bin/$Configuration/$coreNet
 $apiXml = "$apiSrc/Api.xml"
 $apiExporter = "$apiPublish/GliderUI.ApiExporter$executableExtension"
 
-$outDir = "$PSScriptRoot/module/GliderUI/bin/$coreNetVersion"
+$moduleDir = "$PSScriptRoot/module"
+$outDir = "$moduleDir/GliderUI/bin/$coreNetVersion"
 $outDeps = "$outDir/Dependencies"
-$outServer = "$PSScriptRoot/module/GliderUI/bin/$serverNetVersion"
 
 function CopyFolderItems($FolderPath, $Destination) {
     if (Test-Path $Destination) {
@@ -63,7 +63,6 @@ Write-Host "dotnet.exe version: $dotnetExeVersion"
 Pop-Location
 
 Remove-Item -Path $outDir -Recurse -ErrorAction Ignore
-Remove-Item -Path $outServer -Recurse -ErrorAction Ignore
 
 if ($ExportApi) {
     Push-Location $apiSrc
@@ -107,18 +106,18 @@ Get-ChildItem -Path $corePublish -Recurse -Directory | Where-Object {
 CopyFolderItems -FolderPath $corePublish -Destination $outDir
 CopyFolderItems -FolderPath $depPublish -Destination $outDeps
 
-
 # Build servers.
 function BuildServer($Rid) {
     $publishFolder = [System.IO.Path]::GetFullPath("$serverSrc/bin/$Configuration/$serverNetVersion/$Rid/publish/")
-    $outServerRuntime = "$outServer/$Rid"
+    $outServer = "$moduleDir/GliderUI.Server.$Rid/bin/$serverNetVersion"
+    Remove-Item -Path $outServer -Recurse -ErrorAction Ignore
 
     Push-Location $serverSrc
     dotnet publish -c $Configuration -o $publishFolder -r $Rid
     Pop-Location
 
     # Output.
-    CopyFolderItems -FolderPath $publishFolder -Destination $outServerRuntime
+    CopyFolderItems -FolderPath $publishFolder -Destination $outServer
 }
 
 if ($BuildAllRuntimes) {
