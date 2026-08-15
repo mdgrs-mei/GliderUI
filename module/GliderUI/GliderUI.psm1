@@ -1,6 +1,7 @@
 
 param(
-    [bool]$UseTimerEvent = $true
+    [bool]$IsMainRunspace = $true,
+    [String]$ServerModuleRoot
 )
 
 $coreNetVersion = 'net8.0'
@@ -25,26 +26,41 @@ if ($supportedServerRids -notcontains $serverRid) {
     return
 }
 
-$coreDll = "$PSScriptRoot/bin/$coreNetVersion/GliderUI.dll"
-$script:serverPath = "$PSScriptRoot/bin/$serverNetVersion/$serverRid/GliderUI.Server$serverExtension"
+if ($IsMainRunspace) {
+    $serverModulePath = "GliderUI.Server.$serverRid"
+    if ($null -ne $ServerModuleRoot) {
+        $serverModulePath = "$ServerModuleRoot/$serverModulePath"
+    }
+    $serverModule = Get-Module $serverModulePath -ListAvailable
+    if ($null -eq $serverModule) {
+        Write-Error "Server [$serverModulePath] not installed."
+        return
+    }
+
+    $script:serverPath = "$(Split-Path $serverModule.Path -Parent)/bin/$serverNetVersion/GliderUI.Server$serverExtension"
+}
 
 $publicScripts = @(Get-ChildItem $PSScriptRoot/Public/*.ps1)
 foreach ($private:script in $publicScripts) {
     . $script.FullName
 }
 
-if (-not $IsWindows) {
-    & test -x $serverPath
-    if ($LASTEXITCODE -ne 0) {
-        Write-Warning "[$serverPath] does not have execute permission. Skip initializing the module."
-        return
+if ($IsMainRunspace) {
+    if (-not $IsWindows) {
+        & test -x $serverPath
+        if ($LASTEXITCODE -ne 0) {
+            Write-Warning "[$serverPath] does not have execute permission. Skip initializing the module."
+            return
+        }
     }
 }
 
-Import-Module $coreDll
+$clientDll = "$PSScriptRoot/bin/$coreNetVersion/GliderUI.dll"
+Import-Module $clientDll
 
 $modulePath = $MyInvocation.MyCommand.Path
-[GliderUI.Engine]::Get().InitRunspace($serverPath, $host, $modulePath, $UseTimerEvent)
+$useTimerEvent = $IsMainRunspace
+[GliderUI.Engine]::Get().InitRunspace($serverPath, $host, $modulePath, $useTimerEvent)
 
 $MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
     [GliderUI.Engine]::Get().TermRunspace()
