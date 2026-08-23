@@ -6,6 +6,7 @@ $script:supportedServerRids = @(
     'linux-x64'
     'linux-arm64'
 )
+$script:moduleRootPath = "$PSScriptRoot/../"
 
 function GetExecutableExtension() {
     if ($IsWindows) {
@@ -31,13 +32,17 @@ function GetServerModuleName() {
 function GetServerExePath($ModuleRoot) {
     $serverModulePath = GetServerModuleName
     $serverExtension = GetExecutableExtension
-
     if ($null -ne $ModuleRoot) {
         $serverModulePath = "$ModuleRoot/$serverModulePath"
     }
-    $serverModule = Get-Module $serverModulePath -ListAvailable
+
+    $gliderUIVersion = GetGliderUIVersion
+
+    $serverModule = Get-Module $serverModulePath -ListAvailable | Where-Object {
+        $_.Version -eq $gliderUIVersion
+    }
     if ($null -eq $serverModule) {
-        Write-Error "Server [$serverModulePath] not installed."
+        Write-Error "Server [$serverModulePath] Version [$gliderUIVersion] not installed."
         return
     }
 
@@ -52,4 +57,10 @@ function WriteErrorIfRidNotSupported() {
         Write-Error "Server runtime id [$rid] is not supported. Supported runtime ids are [$supportedServerRids]."
         $true
     }
+}
+
+function GetGliderUIVersion() {
+    $psd1 = Join-Path $script:moduleRootPath 'GliderUI.psd1'
+    $manifest = Import-PowerShellDataFile -Path $psd1
+    $manifest.ModuleVersion
 }

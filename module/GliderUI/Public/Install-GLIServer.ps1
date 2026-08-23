@@ -28,8 +28,7 @@ function Install-GLIServer {
     )
 
     $moduleName = GetServerModuleName
-    $gliderUi = Get-Module -Name GliderUI
-    $version = $gliderUi.Version.ToString()
+    $version = GetGliderUIVersion
 
     $installArguments = @{
         Name = $moduleName
