@@ -10,26 +10,17 @@ param (
 $originalProgressPreference = $ProgressPreference
 $ProgressPreference = 'SilentlyContinue'
 
-$clientNetVersion = 'net8.0'
-$serverNetVersion = 'net9.0'
-$supportedServerRids = @(
-    'win-x64'
-    'osx-arm64'
-    'linux-x64'
-    'linux-arm64'
-)
-if ($IsWindows) {
-    $defaultServerRid = 'win-x64'
-    $executableExtension = '.exe'
-} else {
-    $defaultServerRid = [System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier
-    $executableExtension = ''
+$privateScripts = @(Get-ChildItem $PSScriptRoot/module/GliderUI/Private/*.ps1 -Exclude _*)
+foreach ($private:script in $privateScripts) {
+    . $script.FullName
 }
 
-if ($supportedServerRids -notcontains $defaultServerRid) {
-    Write-Error "Server runtime id [$defaultServerRid] is not supported. Supported runtime ids are [$supportedServerRids]."
+if (WriteErrorIfRidNotSupported) {
     return
 }
+
+$defaultServerRid = GetRid
+$executableExtension = GetExecutableExtension
 
 $copyExtensions = @('.dll', '.pdb')
 $src = "$PSScriptRoot/src"
@@ -38,15 +29,15 @@ $clientSrc = "$src/GliderUI"
 $depSrc = "$src/RpcUIShell.Core"
 $serverSrc = "$src/GliderUI.Server"
 
-$apiPublish = [System.IO.Path]::GetFullPath("$apiSrc/bin/$Configuration/$serverNetVersion/$defaultServerRid/publish/")
-$clientPublish = [System.IO.Path]::GetFullPath("$clientSrc/bin/$Configuration/$clientNetVersion/publish/")
-$depPublish = [System.IO.Path]::GetFullPath("$depSrc/bin/$Configuration/$clientNetVersion/publish/")
+$apiPublish = [System.IO.Path]::GetFullPath("$apiSrc/bin/$Configuration/$($script:serverNetVersion)/$defaultServerRid/publish/")
+$clientPublish = [System.IO.Path]::GetFullPath("$clientSrc/bin/$Configuration/$($script:clientNetVersion)/publish/")
+$depPublish = [System.IO.Path]::GetFullPath("$depSrc/bin/$Configuration/$($script:clientNetVersion)/publish/")
 
 $apiXml = "$apiSrc/Api.xml"
 $apiExporter = "$apiPublish/GliderUI.ApiExporter$executableExtension"
 
 $moduleDir = "$PSScriptRoot/module"
-$clientOut = "$moduleDir/GliderUI/bin/$clientNetVersion"
+$clientOut = "$moduleDir/GliderUI/bin/$($script:clientNetVersion)"
 $depOut = "$clientOut/Dependencies"
 
 function CopyFolderItems($FolderPath, $Destination) {
@@ -108,8 +99,8 @@ CopyFolderItems -FolderPath $depPublish -Destination $depOut
 
 # Build servers.
 function BuildServer($Rid) {
-    $serverPublish = [System.IO.Path]::GetFullPath("$serverSrc/bin/$Configuration/$serverNetVersion/$Rid/publish/")
-    $serverOut = "$moduleDir/GliderUI.Server.$Rid/bin/$serverNetVersion"
+    $serverPublish = [System.IO.Path]::GetFullPath("$serverSrc/bin/$Configuration/$($script:serverNetVersion)/$Rid/publish/")
+    $serverOut = "$moduleDir/GliderUI.Server.$Rid/bin/$($script:serverNetVersion)"
     Remove-Item -Path $serverOut -Recurse -ErrorAction Ignore
 
     Push-Location $serverSrc

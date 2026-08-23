@@ -29,8 +29,7 @@ if ($IsMainRunspace) {
     }
 }
 
-$coreNetVersion = 'net8.0'
-$clientDll = "$PSScriptRoot/bin/$coreNetVersion/GliderUI.dll"
+$clientDll = "$PSScriptRoot/bin/$($script:clientNetVersion)/GliderUI.dll"
 Import-Module $clientDll
 
 $modulePath = $MyInvocation.MyCommand.Path

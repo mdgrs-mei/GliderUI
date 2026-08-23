@@ -1,3 +1,4 @@
+$script:clientNetVersion = 'net8.0'
 $script:serverNetVersion = 'net9.0'
 $script:supportedServerRids = @(
     'win-x64'
