@@ -24,7 +24,10 @@ function Install-GLIServer {
         [String]$Scope,
 
         [Parameter(ValueFromPipelineByPropertyName = $true)]
-        [Switch]$TrustRepository
+        [Switch]$TrustRepository,
+
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
+        [Switch]$UninstallOldVersions
     )
 
     $moduleName = GetServerModuleName
@@ -45,10 +48,21 @@ function Install-GLIServer {
         $installArguments.Add('Scope', $Scope)
     }
 
-    if ($PSCmdlet.ShouldProcess($moduleName, 'Install-PSResource')) {
+    if ($PSCmdlet.ShouldProcess($moduleName, "Install-PSResource for $version")) {
         $installedModule = Install-PSResource @installArguments
         if ($null -eq $installedModule) {
             return
+        }
+    }
+
+    if ($UninstallOldVersions) {
+        $oldServerModules = Get-Module $moduleName -ListAvailable | Where-Object {
+            $_.Version -ne $version
+        }
+        if ($oldServerModules -and $PSCmdlet.ShouldProcess($moduleName, "Uninstall-PSResource for $($oldServerModules.Version -join ',')")) {
+            $oldServerModules | ForEach-Object {
+                Uninstall-PSResource -Name $_.Name -Version $_.Version
+            }
         }
     }
 
