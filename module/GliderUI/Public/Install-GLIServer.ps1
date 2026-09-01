@@ -24,6 +24,9 @@ function Install-GLIServer {
         [String]$Scope,
 
         [Parameter(ValueFromPipelineByPropertyName = $true)]
+        [Switch]$PassThru,
+
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [Switch]$TrustRepository,
 
         [Parameter(ValueFromPipelineByPropertyName = $true)]
@@ -52,6 +55,10 @@ function Install-GLIServer {
         $installedModule = Install-PSResource @installArguments
         if ($null -eq $installedModule) {
             return
+        }
+
+        if ($PassThru) {
+            $installedModule
         }
     }
 
