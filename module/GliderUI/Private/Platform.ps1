@@ -32,7 +32,7 @@ function GetServerModuleName() {
 function GetServerExePath($ModuleRoot) {
     $serverModulePath = GetServerModuleName
     $serverExtension = GetExecutableExtension
-    if ($null -ne $ModuleRoot) {
+    if (-not [string]::IsNullOrEmpty($ModuleRoot)) {
         $serverModulePath = "$ModuleRoot/$serverModulePath"
     }
 
@@ -42,7 +42,7 @@ function GetServerExePath($ModuleRoot) {
         $_.Version -eq $gliderUIVersion
     }
     if ($null -eq $serverModule) {
-        Write-Error "Server [$serverModulePath] Version [$gliderUIVersion] not installed."
+        Write-Warning "Server [$serverModulePath] Version [$gliderUIVersion] not installed."
         return
     }
 
