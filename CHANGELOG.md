@@ -1,10 +1,16 @@
 # Changelog
 
-## [0.4.0] - 2026-08-09
+## [0.4.0] - 2026-09-04
 
 ### Added
 
-- Added linux-arm64 support
+- Added `Install-GLIServer`
+- Added linux-arm64 platform
+
+### Deprecated
+
+- `Enable-GLIExecution` and `Remove-GLINonTargetPlatform` will be removed in the next release
+  - Use `Install-GLIServer` instead
 
 ## [0.3.0] - 2026-07-13
 
