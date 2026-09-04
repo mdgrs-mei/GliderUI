@@ -1,14 +1,40 @@
 <#
 .SYNOPSIS
+Installs the GliderUI server module and optionally removes older versions.
 
 .DESCRIPTION
+Installs the GliderUI server module for the current module version and optionally uninstalls older installed versions.
+On non-Windows platforms, the function also ensures the installed server executable has execute permission set.
+
+.PARAMETER Prerelease
+Passed to the Prerelease parameter of Install-PSResource.
+
+.PARAMETER Repository
+Passed to the Repository parameter of Install-PSResource.
+
+.PARAMETER Scope
+Passed to the Scope parameter of Install-PSResource.
+
+.PARAMETER PassThru
+Returns the installed module object from Install-PSResource.
+
+.PARAMETER TrustRepository
+Passed to the TrustRepository parameter of Install-PSResource.
+
+.PARAMETER UninstallOldVersions
+Removes older installed versions of the GliderUI server module after a successful install.
 
 .INPUTS
 None.
 
 .OUTPUTS
-None.
+Returns the installed module object when -PassThru is specified.
 
+.EXAMPLE
+Install-GLIServer
+
+.EXAMPLE
+Install-GLIServer -Scope CurrentUser -PassThru -UninstallOldVersions
 #>
 function Install-GLIServer {
     [CmdletBinding(SupportsShouldProcess)]
