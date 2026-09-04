@@ -112,7 +112,7 @@ function BuildServer($Rid) {
 }
 
 if ($BuildAllRuntimes) {
-    foreach ($rid in $supportedServerRids) {
+    foreach ($rid in $script:supportedServerRids) {
         BuildServer $rid
     }
 } else {
