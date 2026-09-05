@@ -16,7 +16,32 @@ public class Engine
         public global::System.Timers.Timer? EventTimer;
         public PSEventSubscriber? TimerEventSubscriber;
 
-        public void InitTimerEvent()
+        public void Init(bool useTimerEvent, bool isMain)
+        {
+            if (IsInitialized)
+                return;
+
+            if (useTimerEvent)
+            {
+                InitTimerEvent();
+            }
+
+            IsMain = isMain;
+            IsInitialized = true;
+        }
+
+        public void Term()
+        {
+            if (!IsInitialized)
+                return;
+
+            IsMain = false;
+            IsInitialized = false;
+
+            TermTimerEvent();
+        }
+
+        private void InitTimerEvent()
         {
             // Register timer event to process the main command queue.
             // The timer event fires when commands are processed on the main runspace or when waiting for user inputs in interactive sessions.
@@ -46,13 +71,62 @@ $engineUpdateTimer.Start()
             EventTimer.Start();
         }
 
-        public void TermTimerEvent()
+        private void TermTimerEvent()
         {
             if (EventTimer is null)
                 return;
 
             EventTimer.Stop();
             Runspace.DefaultRunspace.Events.UnsubscribeEvent(TimerEventSubscriber);
+        }
+
+        public void IdleUpdate()
+        {
+            if (!IsInitialized)
+                return;
+
+            // Do not run commands inside other event callbacks.
+            if (IsInUpdate)
+                return;
+
+            ProcessCommands();
+        }
+
+        public void Update()
+        {
+            if (!IsInitialized)
+                return;
+
+            if (!IsInUpdate)
+            {
+                // Root update.
+                IsInUpdate = true;
+                ProcessCommands();
+                IsInUpdate = false;
+            }
+            else
+            {
+                // Recursive update.
+                ProcessCommands();
+            }
+        }
+
+        private void ProcessCommands()
+        {
+            var queueId = new CommandQueueId(CommandQueueType.RunspaceId, Runspace.DefaultRunspace.Id);
+            try
+            {
+                CommandServer.Get().ProcessCommands(queueId);
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine("Engine.ProcessCommands faild:");
+                Console.Error.WriteLine($"{e.GetType().FullName}: {e.Message}");
+                if (e.InnerException is not null)
+                {
+                    Console.Error.WriteLine($"-> {e.InnerException.GetType().FullName}: {e.InnerException.Message}");
+                }
+            }
         }
     }
 
@@ -101,27 +175,13 @@ $engineUpdateTimer.Start()
         }
         InitCommandThreadPool(streamingHost, modulePath);
 
-        if (useTimerEvent)
-        {
-            thisRunspace.InitTimerEvent();
-        }
-
-        thisRunspace.IsInitialized = true;
-        thisRunspace.IsMain = true;
+        thisRunspace.Init(useTimerEvent, isMain: true);
     }
 
     public void InitSubRunspace(bool useTimerEvent)
     {
         var thisRunspace = _thisRunspace.Value;
-        if (thisRunspace.IsInitialized)
-            return;
-
-        if (useTimerEvent)
-        {
-            thisRunspace.InitTimerEvent();
-        }
-
-        thisRunspace.IsInitialized = true;
+        thisRunspace.Init(useTimerEvent, isMain: false);
     }
 
     public void TermRunspace()
@@ -130,16 +190,14 @@ $engineUpdateTimer.Start()
         if (!thisRunspace.IsInitialized)
             return;
 
-        thisRunspace.IsInitialized = false;
+        bool isMainRunspace = thisRunspace.IsMain;
+        thisRunspace.Term();
 
-        thisRunspace.TermTimerEvent();
-
-        if (thisRunspace.IsMain)
+        if (isMainRunspace)
         {
             TermCommandThreadPool();
             TermConnection();
             StopServerProcess();
-            thisRunspace.IsMain = false;
         }
     }
 
@@ -210,51 +268,12 @@ $engineUpdateTimer.Start()
     public void IdleUpdateRunspace()
     {
         var thisRunspace = _thisRunspace.Value;
-        if (!thisRunspace.IsInitialized)
-            return;
-
-        // Do not run commands inside other event callbacks.
-        if (thisRunspace.IsInUpdate)
-            return;
-
-        ProcessCommands();
+        thisRunspace.IdleUpdate();
     }
 
     internal void UpdateRunspace()
     {
         var thisRunspace = _thisRunspace.Value;
-        if (!thisRunspace.IsInitialized)
-            return;
-
-        if (!thisRunspace.IsInUpdate)
-        {
-            // Root update.
-            thisRunspace.IsInUpdate = true;
-            ProcessCommands();
-            thisRunspace.IsInUpdate = false;
-        }
-        else
-        {
-            // Recursive update.
-            ProcessCommands();
-        }
-    }
-
-    private void ProcessCommands()
-    {
-        var queueId = new CommandQueueId(CommandQueueType.RunspaceId, Runspace.DefaultRunspace.Id);
-        try
-        {
-            CommandServer.Get().ProcessCommands(queueId);
-        }
-        catch (Exception e)
-        {
-            Console.Error.WriteLine("Engine.ProcessCommands faild:");
-            Console.Error.WriteLine($"{e.GetType().FullName}: {e.Message}");
-            if (e.InnerException is not null)
-            {
-                Console.Error.WriteLine($"-> {e.InnerException.GetType().FullName}: {e.InnerException.Message}");
-            }
-        }
+        thisRunspace.Update();
     }
 }
