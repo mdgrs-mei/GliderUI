@@ -13,9 +13,9 @@ Enter-RSSession -OnStart {
 
     & $build Debug
 
-    $isMainRunspace = $true
+    $isForegroundRunspace = $true
     $modulePath = "$root/module"
-    Import-Module "$modulePath/GliderUI" -ArgumentList $isMainRunspace, $modulePath
+    Import-Module "$modulePath/GliderUI" -ArgumentList $isForegroundRunspace, $modulePath
 
     function Restart {
         Restart-RSSession

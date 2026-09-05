@@ -11,14 +11,53 @@ public class Engine
     private sealed class RunspaceState
     {
         public bool IsInitialized { get; set; }
+        public bool IsMain { get; set; }
         public bool IsInUpdate { get; set; }
         public global::System.Timers.Timer? EventTimer;
         public PSEventSubscriber? TimerEventSubscriber;
+
+        public void InitTimerEvent()
+        {
+            // Register timer event to process the main command queue.
+            // The timer event fires when commands are processed on the main runspace or when waiting for user inputs in interactive sessions.
+            EventTimer = new()
+            {
+                Interval = Constants.ClientTimerEventCommandPolingIntervalMillisecond,
+                AutoReset = false,
+                Enabled = false
+            };
+
+            ScriptBlock action = ScriptBlock.Create(@"
+[GliderUI.Engine]::Get().IdleUpdateRunspace()
+$engineUpdateTimer = $Sender
+$engineUpdateTimer.Start()
+"
+            );
+
+            TimerEventSubscriber = Runspace.DefaultRunspace.Events.SubscribeEvent(
+                source: EventTimer,
+                eventName: "Elapsed",
+                sourceIdentifier: "",
+                data: null,
+                action: action,
+                supportEvent: false,
+                forwardEvent: false);
+
+            EventTimer.Start();
+        }
+
+        public void TermTimerEvent()
+        {
+            if (EventTimer is null)
+                return;
+
+            EventTimer.Stop();
+            Runspace.DefaultRunspace.Events.UnsubscribeEvent(TimerEventSubscriber);
+        }
     }
 
     private readonly RunspaceLocal<RunspaceState> _thisRunspace = new(() => new RunspaceState());
-    private readonly object _lock = new();
-    private int _mainRunspaceId = Constants.InvalidRunspaceId;
+    private int _remainingMainRunspaceCount = 1;
     private string _upstreamPipeName = "";
     private string _downstreamPipeName = "";
     private Process? _serverProcess;
@@ -30,7 +69,12 @@ public class Engine
         return _instance;
     }
 
-    public void InitRunspace(
+    public bool AcquireMainRunspace()
+    {
+        return Interlocked.Exchange(ref _remainingMainRunspaceCount, 0) > 0;
+    }
+
+    public void InitMainRunspace(
         string serverExePath,
         PSHost? streamingHost,
         string modulePath,
@@ -40,33 +84,41 @@ public class Engine
         if (thisRunspace.IsInitialized)
             return;
 
-        lock (_lock)
-        {
-            if (_mainRunspaceId == Constants.InvalidRunspaceId)
-            {
 #if DEBUG
-                //System.Diagnostics.Debugger.Launch();
+        //System.Diagnostics.Debugger.Launch();
 #endif
-                InitPipeNames();
-                try
-                {
-                    StartServerProcess(serverExePath);
-                    InitConnection();
-                }
-                catch (Exception)
-                {
-                    StopServerProcess();
-                    Console.Error.WriteLine($"Failed to start server [{serverExePath}]");
-                    throw;
-                }
-                InitCommandThreadPool(streamingHost, modulePath);
-                _mainRunspaceId = Runspace.DefaultRunspace.Id;
-            }
+        InitPipeNames();
+        try
+        {
+            StartServerProcess(serverExePath);
+            InitConnection();
         }
+        catch (Exception)
+        {
+            StopServerProcess();
+            Console.Error.WriteLine($"Failed to start server [{serverExePath}]");
+            throw;
+        }
+        InitCommandThreadPool(streamingHost, modulePath);
 
         if (useTimerEvent)
         {
-            InitTimerEvent();
+            thisRunspace.InitTimerEvent();
+        }
+
+        thisRunspace.IsInitialized = true;
+        thisRunspace.IsMain = true;
+    }
+
+    public void InitSubRunspace(bool useTimerEvent)
+    {
+        var thisRunspace = _thisRunspace.Value;
+        if (thisRunspace.IsInitialized)
+            return;
+
+        if (useTimerEvent)
+        {
+            thisRunspace.InitTimerEvent();
         }
 
         thisRunspace.IsInitialized = true;
@@ -80,17 +132,14 @@ public class Engine
 
         thisRunspace.IsInitialized = false;
 
-        TermTimerEvent();
+        thisRunspace.TermTimerEvent();
 
-        lock (_lock)
+        if (thisRunspace.IsMain)
         {
-            if (Runspace.DefaultRunspace.Id == _mainRunspaceId)
-            {
-                TermCommandThreadPool();
-                TermConnection();
-                StopServerProcess();
-                _mainRunspaceId = Constants.InvalidRunspaceId;
-            }
+            TermCommandThreadPool();
+            TermConnection();
+            StopServerProcess();
+            thisRunspace.IsMain = false;
         }
     }
 
@@ -135,48 +184,6 @@ public class Engine
     {
         CommandClient.Get().Term();
         CommandServer.Get().Term();
-    }
-
-    private void InitTimerEvent()
-    {
-        var thisRunspace = _thisRunspace.Value;
-
-        // Register timer event to process the main command queue.
-        // The timer event fires when commands are processed on the main runspace or when waiting for user inputs in interactive sessions.
-        thisRunspace.EventTimer = new()
-        {
-            Interval = Constants.ClientTimerEventCommandPolingIntervalMillisecond,
-            AutoReset = false,
-            Enabled = false
-        };
-
-        ScriptBlock action = ScriptBlock.Create(@"
-[GliderUI.Engine]::Get().IdleUpdateRunspace()
-$engineUpdateTimer = $Sender
-$engineUpdateTimer.Start()
-"
-        );
-
-        thisRunspace.TimerEventSubscriber = Runspace.DefaultRunspace.Events.SubscribeEvent(
-            source: thisRunspace.EventTimer,
-            eventName: "Elapsed",
-            sourceIdentifier: "",
-            data: null,
-            action: action,
-            supportEvent: false,
-            forwardEvent: false);
-
-        thisRunspace.EventTimer.Start();
-    }
-
-    private void TermTimerEvent()
-    {
-        var thisRunspace = _thisRunspace.Value;
-        if (thisRunspace.EventTimer is null)
-            return;
-
-        thisRunspace.EventTimer.Stop();
-        Runspace.DefaultRunspace.Events.UnsubscribeEvent(thisRunspace.TimerEventSubscriber);
     }
 
     private void InitCommandThreadPool(PSHost? streamingHost, string modulePath)
