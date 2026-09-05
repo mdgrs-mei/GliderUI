@@ -1,136 +1,13 @@
 ﻿using System.Diagnostics;
 using System.Management.Automation;
 using System.Management.Automation.Host;
-using System.Management.Automation.Runspaces;
 using RpcUIShell.Core;
 
 namespace GliderUI;
 
 public class Engine
 {
-    private sealed class RunspaceState
-    {
-        public bool IsInitialized { get; set; }
-        public bool IsMain { get; set; }
-        public bool IsInUpdate { get; set; }
-        public global::System.Timers.Timer? EventTimer;
-        public PSEventSubscriber? TimerEventSubscriber;
-
-        public void Init(bool useTimerEvent, bool isMain)
-        {
-            if (IsInitialized)
-                return;
-
-            if (useTimerEvent)
-            {
-                InitTimerEvent();
-            }
-
-            IsMain = isMain;
-            IsInitialized = true;
-        }
-
-        public void Term()
-        {
-            if (!IsInitialized)
-                return;
-
-            IsMain = false;
-            IsInitialized = false;
-
-            TermTimerEvent();
-        }
-
-        private void InitTimerEvent()
-        {
-            // Register timer event to process the main command queue.
-            // The timer event fires when commands are processed on the main runspace or when waiting for user inputs in interactive sessions.
-            EventTimer = new()
-            {
-                Interval = Constants.ClientTimerEventCommandPolingIntervalMillisecond,
-                AutoReset = false,
-                Enabled = false
-            };
-
-            ScriptBlock action = ScriptBlock.Create(@"
-[GliderUI.Engine]::Get().IdleUpdateRunspace()
-$engineUpdateTimer = $Sender
-$engineUpdateTimer.Start()
-"
-            );
-
-            TimerEventSubscriber = Runspace.DefaultRunspace.Events.SubscribeEvent(
-                source: EventTimer,
-                eventName: "Elapsed",
-                sourceIdentifier: "",
-                data: null,
-                action: action,
-                supportEvent: false,
-                forwardEvent: false);
-
-            EventTimer.Start();
-        }
-
-        private void TermTimerEvent()
-        {
-            if (EventTimer is null)
-                return;
-
-            EventTimer.Stop();
-            Runspace.DefaultRunspace.Events.UnsubscribeEvent(TimerEventSubscriber);
-        }
-
-        public void IdleUpdate()
-        {
-            if (!IsInitialized)
-                return;
-
-            // Do not run commands inside other event callbacks.
-            if (IsInUpdate)
-                return;
-
-            ProcessCommands();
-        }
-
-        public void Update()
-        {
-            if (!IsInitialized)
-                return;
-
-            if (!IsInUpdate)
-            {
-                // Root update.
-                IsInUpdate = true;
-                ProcessCommands();
-                IsInUpdate = false;
-            }
-            else
-            {
-                // Recursive update.
-                ProcessCommands();
-            }
-        }
-
-        private void ProcessCommands()
-        {
-            var queueId = new CommandQueueId(CommandQueueType.RunspaceId, Runspace.DefaultRunspace.Id);
-            try
-            {
-                CommandServer.Get().ProcessCommands(queueId);
-            }
-            catch (Exception e)
-            {
-                Console.Error.WriteLine("Engine.ProcessCommands faild:");
-                Console.Error.WriteLine($"{e.GetType().FullName}: {e.Message}");
-                if (e.InnerException is not null)
-                {
-                    Console.Error.WriteLine($"-> {e.InnerException.GetType().FullName}: {e.InnerException.Message}");
-                }
-            }
-        }
-    }
-
-    private readonly RunspaceLocal<RunspaceState> _thisRunspace = new(() => new RunspaceState());
+    private readonly RunspaceLocal<EngineRunspace> _thisRunspace = new(() => new EngineRunspace());
     private int _remainingMainRunspaceCount = 1;
     private string _upstreamPipeName = "";
     private string _downstreamPipeName = "";
@@ -146,6 +23,11 @@ $engineUpdateTimer.Start()
     public bool AcquireMainRunspace()
     {
         return Interlocked.Exchange(ref _remainingMainRunspaceCount, 0) > 0;
+    }
+
+    public void ReleaseMainRunspace()
+    {
+        _ = Interlocked.Exchange(ref _remainingMainRunspaceCount, 1);
     }
 
     public void InitMainRunspace(
@@ -198,6 +80,7 @@ $engineUpdateTimer.Start()
             TermCommandThreadPool();
             TermConnection();
             StopServerProcess();
+            ReleaseMainRunspace();
         }
     }
 
