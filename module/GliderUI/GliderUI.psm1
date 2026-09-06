@@ -17,12 +17,19 @@ if (WriteErrorIfRidNotSupported) {
 $clientDll = "$PSScriptRoot/bin/$($script:clientNetVersion)/GliderUI.dll"
 Import-Module $clientDll
 
-$isMainRunspace = $false
+$script:isMainRunspace = $false
 if ($IsForegroundRunspace) {
-    $isMainRunspace = [GliderUI.Engine]::Get().AcquireMainRunspace()
+    $script:isMainRunspace = [GliderUI.Engine]::Get().AcquireMainRunspace()
 }
 
-if ($isMainRunspace) {
+$MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
+    [GliderUI.Engine]::Get().TermRunspace()
+    if ($script:isMainRunspace) {
+        [GliderUI.Engine]::Get().ReleaseMainRunspace()
+    }
+}
+
+if ($script:isMainRunspace) {
     $serverPath = GetServerExePath $ServerModuleRoot
     if ($null -eq $serverPath) {
         return
@@ -39,12 +46,9 @@ if ($isMainRunspace) {
 
 $modulePath = $MyInvocation.MyCommand.Path
 $useTimerEvent = $IsForegroundRunspace
-if ($isMainRunspace) {
+if ($script:isMainRunspace) {
     [GliderUI.Engine]::Get().InitMainRunspace($serverPath, $host, $modulePath, $useTimerEvent)
 } else {
     [GliderUI.Engine]::Get().InitSubRunspace($useTimerEvent)
 }
 
-$MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
-    [GliderUI.Engine]::Get().TermRunspace()
-}

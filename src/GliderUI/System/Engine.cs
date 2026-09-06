@@ -80,7 +80,6 @@ public class Engine
             TermCommandThreadPool();
             TermConnection();
             StopServerProcess();
-            ReleaseMainRunspace();
         }
     }
 
