@@ -29,7 +29,7 @@ Install-PSResource -Name GliderUI
 After installing the core module, you need to install the server for your current platform:
 
 ```powershell
-Install-GLIServer -UninstallOldVersions
+Install-GLIServer
 ```
 
 When updating the module, always run `Install-GLIServer` as well to update the server. Since the server executable is relatively large, we recommended using the `-UninstallOldVersions` parameter to remove older versions:
