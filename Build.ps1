@@ -10,44 +10,35 @@ param (
 $originalProgressPreference = $ProgressPreference
 $ProgressPreference = 'SilentlyContinue'
 
-$coreNetVersion = 'net8.0'
-$serverNetVersion = 'net9.0'
-$supportedServerRids = @(
-    'win-x64'
-    'osx-arm64'
-    'linux-x64'
-    'linux-arm64'
-)
-if ($IsWindows) {
-    $defaultServerRid = 'win-x64'
-    $executableExtension = '.exe'
-} else {
-    $defaultServerRid = [System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier
-    $executableExtension = ''
+$privateScripts = @(Get-ChildItem $PSScriptRoot/module/GliderUI/Private/*.ps1 -Exclude _*)
+foreach ($private:script in $privateScripts) {
+    . $script.FullName
 }
 
-if ($supportedServerRids -notcontains $defaultServerRid) {
-    Write-Error "Server runtime id [$defaultServerRid] is not supported. Supported runtime ids are [$supportedServerRids]."
+if (WriteErrorIfRidNotSupported) {
     return
 }
+
+$defaultServerRid = GetRid
+$executableExtension = GetExecutableExtension
 
 $copyExtensions = @('.dll', '.pdb')
 $src = "$PSScriptRoot/src"
 $apiSrc = "$src/GliderUI.ApiExporter"
-$coreSrc = "$src/GliderUI"
+$clientSrc = "$src/GliderUI"
 $depSrc = "$src/RpcUIShell.Core"
 $serverSrc = "$src/GliderUI.Server"
 
-$apiPublish = [System.IO.Path]::GetFullPath("$apiSrc/bin/$Configuration/$serverNetVersion/$defaultServerRid/publish/")
-$corePublish = [System.IO.Path]::GetFullPath("$coreSrc/bin/$Configuration/$coreNetVersion/publish/")
-$depPublish = [System.IO.Path]::GetFullPath("$depSrc/bin/$Configuration/$coreNetVersion/publish/")
+$apiPublish = [System.IO.Path]::GetFullPath("$apiSrc/bin/$Configuration/$($script:serverNetVersion)/$defaultServerRid/publish/")
+$clientPublish = [System.IO.Path]::GetFullPath("$clientSrc/bin/$Configuration/$($script:clientNetVersion)/publish/")
+$depPublish = [System.IO.Path]::GetFullPath("$depSrc/bin/$Configuration/$($script:clientNetVersion)/publish/")
 
 $apiXml = "$apiSrc/Api.xml"
 $apiExporter = "$apiPublish/GliderUI.ApiExporter$executableExtension"
 
-$outDir = "$PSScriptRoot/module/GliderUI/bin/$coreNetVersion"
-$outDeps = "$outDir/Dependencies"
-$outServer = "$PSScriptRoot/module/GliderUI/bin/$serverNetVersion"
+$moduleDir = "$PSScriptRoot/module"
+$clientOut = "$moduleDir/GliderUI/bin/$($script:clientNetVersion)"
+$depOut = "$clientOut/Dependencies"
 
 function CopyFolderItems($FolderPath, $Destination) {
     if (Test-Path $Destination) {
@@ -62,8 +53,7 @@ $dotnetExeVersion = dotnet --version
 Write-Host "dotnet.exe version: $dotnetExeVersion"
 Pop-Location
 
-Remove-Item -Path $outDir -Recurse -ErrorAction Ignore
-Remove-Item -Path $outServer -Recurse -ErrorAction Ignore
+Remove-Item -Path $clientOut -Recurse -ErrorAction Ignore
 
 if ($ExportApi) {
     Push-Location $apiSrc
@@ -78,8 +68,8 @@ Push-Location $depSrc
 dotnet publish -c $Configuration -o $depPublish
 Pop-Location
 
-Push-Location $coreSrc
-dotnet publish -c $Configuration -o $corePublish
+Push-Location $clientSrc
+dotnet publish -c $Configuration -o $clientPublish
 Pop-Location
 
 # Filter deps files.
@@ -92,37 +82,37 @@ Get-ChildItem -Path $depPublish -Recurse -File | ForEach-Object {
     $deps.Add($_.FullName.Replace($depPublish, ''))
 }
 
-# Filter core dlls.
-Get-ChildItem -Path $corePublish -Recurse -File | Where-Object {
-    $path = $_.FullName.Replace($corePublish, '')
+# Filter client dlls.
+Get-ChildItem -Path $clientPublish -Recurse -File | Where-Object {
+    $path = $_.FullName.Replace($clientPublish, '')
     ($_.Extension -notin $copyExtensions) -or ($deps.Contains($path))
 } | Remove-Item -Force
 
-# Remove empty folders of core dlls.
-Get-ChildItem -Path $corePublish -Recurse -Directory | Where-Object {
+# Remove empty folders of client dlls.
+Get-ChildItem -Path $clientPublish -Recurse -Directory | Where-Object {
     -not (Get-ChildItem -Path $_.FullName -Recurse -File)
 } | Remove-Item -Force
 
 # Output.
-CopyFolderItems -FolderPath $corePublish -Destination $outDir
-CopyFolderItems -FolderPath $depPublish -Destination $outDeps
-
+CopyFolderItems -FolderPath $clientPublish -Destination $clientOut
+CopyFolderItems -FolderPath $depPublish -Destination $depOut
 
 # Build servers.
 function BuildServer($Rid) {
-    $publishFolder = [System.IO.Path]::GetFullPath("$serverSrc/bin/$Configuration/$serverNetVersion/$Rid/publish/")
-    $outServerRuntime = "$outServer/$Rid"
+    $serverPublish = [System.IO.Path]::GetFullPath("$serverSrc/bin/$Configuration/$($script:serverNetVersion)/$Rid/publish/")
+    $serverOut = "$moduleDir/GliderUI.Server.$Rid/bin/$($script:serverNetVersion)"
+    Remove-Item -Path $serverOut -Recurse -ErrorAction Ignore
 
     Push-Location $serverSrc
-    dotnet publish -c $Configuration -o $publishFolder -r $Rid
+    dotnet publish -c $Configuration -o $serverPublish -r $Rid
     Pop-Location
 
     # Output.
-    CopyFolderItems -FolderPath $publishFolder -Destination $outServerRuntime
+    CopyFolderItems -FolderPath $serverPublish -Destination $serverOut
 }
 
 if ($BuildAllRuntimes) {
-    foreach ($rid in $supportedServerRids) {
+    foreach ($rid in $script:supportedServerRids) {
         BuildServer $rid
     }
 } else {

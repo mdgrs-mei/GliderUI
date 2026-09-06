@@ -1,7 +1,7 @@
 @{
 
     # Script module or binary module file associated with this manifest.
-    RootModule = 'GliderUI.psm1'
+    # RootModule = ''
 
     # Version number of this module.
     ModuleVersion = '0.4.0'
@@ -10,7 +10,7 @@
     CompatiblePSEditions = 'Core'
 
     # ID used to uniquely identify this module
-    GUID = 'b46a30c6-ccfc-494e-9e1e-ef2d6c254358'
+    GUID = '22fa52b1-b051-4cea-a7e8-05268ff5e6df'
 
     # Author of this module
     Author = 'mdgrs-mei'
@@ -22,7 +22,7 @@
     Copyright = '(c) mdgrs-mei. All rights reserved.'
 
     # Description of the functionality provided by this module
-    Description = 'Cross-platform Desktop GUI framework for PowerShell powered by Avalonia'
+    Description = 'Server binaries for GliderUI module'
 
     # Minimum version of the PowerShell engine required by this module
     PowerShellVersion = '7.4'
@@ -61,12 +61,7 @@
     # NestedModules = @()
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-    FunctionsToExport = @(
-        'Enable-GLIExecution'
-        'Install-GLIServer'
-        'Remove-GLINonTargetPlatform'
-        'Set-GLIRunspacePoolOption'
-    )
+    FunctionsToExport = @()
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport = @()
@@ -92,7 +87,7 @@
         PSData = @{
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags = @('Windows', 'Linux', 'MacOS', 'GUI')
+            Tags = @('Linux')
 
             # A URL to the license for this module.
             LicenseUri = 'https://github.com/mdgrs-mei/GliderUI/blob/main/LICENSE'
@@ -107,7 +102,7 @@
             ReleaseNotes = 'https://github.com/mdgrs-mei/GliderUI/blob/main/CHANGELOG.md'
 
             # Prerelease string of this module
-            # Prerelease = 'alpha'
+            # Prerelease = ''
 
             # Flag to indicate whether the module requires explicit user acceptance for install/update/save
             # RequireLicenseAcceptance = $false

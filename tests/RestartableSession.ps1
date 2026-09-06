@@ -2,7 +2,7 @@
 
 $root = Split-Path $PSScriptRoot -Parent
 Enter-RSSession -OnStart {
-    $root = $args[0]
+    param ($root)
     $build = "$root/Build.ps1"
 
     $server = Get-Process -Name GliderUI.Server -ErrorAction SilentlyContinue
@@ -12,7 +12,10 @@ Enter-RSSession -OnStart {
     }
 
     & $build Debug
-    Import-Module "$root/module/GliderUI"
+
+    $isForegroundRunspace = $true
+    $modulePath = "$root/module"
+    Import-Module "$modulePath/GliderUI" -ArgumentList $isForegroundRunspace, $modulePath
 
     function Restart {
         Restart-RSSession

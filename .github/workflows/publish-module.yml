@@ -24,4 +24,4 @@ jobs:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         shell: pwsh
         run: |
-          Publish-Module -Path ./module/GliderUI -NuGetApiKey "$env:NUGET_API_KEY"
+          & ./tools/PublishModule.ps1 -NuGetApiKey "$env:NUGET_API_KEY"

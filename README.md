@@ -18,7 +18,7 @@ https://github.com/user-attachments/assets/aa53a0b8-d478-4897-bc82-d10c804c98b1
 ## Requirements
 
 - PowerShell 7.4 or newer
-- Windows(win-x64/win-arm64), macOS(osx-arm64) or Linux(linux-x64)
+- Windows(win-x64/win-arm64), macOS(osx-arm64) or Linux(linux-x64/linux-arm64)
 
 ## Installation
 
@@ -26,18 +26,17 @@ https://github.com/user-attachments/assets/aa53a0b8-d478-4897-bc82-d10c804c98b1
 Install-PSResource -Name GliderUI
 ```
 
-On macOS or Linux, call `Enable-GLIExecution` once after the installation or update using the same user account that installed the module:
+After installing the core module, you need to install the server for your current platform:
 
 ```powershell
-# Adds execute permission to the server executable file.
-Enable-GLIExecution
+Install-GLIServer -UninstallOldVersions
 ```
 
-The module includes server files for all supported platforms, totaling hundreds of megabytes. You can optionally call `Remove-GLINonTargetPlatform` to remove the files that are not needed on the current platform.
+When updating the module, always run `Install-GLIServer` as well to update the server. Since the server executable is relatively large, we recommended using the `-UninstallOldVersions` parameter to remove older versions:
 
 ```powershell
-# Optionally removes server binaries for other platforms.
-Remove-GLINonTargetPlatform
+Update-PSResource -Name GliderUI
+Install-GLIServer -UninstallOldVersions
 ```
 
 ## Quick Start
