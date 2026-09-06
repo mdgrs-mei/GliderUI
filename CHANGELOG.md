@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.1] - 2026-09-06
+
+### Fixed
+
+- Fixed the server not initialized issue when reloading the module after installation
+
 ## [0.4.0] - 2026-09-04
 
 ### Added
