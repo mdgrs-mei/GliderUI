@@ -65,6 +65,7 @@
         'Enable-GLIExecution'
         'Install-GLIServer'
         'Remove-GLINonTargetPlatform'
+        'Remove-GLIObject'
         'Set-GLIRunspacePoolOption'
     )
 
