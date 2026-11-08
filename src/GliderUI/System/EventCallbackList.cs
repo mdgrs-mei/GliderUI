@@ -10,8 +10,14 @@ internal sealed class EventCallbackList : IGliderUIObject
 
     public EventCallbackList()
     {
-        _ = ObjectStore.Get().RegisterObject(this, out ObjectId id);
+        // Do not store a reference to leave the lifetime to the parent object.
+        ObjectStore.Get().RegisterObject(this, out ObjectId id, storeReference: false);
         GliderUIObjectId = id;
+    }
+
+    ~EventCallbackList()
+    {
+        ObjectStore.Get().UnregisterObject(GliderUIObjectId);
     }
 
     public void Add(
