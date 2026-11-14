@@ -158,4 +158,17 @@ public class Engine
         var thisRunspace = _thisRunspace.Value;
         thisRunspace.Update();
     }
+
+    public void RemoveGliderUIObject(IGliderUIObject? obj)
+    {
+        if (obj is null)
+            return;
+
+        CommandClient.Get().RemoveObject(obj.GliderUIObjectId);
+    }
+
+    public void RemoveAllGliderUIObjects()
+    {
+        CommandClient.Get().RemoveAllObjects();
+    }
 }

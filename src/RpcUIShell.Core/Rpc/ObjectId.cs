@@ -17,6 +17,11 @@ public class ObjectId
         Id = id;
     }
 
+    public bool IsNull()
+    {
+        return string.IsNullOrEmpty(Id);
+    }
+
     public override string ToString()
     {
         return Id;
