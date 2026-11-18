@@ -41,7 +41,6 @@ public class Generator : IIncrementalGenerator
             var configOptionsProvider = providers.Left.Right;
             if (configOptionsProvider.GlobalOptions.TryGetValue("build_property.RpcUIShellGenerator_TypeMappingRootNamespace", out var rootNamespace))
             {
-                EnumGenerator.GenerateTypeMapping(sourceProductionContext, rootNamespace);
                 ObjectGenerator.GenerateTypeMapping(sourceProductionContext, rootNamespace);
             }
 

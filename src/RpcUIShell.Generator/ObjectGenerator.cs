@@ -77,17 +77,25 @@ internal static class ObjectGenerator
 
         codeWriter.IncrementIndent();
         codeWriter.AppendAndReserveNewLine($$"""
-            private static void InitObjectTypeMapping()
+            private static void InitMapping()
             {
-                ObjectTypeMapping.Get().InitMapping(_objectList);
+                ObjectTypeMapping.Get().InitMapping(_list);
             }
             """);
 
         codeWriter.Append($$"""
-            private static readonly List<(string, string)> _objectList = [
+            private static readonly List<(string, string)> _list = [
             """);
 
         codeWriter.IncrementIndent();
+
+        foreach (var enumDef in api.Enums)
+        {
+            var ns = Generator.GetTargetNamespace(enumDef.Namespace);
+            codeWriter.Append($"""
+                ("{ns}.{enumDef.Name}, {api.ModuleName}", "{enumDef.FullName}"),
+                """);
+        }
 
         foreach (var (systemTypeFullName, _) in Api.SystemTypes)
         {

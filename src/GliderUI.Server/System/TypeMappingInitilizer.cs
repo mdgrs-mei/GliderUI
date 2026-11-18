@@ -10,7 +10,6 @@ internal static partial class TypeMappingInitializer
             ObjectTypeMapping.MappingDirection.ServerToClient,
             "GliderUI");
 
-        InitEnumTypeMapping();
-        InitObjectTypeMapping();
+        InitMapping();
     }
 }
