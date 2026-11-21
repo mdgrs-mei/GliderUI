@@ -52,8 +52,7 @@ public class Generator : IIncrementalGenerator
                     surpressMethodByNameAttributes,
                     surpressPropertyByNameAttributes);
 
-                EnumGenerator.Generate(sourceProductionContext);
-                ObjectGenerator.Generate(sourceProductionContext);
+                ObjectGenerator.GenerateApi(sourceProductionContext);
 
                 AttributeGenerator.TermSurpressDictionary();
             }

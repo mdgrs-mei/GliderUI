@@ -7,8 +7,17 @@ internal static class ObjectGenerator
 {
     private static readonly Dictionary<string, ObjectDef> _objectDefs = [];
 
-    public static void Generate(SourceProductionContext sourceProductionContext)
+    public static void GenerateApi(SourceProductionContext sourceProductionContext)
     {
+        Api api = Generator.Api!;
+        foreach (var apiEnumDef in api.Enums)
+        {
+            EnumDef enumDef = new(apiEnumDef);
+            string filename = enumDef.GetSourceCodeFileName();
+            string sourceCode = enumDef.Generate();
+            sourceProductionContext.AddSource(filename, sourceCode);
+        }
+
         CreateObjectDefMap();
 
         foreach (var keyValuePair in _objectDefs)
