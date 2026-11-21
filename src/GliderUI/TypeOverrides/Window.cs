@@ -24,7 +24,7 @@ public partial class Window : IGliderUIObject
         : base(ObjectId.Null)
     {
         GliderUIObjectId = CommandClient.Get().CreateObject(
-            ObjectTypeMapping.Get().GetTargetTypeName(typeof(Window)),
+            TypeMapping.Get().GetTargetTypeName(typeof(Window)),
             this);
 
         CommandClient.Get().InvokeStaticMethod(_accessorClassName, "RegisterWindow", GliderUIObjectId);
@@ -61,7 +61,7 @@ public partial class Window : IGliderUIObject
         _closedCallbacks.Add(
             GliderUIObjectId,
             "Closed",
-            ObjectTypeMapping.Get().GetTargetTypeName(typeof(System.EventArgs)),
+            TypeMapping.Get().GetTargetTypeName(typeof(System.EventArgs)),
             eventCallback);
     }
 

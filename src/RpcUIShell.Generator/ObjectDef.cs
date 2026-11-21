@@ -504,7 +504,7 @@ internal class ObjectDef
 
     private void GeneratePropertyGetterSetter(CodeWriter codeWriter, PropertyDef property)
     {
-        string typeNameExpression = property.ExplicitInterfaceType is not null ? $"ObjectTypeMapping.Get().GetTargetTypeName(typeof({Type.GetName()}))" : "null";
+        string typeNameExpression = property.ExplicitInterfaceType is not null ? $"TypeMapping.Get().GetTargetTypeName(typeof({Type.GetName()}))" : "null";
         if (property.CanRead)
         {
             if (property.IsIndexer)
@@ -555,7 +555,7 @@ internal class ObjectDef
     private void GenerateMethod(CodeWriter codeWriter, MethodDef method)
     {
         var returnType = method.ReturnType!;
-        string typeNameExpression = method.ExplicitInterfaceType is not null ? $"ObjectTypeMapping.Get().GetTargetTypeName(typeof({Type.GetName()}))" : "null";
+        string typeNameExpression = method.ExplicitInterfaceType is not null ? $"TypeMapping.Get().GetTargetTypeName(typeof({Type.GetName()}))" : "null";
 
         if (returnType.IsVoid)
         {
@@ -649,7 +649,7 @@ internal class ObjectDef
                 {{method.GetConstructorSignatureExpression(_apiObjectDef.Name)}}{{baseInitializer}}
                 {
                     {{Generator.Api!.ObjectIdMemberName}} = CommandClient.Get().CreateObject(
-                        ObjectTypeMapping.Get().GetTargetTypeName(typeof({{Type.GetName()}})),
+                        TypeMapping.Get().GetTargetTypeName(typeof({{Type.GetName()}})),
                         this{{method.GetArgumentsExpression(genericTypeParametersOverride: null)}});
                 }
                 """);
@@ -691,7 +691,7 @@ internal class ObjectDef
             {
                 codeWriter.Append($$"""
                     get => PropertyAccessor.GetStatic<{{property.Type.GetName()}}>(
-                        ObjectTypeMapping.Get().GetTargetTypeName(typeof({{Type.GetName()}})),
+                        TypeMapping.Get().GetTargetTypeName(typeof({{Type.GetName()}})),
                         {{property.GetNameOfExpression()}}){{(property.Type.IsNullable ? "" : "!")}};
                     """);
             }
@@ -700,7 +700,7 @@ internal class ObjectDef
             {
                 codeWriter.Append($$"""
                     set => PropertyAccessor.SetStatic(
-                        ObjectTypeMapping.Get().GetTargetTypeName(typeof({{Type.GetName()}})),
+                        TypeMapping.Get().GetTargetTypeName(typeof({{Type.GetName()}})),
                         {{property.GetNameOfExpression()}},
                         value);
                     """);
@@ -739,7 +739,7 @@ internal class ObjectDef
                     {{method.GetSignatureExpression()}}
                     {
                         CommandClient.Get().InvokeStaticMethod(
-                            ObjectTypeMapping.Get().GetTargetTypeName(typeof({{Type.GetName()}})),
+                            TypeMapping.Get().GetTargetTypeName(typeof({{Type.GetName()}})),
                             {{method.GetNameOfExpression()}}{{method.GetArgumentsExpression(genericTypeParametersOverride: null)}});
                     }
                     """);
@@ -750,7 +750,7 @@ internal class ObjectDef
                     {{method.GetSignatureExpression()}}
                     {
                         return CommandClient.Get().InvokeStaticMethodAndGetResult<{{returnType.GetName()}}>(
-                            ObjectTypeMapping.Get().GetTargetTypeName(typeof({{Type.GetName()}})),
+                            TypeMapping.Get().GetTargetTypeName(typeof({{Type.GetName()}})),
                             {{method.GetNameOfExpression()}}{{method.GetArgumentsExpression(genericTypeParametersOverride: null)}}){{(returnType.IsNullable ? "" : "!")}};
                     }
                     """);
@@ -847,7 +847,7 @@ internal class ObjectDef
             return;
 
         string typeName = Type.OverrideGenericTypeParameter(genericTypeParametersOverride).GetName();
-        string typeNameExpression = $"ObjectTypeMapping.Get().GetTargetTypeName(typeof({typeName}))";
+        string typeNameExpression = $"TypeMapping.Get().GetTargetTypeName(typeof({typeName}))";
 
         foreach (var property in _staticProperties)
         {

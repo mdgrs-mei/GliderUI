@@ -1,6 +1,6 @@
 ﻿namespace RpcUIShell.Core;
 
-public sealed class ObjectTypeMapping : Singleton<ObjectTypeMapping>
+public sealed class TypeMapping : Singleton<TypeMapping>
 {
     private readonly Dictionary<string, string> _map = [];
     private MappingDirection _direction = MappingDirection.ClientToServer;

@@ -79,7 +79,7 @@ internal static class ObjectGenerator
         codeWriter.AppendAndReserveNewLine($$"""
             private static void InitMapping()
             {
-                ObjectTypeMapping.Get().InitMapping(_list);
+                TypeMapping.Get().InitMapping(_list);
             }
             """);
 
@@ -147,6 +147,6 @@ internal static class ObjectGenerator
         codeWriter.DecrementIndent();
         codeWriter.Append("}");
 
-        sourceProductionContext.AddSource($"ObjectTypeMappingInitializer.g.cs", codeWriter.ToString());
+        sourceProductionContext.AddSource($"TypeMappingInitializer.g.cs", codeWriter.ToString());
     }
 }
