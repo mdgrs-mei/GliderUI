@@ -41,7 +41,7 @@ public class Generator : IIncrementalGenerator
             var configOptionsProvider = providers.Left.Right;
             if (configOptionsProvider.GlobalOptions.TryGetValue("build_property.RpcUIShellGenerator_TypeMappingRootNamespace", out var rootNamespace))
             {
-                ObjectGenerator.GenerateTypeMapping(sourceProductionContext, rootNamespace);
+                TypeMappingGenerator.Generate(sourceProductionContext, rootNamespace);
             }
 
             if (configOptionsProvider.GlobalOptions.TryGetValue("build_property.RpcUIShellGenerator_GenerateApi", out var generateApi))
@@ -52,7 +52,7 @@ public class Generator : IIncrementalGenerator
                     surpressMethodByNameAttributes,
                     surpressPropertyByNameAttributes);
 
-                ObjectGenerator.GenerateApi(sourceProductionContext);
+                ApiGenerator.Generate(sourceProductionContext);
 
                 AttributeGenerator.TermSurpressDictionary();
             }

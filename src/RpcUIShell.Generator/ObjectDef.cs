@@ -1081,7 +1081,7 @@ internal class ObjectDef
             if (!interfaceType.IsSupported())
                 continue;
 
-            ObjectDef? interfaceObject = ObjectGenerator.GetObjectDef(interfaceType);
+            ObjectDef? interfaceObject = ApiGenerator.GetObjectDef(interfaceType);
             if (interfaceObject is null)
                 continue;
 

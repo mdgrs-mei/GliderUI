@@ -90,7 +90,7 @@ internal class SpecializedMethodGenerator
             string newExpression = "";
             if (methodDef.ObjectDef.BaseType is not null)
             {
-                ObjectDef? baseObjectDef = ObjectGenerator.GetObjectDef(methodDef.ObjectDef.BaseType);
+                ObjectDef? baseObjectDef = ApiGenerator.GetObjectDef(methodDef.ObjectDef.BaseType);
                 newExpression = (baseObjectDef is not null) && baseObjectDef.ContainsSignature(methodDef) ? "new " : "";
             }
 
