@@ -39,9 +39,10 @@ internal static class TypeMappingGenerator
 
         foreach (var enumDef in api.Enums)
         {
-            var ns = Generator.GetTargetNamespace(enumDef.Namespace);
+            var targetTypeFullName = Generator.GetTargetTypeFullName(enumDef.FullName);
+
             codeWriter.Append($"""
-                ("{ns}.{enumDef.Name}, {api.ModuleName}", "{enumDef.FullName}"),
+                ("{targetTypeFullName}", "{enumDef.FullName}"),
                 """);
         }
 
@@ -73,10 +74,10 @@ internal static class TypeMappingGenerator
                 ("{targetTypeFullName}", "{apiObjectDef.FullName}"),
                 """);
 
-            if (apiObjectDef.NestedTypes is null)
+            if (apiObjectDef.NestedObjects is null)
                 continue;
 
-            foreach (var nestedApiObjectDef in apiObjectDef.NestedTypes)
+            foreach (var nestedApiObjectDef in apiObjectDef.NestedObjects)
             {
                 ObjectDef nestedObjectDef = new(nestedApiObjectDef);
                 if (!nestedObjectDef.IsSupported())

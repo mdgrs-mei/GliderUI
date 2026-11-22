@@ -27,6 +27,16 @@ internal class EnumDef
 
                 namespace {{ns}};
 
+                """);
+
+        Generate(codeWriter);
+
+        return codeWriter.ToString();
+    }
+
+    public void Generate(CodeWriter codeWriter)
+    {
+        codeWriter.Append($$"""
                 public enum {{_apiEnumDef.Name}} : global::System.{{_apiEnumDef.UnderlyingType}}
                 {
                 """);
@@ -39,7 +49,5 @@ internal class EnumDef
         codeWriter.DecrementIndent();
 
         codeWriter.Append("}");
-
-        return codeWriter.ToString();
     }
 }

@@ -15,6 +15,7 @@ internal class ObjectDef
     private readonly List<EventDef> _staticEvents = [];
     private readonly List<EventDef> _instanceEvents = [];
     private readonly List<ObjectDef> _nestedObjects = [];
+    private readonly List<EnumDef> _nestedEnums = [];
 
     private Dictionary<string, GetterSetter>? _explicitInterfaceImplementationGetterSetters;
 
@@ -95,11 +96,18 @@ internal class ObjectDef
                 _instanceEvents.Add(new EventDef(eventDef, this, MemberDefType.Instance));
             }
         }
-        if (_apiObjectDef.NestedTypes is not null)
+        if (_apiObjectDef.NestedObjects is not null)
         {
-            foreach (var nestedType in _apiObjectDef.NestedTypes)
+            foreach (var nestedObject in _apiObjectDef.NestedObjects)
             {
-                _nestedObjects.Add(new ObjectDef(nestedType));
+                _nestedObjects.Add(new ObjectDef(nestedObject));
+            }
+        }
+        if (_apiObjectDef.NestedEnums is not null)
+        {
+            foreach (var nestedEnum in _apiObjectDef.NestedEnums)
+            {
+                _nestedEnums.Add(new EnumDef(nestedEnum));
             }
         }
     }
@@ -496,6 +504,10 @@ internal class ObjectDef
             {
                 nestedObject.Generate(codeWriter);
             }
+            foreach (var nestedEnum in _nestedEnums)
+            {
+                nestedEnum.Generate(codeWriter);
+            }
 
             codeWriter.DecrementIndent();
         }
@@ -798,6 +810,10 @@ internal class ObjectDef
         foreach (var nestedObject in _nestedObjects)
         {
             nestedObject.Generate(codeWriter);
+        }
+        foreach (var nestedEnum in _nestedEnums)
+        {
+            nestedEnum.Generate(codeWriter);
         }
 
         codeWriter.DecrementIndent();
