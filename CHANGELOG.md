@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.5.0] - 2026-11-23
+
+### Added
+
+- Added `Remove-GLIObject`
+- Added win-arm64 platform
+
+### Fixed
+
+- Fixed an error when uninstalling servers that were installed with the AllUsers scope
+- Fixed wrong namespaces of nested Enums
+
+### Changed
+
+- Updated StreamJsonRpc to 2.26.150 for a vulnerability fix
+- Updated LiveCharts2 to 2.2.0
+- Updated Avalonia to 12.1.6
+
 ## [0.4.1] - 2026-09-06
 
 ### Fixed
