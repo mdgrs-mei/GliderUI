@@ -94,7 +94,13 @@ function Install-GLIServer {
         }
         if ($oldServerModules -and $PSCmdlet.ShouldProcess($moduleName, "Uninstall-PSResource for $($oldServerModules.Version -join ',')")) {
             $oldServerModules | ForEach-Object {
-                Uninstall-PSResource -Name $_.Name -Version $_.Version
+                $uninstallVersion = $_.Version
+                try {
+                    Uninstall-PSResource -Name $moduleName -Version $uninstallVersion -WarningAction Stop
+                } catch {
+                    Write-Host 'Retrying uninstall with -Scope AllUsers...'
+                    Uninstall-PSResource -Name $moduleName -Version $uninstallVersion -Scope AllUsers
+                }
             }
         }
     }
