@@ -2,6 +2,7 @@ $script:clientNetVersion = 'net8.0'
 $script:serverNetVersion = 'net10.0'
 $script:supportedServerRids = @(
     'win-x64'
+    'win-arm64'
     'osx-arm64'
     'linux-x64'
     'linux-arm64'
@@ -17,11 +18,7 @@ function GetExecutableExtension() {
 }
 
 function GetRid() {
-    if ($IsWindows) {
-        'win-x64'
-    } else {
-        [System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier
-    }
+    [System.Runtime.InteropServices.RuntimeInformation]::RuntimeIdentifier
 }
 
 function GetServerModuleName() {
