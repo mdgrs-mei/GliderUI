@@ -41,6 +41,7 @@ internal sealed class Program
             "WinRT.ObjectReference",
             "CompiledAvaloniaXaml.!AvaloniaResources",
             "CompiledAvaloniaXaml.!XamlLoader",
+            "Avalonia.Controls.PageNavigationExtensions", // Cannot handle SpecialName nested classes.
         ];
 
         api.SupportedGlobalSystemInterfaces =
