@@ -9,8 +9,8 @@ if (-not (Get-Module GliderUI)) {
 
 $win = [Window]::new()
 $win.Title = 'Basic Input'
-$win.Width = 420
-$win.Height = 400
+$win.Width = 450
+$win.Height = 440
 
 $toggleSwitch = [ToggleSwitch]::new()
 $toggleSwitch.AddIsCheckedChanged({
@@ -66,7 +66,7 @@ $radioButtonPanel.Children.Add($radioButton2)
 $radioButtonPanel.Children.Add($radioButton3)
 
 $radioButtonGroup = [GroupBox]::new()
-$radioButtonGroup.Padding = 8
+$radioButtonGroup.Padding = 12
 $radioButtonGroup.Header = 'RadioButton'
 $radioButtonGroup.Content = $radioButtonPanel
 

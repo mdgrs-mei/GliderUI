@@ -10,7 +10,7 @@ if (-not (Get-Module GliderUI)) {
 $win = [Window]::new()
 $win.Title = 'Storage Provider'
 $win.Width = 600
-$win.Height = 240
+$win.Height = 220
 
 # OpenFilePicker
 $textBox0 = [TextBox]::new()
