@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0] - 2026-11-25
+
+### Changed
+
+- Updated Avalonia to 12.2.0
+- Changed the default theme to Fluent2
+
 ## [0.5.0] - 2026-11-23
 
 ### Added
