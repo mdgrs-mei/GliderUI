@@ -79,6 +79,7 @@ function CreateDrawerMenuItem($Title, $IconGeometry, $NavigationPage) {
     $button.HorizontalAlignment = 'Stretch'
     $button.Padding = 12
     $button.Background = [SolidColorBrush]::new([Colors]::Transparent, 1)
+    $button.BorderBrush = [SolidColorBrush]::new([Colors]::Transparent, 1)
     $button.Content = $panel
     $button.AddClick({
             param($argumentList)
